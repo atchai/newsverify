@@ -1,0 +1,13 @@
+name = NewsPlatform: Search
+core = 7.x
+package = Features
+php = 5.2.4
+dependencies[] = ctools
+dependencies[] = entity
+dependencies[] = search_api
+dependencies[] = search_api_solr
+dependencies[] = search_api_views
+dependencies[] = views
+features[ctools][] = views:views_default:3.0
+features[features_api][] = api:1
+features[views_view][] = search

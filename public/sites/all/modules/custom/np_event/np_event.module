@@ -1,0 +1,58 @@
+<?php
+/**
+ * @file
+ * Code for the NewsPlatform: Event feature.
+ */
+
+include_once 'np_event.features.inc';
+
+/**
+ * Implements hook_preprocess_node().
+ * 
+ * - Shift the verification status inside the div header
+ * 
+ * This could also have been done in hook_field_group_pre_render from field_group module
+ * but I think this is a more standard and intuitive strategy for future maintenance
+ */
+function np_event_preprocess_node(&$vars) {
+  if ($vars['node']->type != 'event' || $vars['view_mode'] != 'full') {
+    return;
+  }
+  
+  // Get the group settings. Obtaining the group settings is all to allow the label to be changed from within
+  // the Drupal interface. Hardcoding the labels would be far quicker but very unintuitive for future maintenance
+  $groups = field_group_info_groups('node', 'event', $vars['view_mode']);
+  if (empty($groups)) {
+    $groups = field_group_info_groups('node', 'event', 'default');
+  }
+  
+  // These are the groups that we want to shift the location of the verification status
+  $change_groups = array(
+    'group_when' => 'field_when_v_status',
+    'group_where' => 'field_where_v_status',
+    'group_what' => 'field_what_v_status',
+  );
+
+  foreach ($change_groups as $group_key => $field_key) {
+    $group_settings = $groups[$group_key];
+    $group_content =& $vars['content'][$group_key];
+
+    $field_content = '<span class="status-container">' . render($group_content[$field_key]) . '</span>';
+    unset($group_content[$field_key]);
+
+    $display_status = 'display: block;';
+    if($group_settings->collapsed) {
+      $display_status = 'display: none;';
+    }
+
+    $output = '
+      <div id="' . $group_settings->group_name . '" class="' . $group_settings->classes .'">
+        <h3><span class="field-group-format-toggler">' . $group_settings->label . '</span>' . $field_content . '</h3>
+        <div class="field-group-format-wrapper" style="' . $display_status . '">
+    ';
+
+    $group_content['#prefix'] = $output;
+    $group_content['#suffix'] = '</div></div>';
+  }
+
+}

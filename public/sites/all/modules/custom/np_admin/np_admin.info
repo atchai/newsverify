@@ -1,0 +1,17 @@
+name = NewsPlatform: Admin
+core = 7.x
+package = Features
+php = 5.2.4
+dependencies[] = admin_views
+dependencies[] = features
+dependencies[] = menu
+dependencies[] = strongarm
+dependencies[] = views
+features[ctools][] = strongarm:strongarm:1
+features[ctools][] = views:views_default:3.0
+features[features_api][] = api:1
+features[menu_links][] = navigation:admin/content
+features[user_permission][] = view the administration theme
+features[variable][] = admin_theme
+features[variable][] = node_admin_theme
+features[views_view][] = np_admin

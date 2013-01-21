@@ -1,0 +1,679 @@
+<?php
+
+/**
+ * @file
+ * SimpleAds Install.
+ */
+
+include_once("simpleads.updates.inc");
+
+/**
+ * Implements hook_install().
+ */
+function simpleads_install() {
+
+  $t = get_t();
+
+  $type = array(
+    'type' => 'simpleads',
+    'name' => $t('Simple Ad'),
+    'base' => 'node_content',
+    'description' => $t('Advertisement'),
+    'custom' => 1,
+    'modified' => 1,
+    'locked' => 0,
+  );
+
+  $type = node_type_set_defaults($type);
+  node_type_save($type);
+
+  $vocabulary = (object) array(
+    'name' => $t('Ad Groups'),
+    'description' => $t('Ad Groups'),
+    'machine_name' => 'ad_groups',
+    'help' => '',
+  );
+  taxonomy_vocabulary_save($vocabulary);
+
+  $ad_groups = array(
+    $t('Sidebar Ads'), $t('Content Ads'),
+  );
+
+  $ad_group_vid = db_select('taxonomy_vocabulary', 'tv')
+  ->fields('tv', array('vid'))
+  ->condition('machine_name', 'ad_groups')
+  ->execute()
+  ->fetchField();
+
+  foreach ($ad_groups as $name) {
+    $term = new stdClass;
+    $term->name = $name;
+    $term->vid = $ad_group_vid;
+    taxonomy_term_save($term);
+  }
+
+  $fields = array(
+    array(
+      'field_name' => 'field_ad_type',
+      'type' => 'list_text',
+      'cardinality' => 1,
+      'translatable' => TRUE,
+      'locked' => FALSE,
+      'module' => 'list',
+      'settings' => array(
+        'allowed_values' => array(
+          'graphic' => $t('Image Ad'),
+          'text' => $t('Text Ad'),
+          'flash' => $t('Flash Ad'),
+        ),
+        'allowed_values_function' => '',
+      ),
+      'storage' => array(
+        'type' => 'field_sql_storage',
+        'settings' => array(),
+      ),
+    ),
+    array(
+      'field_name' => 'field_ad_image',
+      'type' => 'image',
+      'cardinality' => 1,
+      'translatable' => TRUE,
+      'locked' => FALSE,
+      'indexes' => array('fid' => array('fid')),
+      'settings' => array(
+        'uri_scheme' => 'public',
+        'default_image' => FALSE,
+      ),
+      'storage' => array(
+        'type' => 'field_sql_storage',
+        'settings' => array(),
+      ),
+    ),
+    array(
+      'field_name' => 'field_ad_flash',
+      'type' => 'file',
+      'cardinality' => 1,
+      'translatable' => TRUE,
+      'locked' => FALSE,
+      'indexes' => array('fid' => array('fid')),
+      'settings' => array(
+        'uri_scheme' => 'public',
+        'default_image' => FALSE,
+      ),
+      'storage' => array(
+        'type' => 'field_sql_storage',
+        'settings' => array(),
+      ),
+    ),
+    array(
+      'field_name' => 'field_ad_text',
+      'type' => 'text',
+      'cardinality' => 1,
+      'translatable' => TRUE,
+      'locked' => FALSE,
+      'settings' => array(),
+      'storage' => array(
+        'type' => 'field_sql_storage',
+        'settings' => array(),
+      ),
+    ),
+    array(
+      'field_name' => 'field_ad_url',
+      'type' => 'text',
+      'cardinality' => 1,
+      'translatable' => TRUE,
+      'settings' => array(
+        'max_length' => 255,
+      ),
+      'translatable' => TRUE,
+      'entity_types' => array(),
+    ),
+    array(
+      'field_name' => 'field_ad_category',
+      'type' => 'taxonomy_term_reference',
+      'settings' => array(
+        'allowed_values' => array(
+          array(
+            'vocabulary' => 'ad_groups',
+            'parent' => 0
+          ),
+        ),
+      ),
+    ),
+    array(
+      'field_name' => 'field_ad_start_date',
+      'type' => 'text',
+      'cardinality' => 1,
+      'translatable' => TRUE,
+      'settings' => array(
+        'max_length' => 255,
+      ),
+      'translatable' => TRUE,
+      'entity_types' => array(),
+    ),
+    array(
+      'field_name' => 'field_ad_end_date',
+      'type' => 'text',
+      'cardinality' => 1,
+      'translatable' => TRUE,
+      'settings' => array(
+        'max_length' => 255,
+      ),
+      'translatable' => TRUE,
+      'entity_types' => array(),
+    ),
+    array(
+      'field_name' => 'field_ad_url_taget',
+      'type' => 'list_boolean',
+      'cardinality' => 1,
+      'translatable' => TRUE,
+      'settings' => array(
+        'allowed_values' => array(
+          0 => $t('Open destination URL in the same window'),
+          1 => $t('Open destination URL in a new window'),
+        ),
+        'allowed_values_function' => '',
+      ),
+      'module' => 'list',
+      'translatable' => TRUE,
+      'entity_types' => array(),
+    ),
+    array(
+      'field_name' => 'field_ad_status',
+      'type' => 'list_boolean',
+      'cardinality' => 1,
+      'translatable' => TRUE,
+      'settings' => array(
+        'allowed_values' => array(
+          0 => $t('This ad is inactive'),
+          1 => $t('This ad is active'),
+        ),
+        'allowed_values_function' => '',
+      ),
+      'module' => 'list',
+      'translatable' => TRUE,
+      'entity_types' => array(),
+    ),
+  );
+  foreach ($fields as $field) {
+    field_create_field($field);
+  }
+
+  $instance = array(
+    'field_name' => 'field_ad_type',
+    'entity_type' => 'node',
+    'label' => $t('Ad Type'),
+    'bundle' => 'simpleads',
+    'description' => $t('Please select Ad type.'),
+    'required' => TRUE,
+    'default_value' => array(
+      0 => array(
+        'value' => 'graphic',
+      ),
+    ),
+    'settings' => array(
+      'allowed_values'  => array(
+        'graphic' => $t('Image Ad'),
+        'text' => $t('Text Ad'),
+        'flash' => $t('Flash Ad'),
+      ),
+      'user_register_form' => FALSE,
+    ),
+    'user_register_form' => FALSE,
+    'widget' => array(
+      'active' => 1,
+      'type' => 'options_select',
+      'weight' => -3,
+      'module' => 'list',
+    ),
+
+    'display' => array(
+      'default' => array(
+        'label' => 'hidden',
+        'type' => 'list_default',
+        'module' => 'list',
+        'weight' => -1,
+      ),
+      'teaser' => array(
+        'label' => 'hidden',
+        'type' => 'list_default',
+        'module' => 'list',
+        'weight' => -1,
+      ),
+    ),
+  );
+  field_create_instance($instance);
+
+  $instance = array(
+    'field_name' => 'field_ad_image',
+    'entity_type' => 'node',
+    'label' => $t('Ad Image'),
+    'bundle' => 'simpleads',
+    'description' => $t('Upload an image for this Ad.'),
+    'required' => FALSE,
+
+    'settings' => array(
+      'file_directory' => 'field/image',
+      'file_extensions' => 'png gif jpg jpeg',
+      'max_filesize' => '',
+      'max_resolution' => '',
+      'min_resolution' => '',
+      'alt_field' => TRUE,
+      'title_field' => '',
+    ),
+
+    'widget' => array(
+      'type' => 'image_image',
+      'settings' => array(
+        'progress_indicator' => 'throbber',
+        'preview_image_style' => 'thumbnail',
+      ),
+      'weight' => -2,
+    ),
+
+    'display' => array(
+      'default' => array(
+        'label' => 'hidden',
+        'type' => 'image',
+        'settings' => array('image_style' => 'large', 'image_link' => ''),
+        'weight' => -1,
+      ),
+      'teaser' => array(
+        'label' => 'hidden',
+        'type' => 'image',
+        'settings' => array('image_style' => 'medium', 'image_link' => 'content'),
+        'weight' => -1,
+      ),
+    ),
+  );
+  field_create_instance($instance);
+
+  $instance = array(
+    'field_name' => 'field_ad_flash',
+    'entity_type' => 'node',
+    'label' => $t('Ad Flash'),
+    'bundle' => 'simpleads',
+    'description' => $t('Upload Flash file for this Ad.'),
+    'required' => FALSE,
+
+    'settings' => array(
+      'file_directory' => 'field/flash',
+      'file_extensions' => 'swf',
+      'max_filesize' => '',
+      'max_resolution' => '',
+      'min_resolution' => '',
+      'alt_field' => FALSE,
+      'title_field' => '',
+    ),
+
+    'widget' => array(
+      'type' => 'file_generic',
+      'settings' => array(
+      ),
+      'weight' => -1,
+    ),
+
+    'display' => array(
+      'default' => array(
+        'label' => 'hidden',
+        'type' => 'file_default',
+        'weight' => -1,
+      ),
+      'teaser' => array(
+        'label' => 'hidden',
+        'type' => 'file_default',
+        'weight' => -1,
+      ),
+    ),
+  );
+  field_create_instance($instance);
+
+  $instance = array(
+    'field_name' => 'field_ad_text',
+    'entity_type' => 'node',
+    'label' => $t('Text Ad'),
+    'bundle' => 'simpleads',
+    'description' => $t('Enter your text ad. If you would like to embed media, please configure WYSIWYG editor and input format settings.'),
+    'required' => FALSE,
+
+    'settings' => array(
+      'rows' => 5,
+      'text_processing' => 1,
+    ),
+
+    'widget' => array(
+      'type' => 'text_textarea',
+      'settings' => array(
+      ),
+      'weight' => 0,
+      'module' => 'text',
+    ),
+
+    'display' => array(
+      'default' => array(
+        'label' => 'hidden',
+        'type' => 'text_default',
+        'weight' => -1,
+        'module' => 'text',
+      ),
+      'teaser' => array(
+        'label' => 'hidden',
+        'type' => 'text_default',
+        'weight' => -1,
+      ),
+    ),
+  );
+  field_create_instance($instance);
+
+  $instance = array(
+    'field_name' => 'field_ad_url',
+    'entity_type' => 'node',
+    'bundle' => 'simpleads',
+    'label' => $t('URL Address'),
+    'required' => FALSE,
+    'widget' => array(
+      'type' => 'text_textfield',
+      'settings' => array(
+        'size' => 60,
+      ),
+      'weight' => 1,
+    ),
+    'settings' => array(
+      'text_processing' => 0,
+    ),
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'type' => 'text_default',
+        'settings' => array(),
+      ),
+    ),
+  );
+  field_create_instance($instance);
+
+  $instance = array(
+    'field_name' => 'field_ad_url_taget',
+    'entity_type' => 'node',
+    'bundle' => 'simpleads',
+    'label' => $t('Link Target'),
+    'required' => FALSE,
+    'widget' => array(
+      'type' => 'options_onoff',
+      'settings' => array(
+        'display_label' => 0,
+      ),
+      'weight' => 2,
+      'module' => 'options',
+    ),
+    'default_value' => array(
+      0 => array(
+        'value' => 1,
+      ),
+    ),
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'type' => 'list_default',
+        'module' => 'list',
+        'settings' => array(),
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+  );
+  field_create_instance($instance);
+
+  $instance = array(
+    'field_name' => 'field_ad_category',
+    'entity_type' => 'node',
+    'label' => $t('Ad Group'),
+    'bundle' => 'simpleads',
+    'required' => TRUE,
+    'widget' => array(
+      'type' => 'options_select',
+      'weight' => -4,
+    ),
+    'display' => array(
+      'default' => array('type' => 'hidden'),
+      'teaser' => array('type' => 'hidden')
+    ),
+  );
+  field_create_instance($instance);
+
+  $instance = array(
+    'field_name' => 'field_ad_start_date',
+    'entity_type' => 'node',
+    'bundle' => 'simpleads',
+    'label' => $t('Active Date'),
+    'description' => $t('Allowed date formats: now, tomorrow, next week, 10 September 2011, +1 day, +1 week, +1 year, +1 week 2 days 4 hours 2 seconds, next Monday, last Friday, mm/dd/yyyy hh:mm am/pm'),
+    'required' => FALSE,
+    'widget' => array(
+      'type' => 'text_textfield',
+      'settings' => array(
+        'size' => 60,
+      ),
+      'weight' => 3,
+    ),
+    'settings' => array(
+      'text_processing' => 0,
+    ),
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'type' => 'text_default',
+        'settings' => array(),
+      ),
+    ),
+  );
+  field_create_instance($instance);
+
+  $instance = array(
+    'field_name' => 'field_ad_end_date',
+    'entity_type' => 'node',
+    'bundle' => 'simpleads',
+    'label' => $t('End Date'),
+    'description' => $t('Allowed date formats: now, tomorrow, next week, 10 September 2011, +1 day, +1 week, +1 year, +1 week 2 days 4 hours 2 seconds, next Monday, last Friday, mm/dd/yyyy hh:mm am/pm'),
+    'required' => FALSE,
+    'widget' => array(
+      'type' => 'text_textfield',
+      'settings' => array(
+        'size' => 60,
+      ),
+      'weight' => 4,
+    ),
+    'settings' => array(
+      'text_processing' => 0,
+    ),
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'type' => 'text_default',
+        'settings' => array(),
+      ),
+    ),
+  );
+  field_create_instance($instance);
+
+  $instance = array(
+    'field_name' => 'field_ad_status',
+    'entity_type' => 'node',
+    'bundle' => 'simpleads',
+    'label' => $t('Status'),
+    'description' => $t('Please use this field to show or hide ads even if the ad is active and published.'),
+    'required' => FALSE,
+    'widget' => array(
+      'type' => 'options_onoff',
+      'settings' => array(
+        'display_label' => 0,
+      ),
+      'weight' => 5,
+      'module' => 'options',
+    ),
+    'default_value' => array(
+      0 => array(
+        'value' => 1,
+      ),
+    ),
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'type' => 'list_default',
+        'module' => 'list',
+        'settings' => array(),
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+  );
+  field_create_instance($instance);
+
+  user_role_grant_permissions(DRUPAL_ANONYMOUS_RID, array('count ad impressions', 'count ad clicks'));
+
+  // Reset menu, comments and other default options.
+  variable_set('menu_options_simpleads', array());
+  variable_set('node_options_simpleads', array());
+  variable_set('comment_simpleads', 1);
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function simpleads_uninstall() {
+  field_delete_field('field_ad_image');
+  field_delete_field('field_ad_flash');
+  field_delete_field('field_ad_text');
+  field_delete_field('field_ad_type');
+  field_delete_field('field_ad_url');
+  field_delete_field('field_ad_category');
+  field_delete_field('field_ad_start_date');
+  field_delete_field('field_ad_end_date');
+  field_delete_field('field_ad_url_taget');
+  node_type_delete('simpleads');
+
+  $vid = db_select('taxonomy_vocabulary', 'tv')
+  ->fields('tv', array('vid'))
+  ->condition('machine_name', 'ad_groups')
+  ->execute()
+  ->fetchField();
+  taxonomy_vocabulary_delete($vid);
+  variable_del('simpleads_filters');
+  variable_del('menu_options_simpleads');
+  variable_del('node_options_simpleads');
+  variable_del('comment_simpleads');
+}
+
+/**
+ * Implements hook_schema().
+ */
+function simpleads_schema() {
+  $schema['simpleads_impressions'] = array(
+    'description' => 'Stores Ad Impressions',
+    'fields' => array(
+      'aid'  => array(
+        'type' => 'serial',
+        'not null' => TRUE,
+        'description' => 'Ad ID',
+      ),
+      'nid'  => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'description' => 'Node ID',
+      ),
+      'timestamp' => array(
+        'type' => 'varchar',
+        'length' => 30,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'Timestamp',
+      ),
+      'ip_address' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'IP Address',
+      ),
+    ),
+    'primary key' => array('aid'),
+    'indexes' => array(
+      'nid' => array('nid'),
+      'aid' => array('aid'),
+    ),
+  );
+
+  $schema['simpleads_clicks'] = array(
+    'description' => 'Stores Ad Clicks',
+    'fields' => array(
+      'aid'  => array(
+        'type' => 'serial',
+        'not null' => TRUE,
+        'description' => 'Ad ID',
+      ),
+      'nid'  => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'description' => 'Node ID',
+      ),
+      'timestamp' => array(
+        'type' => 'varchar',
+        'length' => 30,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'Timestamp',
+      ),
+      'ip_address' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'IP Address',
+      ),
+    ),
+    'primary key' => array('aid'),
+    'indexes' => array(
+      'nid' => array('nid'),
+      'aid' => array('aid'),
+    ),
+  );
+
+  $schema['simpleads_blocks'] = array(
+    'description' => 'Stores Ad Blocks',
+    'fields' => array(
+      'abid'  => array(
+        'type' => 'serial',
+        'not null' => TRUE,
+        'description' => 'Ad Block ID',
+      ),
+      'tid'  => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'description' => 'Taxonomy Term ID',
+      ),
+      'settings' => array(
+        'type' => 'text',
+        'not null' => TRUE,
+        'description' => 'Serialized data (settings)',
+      ),
+    ),
+    'primary key' => array('abid'),
+    'indexes' => array(
+      'tid' => array('tid'),
+    ),
+  );
+
+  return $schema;
+}

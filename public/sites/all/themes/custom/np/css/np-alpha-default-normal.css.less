@@ -1,0 +1,122 @@
+/* Deskop ONLY
+----------------------------------------------------------------------------------------------------*/
+
+/* ONLY show the following on mobile, DONT show on desktop
+----------------------------------------------------------------------------------------------------*/
+#block-np-core-np-core-section-menu-two,
+#block-np-core-np-core-menu-title {
+  display: none;
+}
+
+/* Revert global.css
+----------------------------------------------------------------------------------------------------*/
+#page #block-menu-block-1, // Footer pages navigation menu
+#page #block-block-2, // Content box in bottom right hand corner of desktop screen.
+#page #zone-navigation-wrapper, // Main menu (sections) header title "Menu", in the middle of the page
+#page #zone-pre-content-wrapper, // Main menu (sections), in the middle of the page
+#page #block-views-exp-search-page, // Header search box
+#region-branding, // Site name and large logo
+#breadcrumb, // Breadcrumb
+#block-views-latest-from-location-block // Location news block on event page left hand side
+{
+  display: block;
+}
+
+/* Pages
+----------------------------------------------------------------------------------------------------*/
+
+#page-title {
+  margin: 0 0 15px 0;
+}
+
+#block-system-main {
+
+  p {
+    margin: 0 0 10px 0;
+
+    &:last-child {
+      margin: 0 0 0 0;
+    }
+  }
+
+}
+
+/* Header - Search & Small Logo
+----------------------------------------------------------------------------------------------------*/
+
+#region-search .block {
+  float: left;
+  &:first-child {
+    float: right;
+  }
+}
+
+#zone-branding-wrapper {
+  padding: 25px 0 0;
+}
+
+#block-system-main {
+  .image-container-618xh {
+    width: 618px;
+  }
+  .image-container-309xh {
+    width: 309px;
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+  .image-618xh,
+  .image-container-618xh img,
+  .image-container-309xh img,
+  .node-event-view-mode-inline img,
+  .node-post-view-mode-in_event_page img {
+    max-width: none;
+  }
+  .image-align-left {
+    margin-left: 0; // LTR
+  }
+}
+
+.view-search {
+  position: relative;
+  width: 960px;
+  .views-row {
+    @padding: 10px;
+
+    margin: 5px 20px 20px 0; // LTR
+    float: left; // LTR
+    width: 300px - (@padding * 2);
+    padding: @padding;
+  }
+}
+
+.view-home,
+.view-taxonomy,
+.view-search {
+  position: relative;
+  width: 960px;
+  li.news-item {
+    margin: 5px 20px 8px 0; // LTR
+    float: left; // LTR
+    width: 300px;
+  }
+}
+
+.view-home-carousel {
+  width: 960px;
+  margin: 0 -10px;
+}
+
+#block-views-related-stories-block {
+  .view-related-stories {
+    ul {
+      li {
+        width: 150px;
+        margin: 10px 5px 0 0; // LTR
+      }
+    }
+  }
+}
+
+#section-footer {
+  padding: 0 0 160px 0;
+}

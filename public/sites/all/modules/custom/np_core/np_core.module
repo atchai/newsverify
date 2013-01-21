@@ -1,0 +1,213 @@
+<?php
+/**
+ * @file
+ * Code for the NewsPlatform: Core feature.
+ */
+
+include_once 'np_core.features.inc';
+
+define('ADMINISTER_NP', 'administer news platform');
+
+/**
+ * Implements hook_menu().
+ */
+function np_core_menu() {
+  $items = array();
+
+  $items['admin/config/np'] = array(
+    'title' => 'News Platform settings',
+    'description' => 'Administer News Platform settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('np_core_settings'),
+    'access arguments' => array(ADMINISTER_NP),
+    'file' => 'np_core.admin.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function np_core_permission() {
+  return array(
+    ADMINISTER_NP => array(
+      'title' => t('Administer News Platform'),
+      'description' => t('Access the settings page for the News Platform.'),
+    ),
+  );
+}
+
+
+/**
+ * Implements hook_block_info().
+ */
+function np_core_block_info() {
+  $blocks['np_core_site_slogan'] = array(
+    'info' => t('News Platform: Site Slogan'),
+  );
+  $blocks['np_core_section_menu_two'] = array(
+    'info' => t('News Platform: Section Two'),
+  );
+  $blocks['np_core_menu_title'] = array(
+    'info' => t('News Platform: Menu title'),
+  );
+  $blocks['np_core_front_page_menu_title'] = array(
+    'info' => t('News Platform: Front page menu title'),
+  );
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function np_core_block_view($delta = '') {
+  switch ($delta) {
+    case 'np_core_site_slogan':
+      $block['subject'] = '';
+      $block['content'] = array(
+        '#markup' => '<span class="site-slogan">' . filter_xss(variable_get('site_slogan', '')) . '</span>'
+      );
+      break;
+    case 'np_core_section_menu_two':
+      // Get the views exposed search form.
+      $view_content = array();
+      list($nothing, $type, $name, $display_id) = explode('-', '-exp-search-page');
+      // Put the - back on.
+      $type = '-' . $type;
+      if ($view = views_get_view($name)) {
+        if ($view->access($display_id)) {
+          $view->set_display($display_id);
+          if (isset($view->display_handler)) {
+            $output = $view->display_handler->view_special_blocks($type);
+            // Before returning the block output, convert it to a renderable
+            // array with contextual links.
+            views_add_block_contextual_links($output, $view, $display_id, 'special_block_' . $type);
+            $view->destroy();
+            $view_content = $output;
+          }
+        }
+        $view->destroy();
+      }
+
+      $block['subject'] = '<span class="menu">' . t('Menu') . '</span><a href="#section-header" class="backtotop">' . t('Back to top') . '</a><span class="clearfix"></span>';
+      $block['content'] = array(
+        'view' => $view_content,
+        'menu' => menu_tree('menu-section')
+      );
+      break;
+    case 'np_core_menu_title':
+      $block['subject'] = '';
+      $block['content'] = array(
+        '#markup' => '<h3><a href="#section-footer">' . t('Menu') . '</a></h3>'
+      );
+      break;
+    case 'np_core_front_page_menu_title':
+      $block['subject'] = '';
+      $block['content'] = array(
+        '#markup' => '<h2>' . t('Latest News') . '</h2>'
+      );
+      break;
+  }
+  return $block;
+}
+
+/**
+ * Implements hook_wysiwyg_editor_settings_alter()
+ * CKEditor settings
+ */
+function np_core_wysiwyg_editor_settings_alter(&$settings, &$context) {
+    global $language;
+
+    if ($context['profile']->editor != 'ckeditor') {
+        return;
+    }
+
+    // Set text direction
+    if ($language->direction == LANGUAGE_RTL) {
+        $settings['contentsLangDirection'] = 'rtl';
+    }
+
+    // Hide image dialogs
+    $settings['removePlugins'] = 'image,forms';
+
+    // Hide link dialog "Advanced" tab
+    $settings['removeDialogTabs'] = 'link:advanced';
+}
+
+/**
+ * Implementation of hook_insert_styles().
+ */
+function np_core_insert_styles() {
+    return array(
+        'np_image_half' => array(
+            'label' => t('Half Width'),
+            'image_style_name' => '309xh',
+            'image_align' => 'left',
+        ),
+        'np_image_full' => array(
+            'label' => t('Full Width'),
+            'image_style_name' => '618xh',
+            'image_align' => 'right',
+        ),
+    );
+}
+
+/**
+ * Implementation of hook_insert_content().
+ * Return a styled image with a caption
+ */
+function np_core_insert_content($item, $style, $widget) {
+    $class = array(
+        'image-container',
+        'image-container-' . $style['image_style_name'],
+        'image-align-' . $style['image_align'],
+    );
+    $img = theme('image_insert_image', array(
+        'item' => $item,
+        'widget' => $widget,
+        'style_name' => $style['image_style_name']
+    ));
+    $caption = '<p>__alt__</p>';
+    return theme('container', array('element' => array(
+        '#attributes' => array('class' => implode(' ', $class)),
+        '#children' => $img . $caption,
+    )));
+}
+
+
+/**
+ * Implements hook_page_alter().
+ */
+function np_core_page_alter($variables) {
+  // Breadcrumbs
+  // We *may* be able to do the breadcrumbs with custom_breadcrumbs or path_breadcrumbs, but ultimately
+  // we'd probably need to write a token hook to get the event section name and even then would probably
+  // wouldn't work properly because that would be null on events and stories with no section.
+  // My point here being that it's just faster and more precise to write code for this.
+  $breadcrumbs = array(
+    l('Home', '<front>')
+  );
+
+  $node = menu_get_object('node', 1);
+
+  // Event and story nodes get the section name added
+  if (isset($node->nid) && ($node->type == 'event' || $node->type == 'story') && isset($node->field_section[LANGUAGE_NONE][0])) {
+    $term = taxonomy_term_load($node->field_section[LANGUAGE_NONE][0]['tid']);
+    $breadcrumbs[] = check_plain($term->name);
+  }
+
+  // All nodes get the title, unlinked
+  if (isset($node->nid)) {
+    $breadcrumbs[] = check_plain($node->title);
+  }
+
+  // Exclude breadcrumb
+  if(drupal_is_front_page()) {
+    return;
+  }
+
+  // Set the breadcrumbs, it will always be at least Home, as that is always set
+  drupal_set_breadcrumb($breadcrumbs);
+}

@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the NewsPlatform: Search feature.
+ */
+
+include_once 'np_search.features.inc';

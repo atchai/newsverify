@@ -1,0 +1,6 @@
+name = NewsPlatform: Inline Nodes
+core = 7.x
+dependencies[] = node
+dependencies[] = filter
+
+version = "7.x-1.0"

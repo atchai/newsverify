@@ -1,0 +1,7 @@
+name = NewsPlatform: Event Summary
+description = Event summary field displayable as overlay compatible with mobile and desktop
+package = Features
+dependencies[] = np_event
+
+version = "7.x-1.x-dev"
+core = "7.x"

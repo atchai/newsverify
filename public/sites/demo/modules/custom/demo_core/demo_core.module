@@ -1,0 +1,33 @@
+<?php
+/**
+ * @file
+ * Code for the NewsPlatform Demo: Core feature.
+ */
+
+include_once 'demo_core.features.inc';
+
+/**
+ * Implements hook_block_info().
+ */
+function demo_core_block_info() {
+  $blocks['demo_core_small_logo'] = array(
+    'info' => t('NewsPlatform Demo: Small logo'),
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function demo_core_block_view($delta = '') {
+  switch ($delta) {
+    case 'demo_core_small_logo':
+      $block['subject'] = '';
+      $block['content'] = array(
+        '#markup' => l(theme('image', array('path' => drupal_get_path('module', 'demo_core') . '/images/small_logo.png')), '<front>', array('html' => TRUE))
+      );
+      break;
+  }
+  return $block;
+}

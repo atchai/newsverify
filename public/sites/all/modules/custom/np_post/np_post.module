@@ -1,0 +1,264 @@
+<?php
+/**
+ * @file
+ * Code for the NewsPlatform: Post feature.
+ */
+
+include_once 'np_post.features.inc';
+
+/**
+ * Implements hook_field_widget_info()
+ */
+function np_post_field_widget_info() {
+    return array(
+       'post_import_widget' => array(
+            'label' => 'Post Import',
+            'field types' => array('entityreference'),
+            'behaviors' => array(
+                'multiple values' => FIELD_BEHAVIOR_DEFAULT,
+                'default value' => FIELD_BEHAVIOR_DEFAULT,
+            ),
+        ),
+    );
+}
+
+function np_post_preprocess_field(&$vars) {
+  $element = $vars['element'];
+  // This will add _custom that we can use to specifically theme the where field in a teaser format
+  // at the top of the event node view page. I'm not sure what is happening, but view_mode should be teaser,
+  // but maybe somewhere along the way it is being changed into _custom (this happens in various places in field and entity api)
+  // Nonetheless, it appears to still display in teaser mode.
+  if (isset($element['#view_mode'])) {
+    $vars['theme_hook_suggestions'][] = 'field__' . $element['#field_name'] . '__' . $element['#view_mode'];
+  }
+}
+
+/**
+ * Implements hook_entity_info_alter()
+ */
+function np_post_entity_info_alter(&$entity_info) {
+    $entity_info['node']['view modes']['in_event_page'] = array(
+        'label' => t('In Event Page'),
+        'custom settings' => TRUE,
+    );
+    $entity_info['field_collection_item']['view modes']['teaser'] = array(
+        'label' => t('Teaser'),
+        'custom settings' => TRUE,
+    );
+}
+
+/**
+ * Implements hook_field_widget_form()
+ *
+ * Note that returning $result as a complex array here probably isn't as best
+ * practice and robust as we could be. Similar elements, which have partial ajax submit
+ * functionality, such as fieldfield and imagefield seem to use custom element types
+ * and #process to expand the element into a multiple field element.
+ * However, that approach is used when they control the data storage, and the approach
+ * we have used still does work.
+ */
+function np_post_field_widget_form(&$form, &$form_state, $field, $instance, $lang, $items, $delta, $element) {
+    if ($instance['widget']['type'] != 'post_import_widget') {
+        return;
+    }
+    $field_name = $instance['field_name'];
+    $target_id = '';
+
+    // target_id can come from three places.
+    // - $items, when we are at node/nid/edit, and are thus editing an existing node
+    // - $form_state when the form has been submitted by ajax using import_button
+    // - $element['#value'] when the form has been submitted using the save button, but
+    // where validation has failed on some other element (e.g somebody forgot to set the title)
+    if(isset($items[$delta]['target_id']) && !empty($items[$delta]['target_id'])) {
+        $target_id = $items[$delta]['target_id'];
+    }
+    else if(isset($form_state['values'][$field_name][$lang][$delta]['target_id']) && !empty($form_state['values'][$field_name][$lang][$delta]['target_id'])) {
+        $target_id = $form_state['values'][$field_name][$lang][$delta]['target_id'];
+    }
+    else if (isset($element['#value']) && !empty($element['#value'])) {
+        $target_id = $element['#value'];
+    }
+
+    // Handle "Remove post" button. Reset $target_id so that the field will be rebuilt as
+    // an empty importer textfield.
+    if (isset($form_state['triggering_element']) && end($form_state['triggering_element']['#parents']) == 'remove' ) {
+        $target_id = '';
+    }
+
+    // A wrapping div id that np_post_import_callback will use to replace the element after ajax submit.
+    $id = sprintf('post-import-%s-%s-%s-wrapper', $field['field_name'], $lang, $delta);
+
+
+    // Logical permutations are as follows:
+    // Node
+    // - 9181
+    // - 0
+    // URL
+    // - '' (can't be null as it is set to '' above)
+    // - 'aksjdhaskj'
+    // - 9812 (not node)
+    // - https://twitter.com/DellSocialBiz/status/275992966852640769 (valid)
+    // - https://twitter.com/DellSocialBiz/status/275992966852640769oopsiputabadlinkin (not valid)
+    if ((is_numeric($target_id) && node_load($target_id) === FALSE) || !is_numeric($target_id)) {
+        // Set the target_id element type to textfield so the user can input a URL.
+        // Note that target_id ultimately needs to be a node id, but we change it into one
+        // at _np_post_entityreference_validate before it goes near the database.
+        $element['#type'] = 'textfield';
+        $element['#title'] = t('URL');
+        $element['#element_validate'] = array('_np_post_entityreference_validate');
+        $element['#maxlength'] = 256;
+
+        $result = array(
+          '#id' => $id,
+          '#type' => 'item',
+          'target_id' => $element,
+          'actions' => array (
+            '#type' => 'actions',
+            'import' => array(
+              '#name' => $field['field_name'] . '_' . $delta . '_import_button',
+              '#type' => 'submit',
+              '#submit' => array('np_post_import_post_submit'),
+              '#value' => t('Import Post'),
+              '#limit_validation_errors' => array($element['#field_parents'] + array($field['field_name'])),
+              '#ajax' => array(
+                  'callback' => 'np_post_import_callback',
+                  'method' => 'replace',
+                  'wrapper' => $id,
+              ),
+              '#weight' => $delta + 1
+            )
+          )
+        );
+        return $result;
+    }
+    else {
+        // If we get to here we know this is already a stored reference from
+        // an existing node in the database (from $items), OR, the form
+        // has been submitted via ajax and we have got it from $form_state,
+        // OR the form has failed to validate and we've got it from $element['#value]
+        // So, simply set the form element to be hidden to store the target_id
+        $element['#type'] = 'hidden';
+        $element['#value'] = $target_id;
+
+        // Load the node so we can embed it in the form.
+        $node = node_load($target_id);
+        $result = array(
+          '#id' => $id,
+          '#type' => 'item',
+          'target_id' => $element,
+          'node' => array(
+            '#title' => $node->title,
+            '#markup' => drupal_render(node_view($node)),
+          ),
+          'actions' => array(
+            '#type' => 'actions',
+            'edit' => array(
+              '#type' => 'link',
+              '#title' => t('Edit Post'),
+              '#href' => sprintf('node/%d/edit', $node->nid),
+              '#options' => array('attributes' => array('target' => '_blank'))
+            ),
+            'remove' => array(
+              '#name' => $field['field_name'] . '_' . $delta . '_remove_button',
+              '#type' => 'submit',
+              '#submit' => array('np_post_remove_post_submit'),
+              '#value' => t('Remove Post'),
+              '#limit_validation_errors' => array($element['#field_parents'] + array($field['field_name'])),
+              '#ajax' => array(
+                  'callback' => 'np_post_remove_callback',
+                  'method' => 'replace',
+                  'wrapper' => $id,
+              ),
+            )
+          )
+        );
+        return $result;
+    }
+}
+
+/**
+ * Validation for the target_id element in np_post_field_widget_form.
+ * The target_id element can be either a hidden field with a node id value, or a visible
+ * textfield with "URL" as the title, to allow the user to paste a URL.
+ * The URL value is only a temporary value that we use to create and reference
+ * or find and reference a node. So if we detect that the field value is a URL
+ * we use the NPPostImporter to get what it's final value should be and then use form_set_value
+ * to set the node if value onf the element.
+ */
+function _np_post_entityreference_validate($element, &$form_state, $form) {
+    $value = trim($element['#value']);
+    if (is_numeric($value) && node_load($value)) {
+      return;
+    }
+    if (!empty($value) && 1 === preg_match("@^https?://.+@", $value)) {
+        $importer = new NPPostImporter($element['#value']);
+        if ($importer->import()) {
+            // Import succeeded, so get the imported node id and update the value of the form element target_id
+            form_set_value($element, $importer->getPostId(), $form_state);
+        }
+        else {
+            form_set_error(implode('][', $element['#parents']), t('Importing the post failed, please check the URL and if you are certain it is correct, contact the website administrator'));
+        }
+    }
+    else if (!empty($value)) {
+      form_set_error(implode('][', $element['#parents']), t('Please enter a valid website link to any web page or social link like a Twitter status or Facebook post'));
+    }
+}
+
+/**
+ * AJAX content callback for "remove post" button on the import post entityreference widget
+ */
+function np_post_remove_callback($form, $form_state) {
+    drupal_set_message(t('Post removed'));
+    $parents = $form_state['triggering_element']['#parents'];
+    // Remove reference to itself 'actions' and 'import' on field > lang > delta > 'actions' > 'import'
+    // to just get the parents of the core element: field > lang > delta
+    array_pop($parents);
+    array_pop($parents);
+    $result = drupal_array_get_nested_value($form, $parents);
+    // $result comes back with $items['_weight'] added to it and I don't know why. If I leave _weight there
+    // the newly rendered node will have a draggable weight select box below it, so I unset it.
+    unset($result['_weight']);
+    // Unset the field's value, $result will be returned as an empty Import np_post_field_widget_form
+    unset($result['target_id']['#value']);
+    return $result;
+}
+
+/**
+ * Callback for the 'remove' ajax button in np_post_field_widget_form
+ * Simply tell the form to rebuild. This may actually be default behavior
+ * anyway, but not much harm in being clearer.
+ */
+function np_post_remove_post_submit($form, &$form_state) {
+    // Rebuild the form to regenerate the entity reference item.
+    $form_state['rebuild'] = TRUE;
+    return;
+}
+
+/**
+ * AJAX content callback for "import post" button on the import post entityreference widget
+ */
+function np_post_import_callback($form, $form_state) {
+    $parents = $form_state['triggering_element']['#parents'];
+    // Remove reference to itself 'actions' and 'import' on field > lang > delta > 'actions' > 'import'
+    // to just get the parents of the core element: field > lang > delta
+    array_pop($parents);
+    array_pop($parents);
+    $result = drupal_array_get_nested_value($form, $parents);
+    // $result comes back with $items['_weight'] added to it and I don't know why. If I leave _weight there
+    // the newly rendered node will have a draggable weight select box below it, so I unset it.
+    unset($result['_weight']);
+    return $result;
+}
+
+/**
+ * Callback for the 'import' ajax button in np_post_field_widget_form
+ * Simply tell the form to rebuild. This may actually be default behavior
+ * anyway, but not much harm in being clearer.
+ */
+function np_post_import_post_submit($form, &$form_state) {
+    // Rebuild the form to regenerate the entity reference item, this time
+    // showing the embedded node instead of a URL textfield
+    $form_state['rebuild'] = TRUE;
+    return;
+}

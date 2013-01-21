@@ -1,0 +1,7 @@
+name = NewsPlatform: Content
+core = 7.x
+package = Features
+php = 5.2.4
+dependencies[] = fe_block
+features[fe_block_boxes][] = block_content_footer
+features[features_api][] = api:1

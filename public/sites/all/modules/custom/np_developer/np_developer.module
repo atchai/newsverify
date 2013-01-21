@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the NewsPlatform: Developer feature.
+ */
+
+include_once 'np_developer.features.inc';

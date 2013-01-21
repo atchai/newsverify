@@ -1,0 +1,42 @@
+/**
+ * @file
+ * SimpleAds CSS.
+ */
+
+form#simpleads-node-form #edit-field-ad-flash,
+form#simpleads-node-form #edit-field-ad-text,
+form#simpleads-node-form #edit-field-ad-image,
+form#simpleads-node-form #edit-field-ad-url-taget,
+form#simpleads-node-form #edit-field-ad-url {
+  display: none;
+}
+
+form#simpleads-node-form #edit-field-ad-url {
+  /* margin-top: -10px; */
+}
+
+form#simpleads-node-form #edit-field-ad-url-taget {
+  margin-top: -10px;
+}
+
+form#simpleads-node-form #edit-field-ad-flash .form-item,
+form#simpleads-node-form #edit-field-ad-text .form-item,
+form#simpleads-node-form #edit-field-ad-image .form-item,
+form#simpleads-node-form #edit-field-ad-url-taget .form-item,
+form#simpleads-node-form #edit-field-ad-url .form-item {
+  background-color: #eeeeee;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+/* Block settings */
+form#block-admin-configure #ads_rotation_settings,
+form#block-admin-configure #ads_rotation_settings .form-item-ads-rotation-dely {
+  display: none;
+}
+
+form#block-admin-configure #ads_rotation_settings .form-item {
+  background-color: #eeeeee;
+  padding-left: 10px;
+  padding-right: 10px;
+}

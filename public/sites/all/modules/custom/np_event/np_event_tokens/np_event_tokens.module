@@ -1,0 +1,20 @@
+<?php
+
+/**
+ * Builds a list of available content.
+ */
+function _token_example_get_node() {
+  if (!user_access('access content') && !user_access('bypass node access')) {
+    return array();
+  }
+
+  $node_query = db_select('node', 'n');
+  $node_query->fields('n', array('nid', 'title'));
+  $node_query->condition('n.status', NODE_PUBLISHED);
+  $node_query->orderBy('n.created', 'DESC');
+  $node_query->range(0, 10);
+  $node_query->addTag('node_access');
+  $nodes = $node_query->execute()->fetchAllKeyed();
+  $nodes = array_map('check_plain', $nodes);
+  return $nodes;
+}

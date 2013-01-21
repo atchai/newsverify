@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the NewsPlatform: Location feature.
+ */
+
+include_once 'np_location.features.inc';

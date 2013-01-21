@@ -1,0 +1,8 @@
+name = NewsPlatform: Event Tokens
+description = Tokens for use in NP Event
+package = Features
+dependencies[] = token
+dependencies[] = np_event
+
+version = "7.x-1.x-dev"
+core = "7.x"

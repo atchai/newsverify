@@ -1,0 +1,17 @@
+diff --git a/geofield.module b/geofield.module
+index 84c18e9..030a3de 100644
+--- a/geofield.module
++++ b/geofield.module
+@@ -346,9 +346,9 @@ function geofield_latlon_DMStoDEC($dms) {
+   $dms = preg_replace('/\s\s+/', ' ', $dms);
+ 
+   $dms = explode(" ", $dms);
+-  $deg = $dms[0];
+-  $min = $dms[1];
+-  $sec = $dms[2];
++  $deg = isset($dms[0]) ? $dms[0] : 0;
++  $min = isset($dms[1]) ? $dms[1] : 0;
++  $sec = isset($dms[2]) ? $dms[2] : 0;
+ 
+   // Direction should be checked only for nonnegative coordinates
+   $dec = floatval($deg+((($min*60)+($sec))/3600));

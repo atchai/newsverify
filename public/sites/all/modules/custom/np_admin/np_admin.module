@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the NewsPlatform: Admin feature.
+ */
+
+include_once 'np_admin.features.inc';

@@ -1,0 +1,202 @@
+<?php
+
+/**
+ * Implements hook_entity_info_alter()
+ */
+function np_event_summary_entity_info_alter(&$entity_info) {
+  $entity_info['node']['view modes']['summary'] = array(
+    'label' => t('Summary'),
+    'custom settings' => TRUE,
+  );
+}
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function np_event_summary_field_formatter_info() {
+  return array(
+    'event_status_summary' => array(
+      'label' => t('Event status'),
+      'field types' => array('taxonomy_term_reference'),
+      'settings' => array(
+        'overlay' => TRUE,
+        'hyperlink' => '',
+      ),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_formatter_settings_form().
+ */
+function np_event_summary_field_formatter_settings_form($field, $instance, $view_mode, $form, &$form_state) {
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+
+  if ($display['type'] == 'event_status_summary') {
+    $element['overlay'] = array(
+      '#title' => t('On click display event overlay'),
+      '#type' => 'checkbox',
+      '#default_value' => $settings['overlay'],
+    );
+    $element['anchor'] = array(
+      '#type' => 'textfield',
+      '#title' => t('On click go to an anchor on the event page'), 
+      '#default_value' => $settings['anchor'],
+    );
+  }
+
+  return $element;
+}
+
+/**
+ * Implements hook_field_formatter_settings_summary().
+ */
+function np_event_summary_field_formatter_settings_summary($field, $instance, $view_mode) {
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+
+  $summary = array();
+
+  if ($display['type'] == 'event_status_summary') {
+    $summary[] = $settings['overlay'] ? t('On click display event overlay') : t('Going to anchor !anchor', array('!anchor' => $settings['anchor']));
+  }
+
+  return implode('<br />', $summary);
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function np_event_summary_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+  $settings = $display['settings'];
+
+  switch ($display['type']) {
+    case 'event_status_summary':
+      foreach ($items as $delta => $item) {        
+        // Load the term
+        $term = taxonomy_term_load($item['tid']);
+        
+        // Get the numerical rating of the verification status value 
+        $rating = 0;
+        if (isset($term->field_rating[LANGUAGE_NONE][0]['value'])) {
+          $rating = $term->field_rating[LANGUAGE_NONE][0]['value'];
+        }
+
+        $element[$delta] = array(
+          '#type' => 'container',
+          '#attributes' => array(
+            'class' => array(
+              'event-status-summary-container'
+            ),
+          ),
+          'event-status-link-container' => array(
+            '#type' => 'container',
+            '#attributes' => array(
+              'class' => array(
+                'event-status-link-container'
+              ),
+            ),
+          ),
+        );
+
+        if ($settings['overlay']) {
+          // Yes, using node_load again looks ridiculous, but for some reason, and I strongly suspect static caching,
+          // unless you reload the node again, using both the nid and vid, you get a page killing error.
+          // The error is Unsupported operand types in ...node.module on line 1361
+          // The fact you need to supply the vid as well led me to believe that it would flush the cache, but $reset
+          // is actually a different flag. Either way, calling node_view directly on the entity doesn't work, 
+          // so we do it this way by loading the node again.
+          $output = node_view(node_load($entity->nid, $entity->vid), 'summary');
+
+          $element[$delta]['event-status-link-container']['rating'] = array(
+            '#markup' => l('<span class="rating-area"><span class="rating-area-inner rating-area-inner-' . $rating . '">&nbsp;</span></span>', 'node/' . $entity->nid, array(
+              'html' => TRUE,
+              'attributes' => array(
+                'class' => array(
+                  'event-summary-link',
+                  'event-summary-link-rating-' . $rating,
+                  'event-summary-link-empty'
+                ),
+              )
+            )),
+          );
+
+          $element[$delta]['event-status-link-container']['link'] = array(
+            '#markup' => l($term->name, 'node/' . $entity->nid, array(
+              'attributes' => array(
+                'class' => array(
+                  'event-summary-link',
+                  'event-summary-link-rating-' . $rating
+                ),
+              )
+            )),
+          );
+
+          $element[$delta]['overlay'] = array(
+            '#type' => 'container',
+            '#attributes' => array(
+              'class' => array(
+                'event-status-content-container',
+              ),
+            ),
+            'node' => $output
+          );
+                    
+          // Add the class to the hyperlink for the overlay js
+          $element[$delta]['event-status-link-container']['#attributes']['class'][] = 'event-status-link-container-overlay';
+          
+          $element[$delta]['#attached']['css'] = array(
+            drupal_get_path('module', 'np_event_summary') . '/js/jquery.qtip/jquery.qtip.css',
+            drupal_get_path('module', 'np_event_summary') . '/np_event_summary.css',
+          );
+          $element[$delta]['#attached']['js'] = array(
+            drupal_get_path('module', 'np_event_summary') . '/js/jquery.qtip/jquery.qtip.js',
+            drupal_get_path('module', 'np_event_summary') . '/np_event_summary.js',
+          );
+        }
+        else if (isset($settings['anchor'])) {
+          $element[$delta]['event-status-link-container']['rating'] = array(
+            '#markup' => l('<span class="rating-area"><span class="rating-area-inner rating-area-inner-' . $rating . '">&nbsp;</span></span>', 'node/' . $entity->nid, array(
+              'html' => TRUE,
+              'attributes' => array(
+                'class' => array(
+                  'event-summary-link',
+                  'event-summary-link-rating-' . $rating,
+                  'event-summary-link-empty'
+                ),
+              ),
+              'fragment' => $settings['anchor']
+            )),
+          );
+
+          $element[$delta]['event-status-link-container']['link'] = array(
+            '#markup' => l($term->name, 'node/' . $entity->nid, array(
+              'attributes' => array(
+                'class' => array(
+                  'event-summary-link',
+                  'event-summary-link-rating-' . $rating
+                ),
+              ),
+              'fragment' => $settings['anchor']
+            )),
+          );
+        }
+        else {
+          $element[$delta]['event-status-link-container']['rating'] = array(
+            '#prefix' => '<div class="event-summary-link event-summary-link-empty event-summary-link-rating-' . $rating . '">',
+            '#markup' => '<span class="rating-area"><span class="rating-area-inner rating-area-inner-' . $rating . '">&nbsp;</span></span>',
+            '#suffix' => '</div>'
+          );
+          $element[$delta]['event-status-link-container']['link'] = array(
+            '#prefix' => '<div class="event-summary-link event-summary-link-rating-' . $rating . '">',
+            '#markup' => check_plain($term->name),
+            '#suffix' => '</div>'
+          );
+        }
+      }
+      break;
+  }
+  return $element;
+}

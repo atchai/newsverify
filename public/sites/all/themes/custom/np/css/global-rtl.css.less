@@ -1,0 +1,303 @@
+/* Global RTL Styles
+----------------------------------------------------------------------------------------------------*/
+
+/* Branding
+----------------------------------------------------------------------------------------------------*/
+
+#region-branding-left .region-branding-left-inner .block {
+  float: left;
+}
+
+
+/* Mobile AND Desktop RTL
+-----------------------------------------------------------------------------------------------------*/
+
+.logo-img {
+  float: right;
+  margin-left: 20px;
+  margin-right: 0;
+}
+
+.site-name-slogan {
+  float: right;
+}
+
+/* list */
+ul.inline li {
+  float: right;
+}
+
+/* Search
+----------------------------------------------------------------------------------------------------*/
+
+// Exposed search box
+.views-exposed-form {
+  .views-exposed-widgets {
+    .views-exposed-widget {
+      padding: 0 0 0 0; // RTL
+    }
+  }
+}
+
+/* Views - Home
+----------------------------------------------------------------------------------------------------*/
+
+.view-home,
+.view-taxonomy,
+.view-search {
+  li.news-item {
+
+    // Story
+    .story-listing-header {
+      padding: 0 20px 0 0; // RTL
+    }
+
+    .node {
+      .field-name-field-verification-status {
+        float: right; // RTL
+      }
+
+      .field-name-field-cmptd-author,
+      .field-name-field-cmptd-last-updated {
+        float: right; // RTL
+      }
+
+      .field-name-field-cmptd-author {
+        padding: 0 0 0 8px; // RTL
+      }
+
+      .field-name-field-cmptd-last-updated {
+        padding: 0 8px 0 0; // RTL
+      }
+
+    }
+
+  }
+}
+
+/* Menu
+----------------------------------------------------------------------------------------------------*/
+
+#block-menu-menu-section {
+  float: right; // RTL
+
+  ul.menu {
+    float: right; // RTL
+  }
+
+  ul.menu li {
+    float: right; // RTL
+  }
+
+}
+
+/* Views - Search
+----------------------------------------------------------------------------------------------------*/
+
+.views-exposed-form {
+  input {
+    padding: 3px 8px 3px 0; // RTL
+  }
+}
+
+/* Footer - Menu
+----------------------------------------------------------------------------------------------------*/
+
+.zone-footer-wrapper ul.menu li {
+  float: right; // RTL
+}
+
+.zone-footer-wrapper div > ul.menu > li {
+  margin: 0 20px 0 0; // RTL
+}
+
+/* Overlay
+----------------------------------------------------------------------------------------------------*/
+
+.qtip-content {
+  .view-mode-summary {
+    text-align: right; // RTL
+  }
+}
+
+/* Verification Status
+----------------------------------------------------------------------------------------------------*/
+
+.event-status-summary-container .event-summary-link {
+  float: right; // RTL
+}
+
+.event-summary-link .rating-area {
+  margin: 6px 0 0 5px; // RTL
+}
+
+/* Views - Home
+----------------------------------------------------------------------------------------------------*/
+
+.view-home,
+.view-taxonomy,
+.view-search {
+  li.news-item {
+    .story-listing-header {
+      padding: 5px 20px 0 0; // RTL
+    }
+  }
+}
+
+/* Pages
+----------------------------------------------------------------------------------------------------*/
+
+.content,
+.content p,
+.field-type-text-long .field-item {
+  text-align: right; // RTL
+}
+
+#block-system-main {
+  .image-align-left {
+    margin-left: 20px; // RTL
+  }
+}
+
+/* Pages - Event
+----------------------------------------------------------------------------------------------------*/
+
+.view-mode-full {
+  .field-name-field-cmptd-when-full {
+    > .field-label {
+      float: right; // RTL
+    }
+
+    .field-name-field-when-date {
+      .field-items {
+        float: right; // RTL
+
+        .field-item {
+          .date-display-start {
+            padding: 0 0 0 10px; // RTL
+          }
+        }
+      }
+    }
+
+    .field-name-field-when-v-status {
+      float: right; // RTL
+      margin: 0 5px 0 0; // RTL
+    }
+  }
+
+  .field-name-field-cmptd-where-full {
+    > .field-label {
+      float: right; // RTL
+    }
+
+    .field-name-field-where-location {
+      .field-items {
+        float: right; // RTL
+      }
+    }
+
+    .field-name-field-where-v-status {
+      float: right; // RTL
+      margin: 0 5px 0 0; // RTL
+    }
+  }
+
+  .field-name-field-cmptd-description-full {
+    > .field-label {
+      float: right; // RTL
+    }
+
+    .field-name-field-what-v-status {
+      float: right; // RTL
+      margin: 0 5px 0 0; // RTL
+    }
+  }
+
+  .field-name-field-tags {
+    .field-item {
+      margin: 0 0 0 10px; // RTL
+    }
+  }
+
+  .group_sources {
+    .view-sources {
+      .views-field-title {
+        float: right; // RTL
+      }
+      .views-field-field-author-rating {
+        float: right; // RTL
+        margin: 0 20px 0 0; // RTL
+      }
+    }
+  }
+}
+
+/* Pages - Story - Embedded Event
+----------------------------------------------------------------------------------------------------*/
+
+.node-story {
+  .node-event {
+    float: right; // RTL
+
+    .field-name-field-verification-status {
+      float: right; // RTL
+    }
+
+    > h2.node-title {
+      float: right; // RTL
+    }
+  }
+}
+
+/* Views - Related Stories
+----------------------------------------------------------------------------------------------------*/
+
+#block-views-related-stories-block {
+  .view-related-stories {
+    ul {
+      float: right; // RTL
+
+      li {
+        margin: 1px 0 0 1px; // RTL
+        float: right; // RTL
+
+        .updated {
+          float: right; // RTL
+        }
+
+        .author {
+          float: right; // RTL
+        }
+      }
+    }
+  }
+}
+
+/* Blocks - Latest From Location
+----------------------------------------------------------------------------------------------------*/
+#block-views-latest-from-location-block {
+  .view-latest-from-location {
+    ul {
+      li {
+        .image {
+          float: right; // RTL
+          padding: 0 0 0 8px; // RTL
+        }
+
+        .title-date-status-container {
+          float: right; // RTL
+        }
+      }
+    }
+  }
+
+}
+
+/* After Content - Advertisements
+----------------------------------------------------------------------------------------------------*/
+#region-after-content {
+  .simplead-container {
+    float: right; // RTL
+  }
+}

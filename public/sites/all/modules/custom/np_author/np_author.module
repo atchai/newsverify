@@ -1,0 +1,58 @@
+<?php
+/**
+ * @file
+ * Code for the NewsPlatform: Author feature.
+ */
+
+include_once 'np_author.features.inc';
+
+/**
+ * Implements hook_entity_info_alter()
+ */
+function np_author_entity_info_alter(&$entity_info) {
+  // For rendering the "Author name / 5 point rating scale"
+  $entity_info['node']['view modes']['micro'] = array(
+    'label' => t('Micro'),
+    'custom settings' => TRUE,
+  );
+}
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function np_author_field_formatter_info() {
+  return array(
+    'taxonomy_term_rating_scale' => array(
+      'label' => t('Rating Scale'),
+      'field types' => array('taxonomy_term_reference'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function np_author_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+
+  switch ($display['type']) {
+    case 'taxonomy_term_rating_scale':
+      foreach ($items as $delta => $item) {
+        $term = taxonomy_term_load($item['tid']);
+        $output = '<span class="no-rating"></span>';
+        if (isset($term->name)) {
+          $rating = (int) $term->name;
+          $output = '<span class="rating-name rating-' . $rating . '">' . $term->name . '</span><span class="rating rating-' . $rating . '">';
+          $output .= implode('', array_fill(0, $rating, '<span class="scale">&nbsp;</span>'));
+          $output .= '</span>';
+        }
+        $element[$delta] = array(
+          '#type' => 'markup',
+          '#markup' => '<div class="rating">' . $output . '</div>'
+        );
+      }
+      break;
+  }
+
+  return $element;
+}

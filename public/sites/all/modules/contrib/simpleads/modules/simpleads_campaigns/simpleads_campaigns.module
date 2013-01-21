@@ -1,0 +1,213 @@
+<?php
+
+/**
+ * @file
+ * SimpleAds Campaigns module.
+ */
+
+require_once("campaigns.helper.inc");
+
+/**
+ * Implements hook_menu().
+ */
+function simpleads_campaigns_menu() {
+  $items = array();
+  $items['admin/content/simpleads_campaigns/create_campaign'] = array(
+    'title' => 'Create new Ad Campaign',
+    'page callback' => '_simpleads_campaign_new',
+    'access callback' => '_simpleads_access_callback',
+    'weight' => 17,
+    'file' => 'campaigns.admin.inc',
+    'type' => MENU_LOCAL_ACTION,
+  );
+
+  $items['admin/content/simpleads_campaigns'] = array(
+    'title' => 'Ad Campaigns',
+    'page callback' => '_simpleads_campaign_listing',
+    'access arguments' => array('access ad campaings'),
+    'weight' => 17,
+    'file' => 'campaigns.admin.inc',
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  $items['admin/content/simpleads_campaigns/%simpleadsid'] = array(
+    'title' => 'Campaign Details',
+    'page callback' => '_simpleads_campaign_details',
+    'page arguments' => array(3),
+    'access arguments' => array('access ad campaings'),
+    'weight' => 17,
+    'file' => 'campaigns.admin.inc',
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function simpleads_campaigns_permission() {
+  return array(
+    'access ad campaings' => array(
+      'title' => t('Access advertisement campaings'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function simpleads_campaigns_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'simpleads_node_form') {
+    $lang = $form['language']['#value'];
+    $campaigns = array(
+      '_none' => t('- None -'),
+    );
+    $results = db_select('node', 'n')
+      ->fields('n', array('title', 'nid'))
+      ->condition('n.status', 1)
+      ->condition('n.type', 'simpleads_campaign')
+      ->orderBy('n.title')
+      ->execute();
+    foreach ($results as $row) {
+      $campaigns[$row->nid] = $row->title;
+    }
+
+    $node = FALSE;
+    if (isset($form['#node']) && is_object($form['#node'])) {
+      $node = $form['#node'];
+    }
+
+    if (isset($form['field_adcamp_list'][$lang])) {
+      $form['field_adcamp_list'][$lang]['#prefix'] = '<div style="display:none;">';
+      $form['field_adcamp_list'][$lang]['#suffix'] = '</div>';
+      $title = $form['field_adcamp_list'][$lang][0]['#title'];
+      $description = $form['field_adcamp_list'][$lang][0]['#description'];
+      $default = "";
+      if ($node && isset($node->field_adcamp_list[$node->language]) && !empty($node->field_adcamp_list[$node->language][0]['safe_value'])) {
+        $default = $node->field_adcamp_list[$node->language][0]['safe_value'];
+      }
+      $form['campaign'] = array(
+        '#type' => 'select',
+        '#title' => check_plain($title),
+        '#description' => check_plain($description),
+        '#weight' => 9,
+        '#options' => $campaigns,
+        '#default_value' => $default,
+      );
+    }
+
+    else {
+      if (isset($form['field_adcamp_list'][LANGUAGE_NONE])) {
+        $form['field_adcamp_list'][LANGUAGE_NONE]['#prefix'] = '<div style="display:none;">';
+        $form['field_adcamp_list'][LANGUAGE_NONE]['#suffix'] = '</div>';
+        $title = $form['field_adcamp_list'][LANGUAGE_NONE][0]['#title'];
+        $description = $form['field_adcamp_list'][LANGUAGE_NONE][0]['#description'];
+        $default = "";
+        if ($node && isset($node->field_adcamp_list[LANGUAGE_NONE]) && !empty($node->field_adcamp_list[LANGUAGE_NONE][0]['safe_value'])) {
+          $default = $node->field_adcamp_list[LANGUAGE_NONE][0]['safe_value'];
+        }
+        $form['campaign'] = array(
+          '#type' => 'select',
+          '#title' => check_plain($title),
+          '#description' => check_plain($description),
+          '#weight' => 9,
+          '#options' => $campaigns,
+          '#default_value' => $default,
+        );
+      }
+    }
+
+  }
+}
+
+/**
+ * Implements hook_node_presave().
+ */
+function simpleads_campaigns_node_presave($node) {
+  if ($node->type == 'simpleads' && isset($node->campaign)) {
+    $node->field_adcamp_list[$node->language][0]['value'] = $node->campaign;
+  }
+  if ($node->type == 'simpleads_campaign') {
+    $start_time = 0;
+
+    if (isset($node->field_adcamp_start[$node->language]) && !empty($node->field_adcamp_start[$node->language][0]['value'])) {
+      $start_time = $node->field_adcamp_start[$node->language][0]['value'];
+    }
+    $start_time = strtotime($start_time);
+
+    if ($start_time != 0) {
+      $node->field_adcamp_start[$node->language][0]['value'] = format_date($start_time, 'custom', 'm/d/Y h:i a');
+    }
+  }
+}
+
+/**
+ * Implements hook_simpleads_stats_info().
+ */
+function simpleads_campaigns_simpleads_stats_info($node, $op) {
+  $campaign_link = "";
+  if (isset($node->field_adcamp_list[$node->language]) && is_numeric($node->field_adcamp_list[$node->language][0]['safe_value'])) {
+    $campaign = node_load($node->field_adcamp_list[$node->language][0]['safe_value']);
+    $campaign_link = t('This ad participates in !link campaign', array('!link' => l($campaign->title, 'admin/content/simpleads_campaigns/' . $campaign->nid)));
+  }
+  if ($op == 'list') {
+    return array($campaign_link);
+  }
+  if ($op == 'ad_status_detail') {
+    return array($campaign_link);
+  }
+}
+
+/**
+ * Implements hook_node_access().
+ */
+function simpleads_campaigns_node_access($node, $op, $account) {
+  if (isset($node->type) && $node->type == 'simpleads_campaign' && $op == 'view' && !user_access('administer nodes', $account)) {
+    return NODE_ACCESS_DENY;
+  }
+}
+
+/**
+ * Implements hook_simpleads_preload().
+ */
+function simpleads_campaigns_simpleads_preload($nid) {
+  $node = node_load($nid);
+  _simpleads_campaigns_watch(NULL, $node);
+}
+
+/**
+ * Implements hook_simpleads_ad_click().
+ */
+function simpleads_campaigns_simpleads_ad_click($op, $node) {
+  if ($op == 'insert') {
+    _simpleads_campaigns_watch(NULL, $node);
+  }
+}
+
+/**
+ * Implements hook_simpleads_ad_impression().
+ */
+function simpleads_campaigns_simpleads_ad_impression($op, $node) {
+  if ($op == 'insert') {
+    _simpleads_campaigns_watch(NULL, $node);
+  }
+}
+
+/**
+ * Implements hook_simpleads_campaign_complete().
+ */
+function simpleads_campaigns_simpleads_campaign_complete($node) {
+  if (is_object($node)) {
+    $node->status = 0;
+    $node->field_ad_status[$node->language][0]['value'] = 0;
+    node_save($node);
+  }
+}
+
+/**
+ * Implements hook_cron().
+ */
+function simpleads_campaigns_cron() {
+  _simpleads_campaigns_watch();
+}

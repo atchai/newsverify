@@ -1,0 +1,412 @@
+<?php
+
+/**
+ * @file
+ * SimpleAds Campaigns Install.
+ */
+
+include_once("campaign.updates.inc");
+
+/**
+ * Implements hook_install().
+ */
+function simpleads_campaigns_install() {
+
+  $t = get_t();
+
+  $type = array(
+    'type' => 'simpleads_campaign',
+    'name' => $t('Simple Ad Campaign'),
+    'base' => 'node_content',
+    'description' => $t('Advertisement Campaign'),
+    'custom' => 1,
+    'modified' => 1,
+    'locked' => 0,
+  );
+
+  $type = node_type_set_defaults($type);
+  node_type_save($type);
+
+  $fields = array(
+    array(
+      'field_name' => 'field_adcamp_list',
+      'type' => 'text',
+      'cardinality' => 1,
+      'translatable' => TRUE,
+      'settings' => array(
+        'max_length' => 255,
+      ),
+      'translatable' => TRUE,
+      'entity_types' => array(),
+    ),
+    array(
+      'field_name' => 'field_adcamp_impression',
+      'type' => 'list_boolean',
+      'cardinality' => 1,
+      'translatable' => TRUE,
+      'settings' => array(
+        'allowed_values' => array(
+          0 => $t('Impressions'),
+          1 => $t('Impressions'),
+        ),
+        'allowed_values_function' => '',
+      ),
+      'module' => 'list',
+      'translatable' => TRUE,
+      'entity_types' => array(),
+    ),
+    array(
+      'field_name' => 'field_adcamp_impressions',
+      'type' => 'text',
+      'cardinality' => 1,
+      'translatable' => TRUE,
+      'settings' => array(
+        'max_length' => 255,
+      ),
+      'translatable' => TRUE,
+      'entity_types' => array(),
+    ),
+    array(
+      'field_name' => 'field_adcamp_click',
+      'type' => 'list_boolean',
+      'cardinality' => 1,
+      'translatable' => TRUE,
+      'settings' => array(
+        'allowed_values' => array(
+          0 => $t('Clicks'),
+          1 => $t('Clicks'),
+        ),
+        'allowed_values_function' => '',
+      ),
+      'module' => 'list',
+      'translatable' => TRUE,
+      'entity_types' => array(),
+    ),
+    array(
+      'field_name' => 'field_adcamp_clicks',
+      'type' => 'text',
+      'cardinality' => 1,
+      'translatable' => TRUE,
+      'settings' => array(
+        'max_length' => 255,
+      ),
+      'translatable' => TRUE,
+      'entity_types' => array(),
+    ),
+    array(
+      'field_name' => 'field_adcamp_day',
+      'type' => 'list_boolean',
+      'cardinality' => 1,
+      'translatable' => TRUE,
+      'settings' => array(
+        'allowed_values' => array(
+          0 => $t('Days'),
+          1 => $t('Days'),
+        ),
+        'allowed_values_function' => '',
+      ),
+      'module' => 'list',
+      'translatable' => TRUE,
+      'entity_types' => array(),
+    ),
+    array(
+      'field_name' => 'field_adcamp_days',
+      'type' => 'text',
+      'cardinality' => 1,
+      'translatable' => TRUE,
+      'settings' => array(
+        'max_length' => 255,
+      ),
+      'translatable' => TRUE,
+      'entity_types' => array(),
+    ),
+    array(
+      'field_name' => 'field_adcamp_start',
+      'type' => 'text',
+      'cardinality' => 1,
+      'translatable' => TRUE,
+      'settings' => array(
+        'max_length' => 255,
+      ),
+      'translatable' => TRUE,
+      'entity_types' => array(),
+    ),
+  );
+  foreach ($fields as $field) {
+    field_create_field($field);
+  }
+
+  $instance = array(
+    'field_name' => 'field_adcamp_list',
+    'entity_type' => 'node',
+    'label' => $t('Campaign'),
+    'bundle' => 'simpleads',
+    'description' => $t('Please select campaign for this ad (if applicable).'),
+    'required' => FALSE,
+    'widget' => array(
+      'type' => 'text_textfield',
+      'settings' => array(
+        'size' => 60,
+      ),
+      'weight' => 1,
+    ),
+    'settings' => array(
+      'text_processing' => 0,
+    ),
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'type' => 'text_default',
+        'settings' => array(),
+      ),
+    ),
+  );
+  field_create_instance($instance);
+
+  $instance = array(
+    'field_name' => 'field_adcamp_impression',
+    'entity_type' => 'node',
+    'bundle' => 'simpleads_campaign',
+    'label' => $t('Impressions'),
+    'required' => FALSE,
+    'widget' => array(
+      'type' => 'options_onoff',
+      'settings' => array(
+        'display_label' => 0,
+      ),
+      'weight' => 2,
+      'module' => 'options',
+    ),
+    'default_value' => array(
+      0 => array(
+        'value' => 1,
+      ),
+    ),
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'type' => 'list_default',
+        'module' => 'list',
+        'settings' => array(),
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+  );
+  field_create_instance($instance);
+
+  $instance = array(
+    'field_name' => 'field_adcamp_impressions',
+    'entity_type' => 'node',
+    'bundle' => 'simpleads_campaign',
+    'label' => $t('Number of impressions'),
+    'required' => FALSE,
+    'widget' => array(
+      'type' => 'text_textfield',
+      'settings' => array(
+        'size' => 60,
+      ),
+      'weight' => 4,
+    ),
+    'settings' => array(
+      'text_processing' => 0,
+    ),
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'type' => 'text_default',
+        'settings' => array(),
+      ),
+    ),
+  );
+  field_create_instance($instance);
+
+  $instance = array(
+    'field_name' => 'field_adcamp_click',
+    'entity_type' => 'node',
+    'bundle' => 'simpleads_campaign',
+    'label' => $t('Clicks'),
+    'required' => FALSE,
+    'widget' => array(
+      'type' => 'options_onoff',
+      'settings' => array(
+        'display_label' => 0,
+      ),
+      'weight' => 6,
+      'module' => 'options',
+    ),
+    'default_value' => array(
+      0 => array(
+        'value' => 0,
+      ),
+    ),
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'type' => 'list_default',
+        'module' => 'list',
+        'settings' => array(),
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+  );
+  field_create_instance($instance);
+
+  $instance = array(
+    'field_name' => 'field_adcamp_clicks',
+    'entity_type' => 'node',
+    'bundle' => 'simpleads_campaign',
+    'label' => $t('Number of clicks'),
+    'required' => FALSE,
+    'widget' => array(
+      'type' => 'text_textfield',
+      'settings' => array(
+        'size' => 60,
+      ),
+      'weight' => 8,
+    ),
+    'settings' => array(
+      'text_processing' => 0,
+    ),
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'type' => 'text_default',
+        'settings' => array(),
+      ),
+    ),
+  );
+  field_create_instance($instance);
+
+  $instance = array(
+    'field_name' => 'field_adcamp_day',
+    'entity_type' => 'node',
+    'bundle' => 'simpleads_campaign',
+    'label' => $t('Days'),
+    'required' => FALSE,
+    'widget' => array(
+      'type' => 'options_onoff',
+      'settings' => array(
+        'display_label' => 0,
+      ),
+      'weight' => 10,
+      'module' => 'options',
+    ),
+    'default_value' => array(
+      0 => array(
+        'value' => 0,
+      ),
+    ),
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'type' => 'list_default',
+        'module' => 'list',
+        'settings' => array(),
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+  );
+  field_create_instance($instance);
+
+  $instance = array(
+    'field_name' => 'field_adcamp_days',
+    'entity_type' => 'node',
+    'bundle' => 'simpleads_campaign',
+    'label' => $t('Number of days'),
+    'required' => FALSE,
+    'widget' => array(
+      'type' => 'text_textfield',
+      'settings' => array(
+        'size' => 60,
+      ),
+      'weight' => 12,
+    ),
+    'settings' => array(
+      'text_processing' => 0,
+    ),
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'type' => 'text_default',
+        'settings' => array(),
+      ),
+    ),
+  );
+  field_create_instance($instance);
+
+  $instance = array(
+    'field_name' => 'field_adcamp_start',
+    'entity_type' => 'node',
+    'bundle' => 'simpleads_campaign',
+    'label' => $t('Start date'),
+    'description' => $t('Allowed date formats: now, tomorrow, next week, 10 September 2011, +1 day, +1 week, +1 year, +1 week 2 days 4 hours 2 seconds, next Monday, last Friday, mm/dd/yyyy hh:mm am/pm'),
+    'required' => TRUE,
+    'widget' => array(
+      'type' => 'text_textfield',
+      'settings' => array(
+        'size' => 60,
+      ),
+      'weight' => 14,
+    ),
+    'settings' => array(
+      'text_processing' => 0,
+    ),
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'type' => 'text_default',
+        'settings' => array(),
+      ),
+    ),
+  );
+  field_create_instance($instance);
+
+  // Reset menu, comments and other default options.
+  variable_set('menu_options_simpleads_campaign', array());
+  variable_set('node_options_simpleads_campaign', array());
+  variable_set('comment_simpleads_campaign', 1);
+
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function simpleads_campaigns_uninstall() {
+  field_delete_field('field_adcamp_list');
+  field_delete_field('field_adcamp_impression');
+  field_delete_field('field_adcamp_impressions');
+  field_delete_field('field_adcamp_click');
+  field_delete_field('field_adcamp_clicks');
+  field_delete_field('field_adcamp_day');
+  field_delete_field('field_adcamp_days');
+  field_delete_field('field_adcamp_start');
+  node_type_delete('simpleads_campaign');
+  // Remove variables.
+  variable_del('menu_options_simpleads_campaign');
+  variable_del('node_options_simpleads_campaign');
+  variable_del('comment_simpleads_campaign');
+}

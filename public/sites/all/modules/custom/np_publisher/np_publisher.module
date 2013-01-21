@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the NewsPlatform: Publisher feature.
+ */
+
+include_once 'np_publisher.features.inc';

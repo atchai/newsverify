@@ -1,0 +1,18 @@
+<?php
+/**
+ * @file
+ * Code for the NewsPlatform: Home feature.
+ */
+
+include_once 'np_home.features.inc';
+
+
+/**
+ * Implements hook_entity_info_alter()
+ */
+function np_home_entity_info_alter(&$entity_info) {
+  $entity_info['node']['view modes']['listing'] = array(
+    'label' => t('In a Listing Page'),
+    'custom settings' => TRUE,
+  );
+}

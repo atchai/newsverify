@@ -1,0 +1,20 @@
+<?php
+/**
+ * @file
+ * Installation functionality for NewsPlatform: Author module
+ */
+
+/**
+ * Create "Anonymous" author node
+ */
+function np_author_install() {
+    $node = new stdClass();
+    $node->type = 'author';
+    $node->changed = REQUEST_TIME;
+    $node->created = REQUEST_TIME;
+    $node->language = LANGUAGE_NONE;
+    node_object_prepare($node);
+    $node->log = 'Automtically created Anonymous author';
+    $node->title = 'Anonymous';
+    node_save($node);
+}

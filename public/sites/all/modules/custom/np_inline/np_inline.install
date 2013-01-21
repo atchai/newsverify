@@ -1,0 +1,33 @@
+<?php
+
+/**
+ * @file
+ * Install file for the np_inline module.
+ */
+
+/**
+ * Turns of filter format caching for all filter formats.
+ * 
+ * THIS IS VERY IMPORTANT FOR THE FUNCTIONING OF THE EVENT EMBED FILTER.
+ * 
+ * With filter format caching turned on as it is normally, the np_inline embed doesn't work properly.
+ * 
+ * Each time an editor updates a story node, and clicks the save button, the function, check_markup seems to be
+ * run on the story body field. This triggers the parsing of the filters, which of course includes the np_inline filter.
+ * 
+ * So the event that ies referenced in each tag like [[26]] is loaded and parsed.
+ * 
+ * BUT, the problem is, that I *think* this is happening while the admin theme is set as default, or for whatever other reason
+ * the front end themes are not enabled, so, the event and post fields are run *using the default drupal templates like node.tpl.php*
+ * instead of those overridden in your theme.
+ * 
+ * There is probably a better fix for this than turning off caching entirely, but this will *work* and it's very quick.
+ * And we can worry about finding a better solution later when performance becomes an issue when the
+ * site is recieving tens of thousands of visitors a day. Until then this is good.
+ */
+function np_inline_update_7001() {
+  // Turn filter format caching off.
+  $num_updated = db_update('filter_format')
+    ->fields(array('cache' => 0))
+    ->execute();
+}

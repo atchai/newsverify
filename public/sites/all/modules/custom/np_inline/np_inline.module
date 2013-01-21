@@ -1,0 +1,65 @@
+<?php
+/**
+ * @file
+ * Code for the NewsPlatform: Inline Nodes module.
+ */
+
+/**
+ * Implements hook_filter_info()
+ */
+function np_inline_filter_info() {
+    return array(
+        'np_inline_filter' => array(
+            'title' => t('Convert inline node references'),
+            'description' => t('Transforms inline node references in the form [[nid:123]] to the rendered output of the node teaser view'),
+            'process callback' => 'np_inline_filter_process',
+            'tips callback' => 'np_inline_filter_tips',
+        )
+  );
+}
+
+/**
+ * Process callback for inline node filter
+ */
+function np_inline_filter_process($text, $filter, $format, $langcode, $cache, $cache_id) {
+    return preg_replace_callback('#\[\[(\d+)\]\]#s', '_np_inline_replace_node', $text);
+}
+
+/**
+ * Node replace callback for inline node filter
+ */
+function _np_inline_replace_node($matches) {
+    $node = node_load($matches[1]);
+    if (!$node || !node_access('view', $node) || !$node->status) {
+        return '';
+    }
+    node_build_content($node, 'inline', $GLOBALS['language_content']->language);
+    $build = $node->content;
+    unset($node->content);
+    $build += array(
+        '#theme' => 'node',
+        '#node' => $node,
+        '#view_mode' => 'inline',
+        '#language' => NULL,
+    );
+    return render($build);
+}
+
+/**
+ * Tips callback
+ */
+function np_inline_filter_tips($filter, $format, $long) {
+    return t('Inline Events<ul>
+        <li>To insert an inline Event use the format <code>[[NID]]</code> where <code>NID</code> is the numeric ID of the event. For example: <code>[[123]]</code></li>
+    </ul>');
+}
+
+/**
+ * Implements hook_entity_info_alter()
+ */
+function np_inline_entity_info_alter(&$entity_info) {
+    $entity_info['node']['view modes']['inline'] = array(
+        'label' => t('Inline'),
+        'custom settings' => TRUE,
+    );
+}
