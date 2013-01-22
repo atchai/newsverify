@@ -68,9 +68,11 @@ function np_core_block_info() {
 function np_core_block_view($delta = '') {
   switch ($delta) {
     case 'np_core_small_logo':
+      $default_path = drupal_get_path('module', 'np_core') . '/images/small_logo.png';
+      $small_logo_path = variable_get('np_core_small_logo_path', $default_path);
       $block['subject'] = '';
       $block['content'] = array(
-        '#markup' => l(theme('image', array('path' => drupal_get_path('module', 'np_core') . '/images/small_logo.png')), '<front>', array('html' => TRUE))
+        '#markup' => l(theme('image', array('path' => $small_logo_path)), '<front>', array('html' => TRUE))
       );
       break;
     case 'np_core_site_slogan':
