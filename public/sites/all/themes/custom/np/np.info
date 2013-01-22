@@ -43,8 +43,8 @@ css[global.css.less][options][weight] = 10
 
 scripts[0] = 'js/jquery.masonry.min.js'
 scripts[1] = 'js/jquery.flexslider-min.js'
-scripts[1] = 'js/jquery.qtip.min.js'
-scripts[2] = 'js/jquery.example.js'
+scripts[2] = 'js/jquery.qtip.min.js'
+scripts[3] = 'js/jquery.example.js'
 scripts[99] = 'js/np.js'
 
 version = '1.x'
