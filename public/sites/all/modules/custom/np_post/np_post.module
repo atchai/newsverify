@@ -142,13 +142,14 @@ function np_post_field_widget_form(&$form, &$form_state, $field, $instance, $lan
 
         // Load the node so we can embed it in the form.
         $node = node_load($target_id);
+        $node_view = node_view($node);
         $result = array(
           '#id' => $id,
           '#type' => 'item',
           'target_id' => $element,
           'node' => array(
             '#title' => $node->title,
-            '#markup' => drupal_render(node_view($node)),
+            '#markup' => drupal_render($node_view),
           ),
           'actions' => array(
             '#type' => 'actions',
