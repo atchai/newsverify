@@ -1,1 +1,679 @@
-// Add your override styles here
+/* News Platform Demo Override Styles
+----------------------------------------------------------------------------------------------------*/
+
+/* Includes
+----------------------------------------------------------------------------------------------------*/
+
+// CSS 3 Properties
+// Selectively taken from https://github.com/twitter/bootstrap/blob/master/less/mixins.less
+@import "lib/mixins.less";
+
+/* Typography
+----------------------------------------------------------------------------------------------------*/
+
+body {
+    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+}
+
+h3 {
+  font-size: 13pt;
+  line-height: 16pt;
+}
+
+/* Linkography
+----------------------------------------------------------------------------------------------------*/
+
+a {
+  color: #000;
+  text-decoration: underline;
+}
+
+a:visited,
+a:hover,
+a:active {
+  color: #000;
+  text-decoration: none;
+}
+
+/* Header
+----------------------------------------------------------------------------------------------------*/
+
+.site-name a {
+  font-size: 22pt;
+  font-weight: normal;
+  color: #fff
+}
+
+/* Branding
+----------------------------------------------------------------------------------------------------*/
+
+#section-footer {
+  background: #000;
+}
+
+#section-header {
+  background: #000;
+}
+
+#zone-header-wrapper {
+  #block-np-core-np-core-menu-title {
+    h3 a {
+      font-weight: normal;
+      font-size: 16px;
+      line-height: 16px;
+      color: #fff;
+      text-decoration: none;
+    }
+  }
+}
+
+#zone-branding-wrapper {
+  border-top: 1px #fff dotted;
+
+  .site-slogan {
+    font-weight: normal;
+    font-size: 13px;
+    line-height: 13px;
+    color: #fff;
+  }
+}
+
+#block-np-core-np-core-site-slogan {
+  font-size: 18pt;
+  font-weight: normal;
+  color: #fff
+}
+
+/* Navigation
+----------------------------------------------------------------------------------------------------*/
+
+.front #zone-navigation-wrapper {
+  background-color: #fff;
+
+  .block h2 {
+    font-size: 13pt;
+    color: #000;
+  }
+}
+
+/* Menu
+----------------------------------------------------------------------------------------------------*/
+
+#block-menu-menu-section {
+  ul.menu li {
+    border-left: 1px solid #fff;
+  }
+
+  ul.menu li a {
+    font-size: 16px;
+    font-weight: normal;
+    color: #000;
+    text-decoration: none;
+  }
+
+}
+
+/* Menu - JS Interaction
+----------------------------------------------------------------------------------------------------*/
+#menu-more-container a {
+  font-size: 9pt;
+  font-weight: normal;
+  color: #000;
+  text-decoration: underline;
+}
+
+/* Blocks - Our Approach
+----------------------------------------------------------------------------------------------------*/
+#block-menu-menu-our-approach {
+  background-color: #fff;
+  color: #000;
+}
+
+/* Blocks - All Aside
+----------------------------------------------------------------------------------------------------*/
+aside .block {
+  .box-shadow(4px 4px 5px #ddd);
+
+  h2.block-title {
+    font-size: 18px;
+    font-weight: normal;
+    line-height: 18px;
+  }
+}
+
+/* Blocks - Latest From Location
+----------------------------------------------------------------------------------------------------*/
+#block-views-latest-from-location-block {
+  h2.block-title {
+    border: 1px #ccc solid;
+  }
+
+  > .block-inner > .content {
+    border-bottom: 1px #ccc solid;
+    border-left: 1px #ccc solid;
+  }
+
+  .view-latest-from-location {
+    ul {
+      li {
+        border-bottom: 1px #ccc solid;
+
+        &:last-child {
+          border-bottom: 0px none;
+        }
+
+        h3 a {
+          font-size: 14px;
+          line-height: 17px;
+          font-weight: normal;
+          color: #000;
+        }
+      }
+    }
+  }
+
+}
+
+
+/* Pages
+----------------------------------------------------------------------------------------------------*/
+.not-front #zone-content-wrapper {
+  border-top: 1px #000 dotted;
+}
+
+#page-title {
+  font-size: 18px;
+  font-weight: normal;
+  line-height: 23px;
+  color: #000;
+}
+
+.content,
+.content p,
+.field-type-text-long .field-item {
+  font-size: 13px;
+  line-height: 16px;
+  font-weight: normal;
+  color: #000;
+}
+
+.field {
+  .field-label {
+    font-size: 15px;
+    line-height: 15px;
+    font-weight: normal;
+    color: #000;
+  }
+}
+
+#block-system-main {
+  .image-container {
+    .box-shadow(4px 4px 5px #ddd);
+  }
+}
+
+/* Pages - Menu
+----------------------------------------------------------------------------------------------------*/
+
+.not-front #zone-pre-content-wrapper {
+  background-color: #fff;
+}
+
+.not-front #block-menu-menu-section ul li {
+  border-left: 0px none;
+}
+
+.not-front #block-menu-menu-section ul li a {
+  color: #000;
+}
+
+/* Pages - Breadcrumb
+----------------------------------------------------------------------------------------------------*/
+
+#breadcrumb {
+  border-bottom: 1px dotted #000;
+
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 14px;
+  color: #000;
+
+  a {
+    color: #000;
+  }
+}
+
+/* Pages - Event
+----------------------------------------------------------------------------------------------------*/
+
+.view-mode-full {
+
+  .field-name-field-submitted {
+    font-size: 10px;
+    font-weight: normal;
+    color: #000;
+    text-decoration: none;
+  }
+
+  .field-name-field-tags {
+    .field-item {
+      a {
+        font-size: 12px;
+        line-height: 15px;
+        font-weight: normal;
+        color: #000;
+      }
+    }
+  }
+
+  .field-name-field-verification-status {
+    border-left: 1px #000 solid;
+    border-top: 1px #000 solid;
+    border-right: 1px #000 solid;
+  }
+
+  .field-name-field-verification-narrative {
+    border-right: 1px #000 solid;
+    border-bottom: 1px #000 solid;
+    border-left: 1px #000 solid;
+  }
+
+  .group_sources {
+    .view-sources {
+      ul {
+        li {
+          border-bottom: 1px #cccccc solid;
+
+          &:last-child {
+            border-bottom: 0px none;
+          }
+
+        }
+      }
+    }
+  }
+
+}
+
+/* Pages - Story
+----------------------------------------------------------------------------------------------------*/
+
+
+/* Pages - Story - Embedded Event
+----------------------------------------------------------------------------------------------------*/
+
+.node-story {
+  .node-event {
+    border-left: 1px #ccc solid;
+    border-top: 1px #ccc solid;
+    .box-shadow(2px 2px 3px #ddd);
+
+    .field-name-field-verification-status {
+      border: 0px none;
+    }
+  }
+}
+
+/* Pages - Author
+----------------------------------------------------------------------------------------------------*/
+
+.node-author-view-mode-full {
+  .field-name-field-accounts {
+    background-color: #fff;
+    .box-shadow(4px 4px 5px #ddd);
+
+    .field-label {
+      font-size: 14px;
+      line-height: 14px;
+      color: #000;
+    }
+
+    .field-collection-view {
+      border: 0px none;
+    }
+  }
+}
+
+/* Pages - All - Post
+----------------------------------------------------------------------------------------------------*/
+
+.field-name-field-post-body-html {
+  background-color: #fff;
+}
+
+/* Pages - All - Groups
+----------------------------------------------------------------------------------------------------*/
+
+.field-group-div {
+  background-color: #fff;
+  .box-shadow(4px 4px 5px #ddd);
+
+  h3 {
+    font-size: 14px;
+    line-height: 14px;
+    color: #000;
+
+    a {
+      text-decoration: none;
+    }
+
+    .status-container {
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 14px;
+      color: #000;
+    }
+  }
+}
+
+/* Overlay
+----------------------------------------------------------------------------------------------------*/
+
+.qtip-content {
+  background-color: #fff;
+  .box-shadow(5px 5px 5px #ddd);
+
+  // Event Summary (overlay) view
+  .view-mode-summary {
+    .field-name-field-sources-simple {
+      border-bottom: 1px #000 dotted;
+
+      table {
+        thead {
+          tr {
+            th {
+              background-color: #fff;
+
+              font-size: 12px;
+              line-height: 12px;
+              font-weight: normal;
+              color: #000;
+
+              &:first-child {
+                border-right: 4px #fff solid;
+              }
+            }
+          }
+        }
+        tbody {
+          tr {
+            background-color: #fff;
+            border-bottom: 0px none;
+
+            td {
+              background-color: #fff;
+
+              font-size: 11px;
+              line-height: 11px;
+              font-weight: normal;
+              color: #000;
+            }
+          }
+        }
+      }
+    }
+
+    .field-name-field-cmptd-why-we-think-its {
+      .why-we-think-its {
+        font-weight: bold;
+      }
+    }
+
+    div.actions {
+      border-top: 1px #000 dotted;
+
+      .action-view-event {
+        font-size: 12px;
+        line-height: 12px;
+        font-weight: normal;
+        color: #000;
+        text-decoration: none;
+      }
+
+      .action-about-verification {
+        font-size: 13px;
+        line-height: 13px;
+        font-weight: normal;
+        color: #000;
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+/* Verification Status
+----------------------------------------------------------------------------------------------------*/
+
+.event-summary-link {
+  font-weight: normal;
+  font-size: 9pt;
+}
+
+/* Views
+----------------------------------------------------------------------------------------------------*/
+
+/* Views - Search
+----------------------------------------------------------------------------------------------------*/
+
+// Exposed search box
+.views-exposed-form {
+  input {
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 14px;
+    color: #000;
+  }
+}
+
+/* Views - Home
+----------------------------------------------------------------------------------------------------*/
+
+.view-home,
+.view-taxonomy,
+.view-search {
+  li.news-item {
+    border: 0 none;
+    .box-shadow(2px 2px 5px 2px #ddd);
+
+    // Story
+    .story-listing-header {
+      background-color: #000;
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 14px;
+      color: #fff;
+    }
+
+    h2.node-title a {
+      font-weight: normal;
+      font-size: 16pt;
+      line-height: 16pt;
+    }
+
+    .node {
+
+      .field-name-field-what-description {
+        font-weight: normal;
+        font-size: 12pt;
+        line-height: 15pt;
+      }
+
+      .field-name-field-cmptd-author,
+      .field-name-field-cmptd-last-updated {
+        font-size: 9pt;
+        font-weight: normal;
+      }
+
+    }
+
+    .node-event,
+    .node-story {
+      .field-name-field-cmptd-last-updated {
+        border-right: 1px #000 solid;
+      }
+    }
+  }
+}
+
+.view-search {
+  .views-row {
+    border: 0 none;
+    .box-shadow(5px 5px 5px #ddd);
+  }
+}
+
+/* Views - Home - Carousel
+----------------------------------------------------------------------------------------------------*/
+
+.view-home-carousel {
+  .slideshow {
+    border: none;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    -o-border-radius: 0;
+    border-radius: 0;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    -o-box-shadow: none;
+    box-shadow: none;
+
+    .slides {
+      li.slide-item {
+        .news-caption {
+          h3.news-title {
+            font-size: 13pt;
+            line-height: 16pt;
+          }
+          .date {
+            font-size: 9pt;
+          }
+        }
+      }
+    }
+  }
+}
+
+/* Views - Related Stories
+----------------------------------------------------------------------------------------------------*/
+
+#block-views-related-stories-block {
+
+  h2.block-title {
+    border: 1px #000 solid;
+
+    font-size: 19px;
+    font-weight: normal;
+    line-height: 19px;
+    color: #000;
+  }
+
+  .view-related-stories {
+    ul {
+      li {
+        background-color: #fff;
+        .box-shadow(4px 4px 5px #ddd);
+
+        font-size: 10px;
+        font-weight: normal;
+        color: #000;
+        text-decoration: none;
+
+        h4 {
+          font-size: 11px;
+          font-weight: normal;
+          line-height: 15px;
+        }
+
+        .updated {
+          border-left: 1px #000 solid;
+        }
+      }
+    }
+  }
+}
+
+/* Footer
+----------------------------------------------------------------------------------------------------*/
+
+#region-after-content {
+  border-top: 1px #ccc dotted;
+  border-bottom: 1px #ccc dotted;
+}
+
+.zone-footer-wrapper {
+  border-top: 2px #000 solid;
+}
+
+#section-footer .footer-spacer {
+  border-top: 1px #000 dotted;
+  border-bottom: 1px #000 dotted;
+}
+
+.region-footer-first h2.block-title {
+  font-size: 19pt;
+  font-weight: normal;
+  color: #fff;
+}
+
+.region-footer-first .block .content,
+.region-footer-first .block .content p {
+  font-size: 11pt;
+  line-height: 14pt;
+  color: #fff;
+}
+
+/* Footer - Menu
+----------------------------------------------------------------------------------------------------*/
+
+.zone-footer-wrapper ul.menu li a {
+  font-weight: normal;
+  font-size: 9.6pt;
+  color: #fff;
+  text-decoration: none;
+
+  border-bottom: 1px #000 dotted;
+}
+
+.zone-footer-wrapper div > ul.menu > li > ul.menu > li a:before {
+  color: #fff;
+}
+
+#block-np-core-np-core-section-menu-two {
+
+  .block-inner {
+    h2.block-title {
+      font-weight: normal;
+      font-size: 15px;
+      line-height: 15px;
+      color: #fff;
+
+      .backtotop {
+        color: #fff;
+        text-decoration: none;
+      }
+    }
+
+    > .content {
+      border-top: 1px #fff dotted;
+
+      ul {
+        li {
+          border-bottom: 1px #fff dotted;
+
+          &:first-child {
+            border-top: 1px #fff dotted;
+          }
+
+          a {
+            font-weight: normal;
+            font-size: 15px;
+            line-height: 15px;
+            color: #fff;
+            text-decoration: none;
+          }
+        }
+      }
+    }
+  }
+
+}
