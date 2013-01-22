@@ -146,15 +146,6 @@ function np_event_summary_field_formatter_view($entity_type, $entity, $field, $i
                     
           // Add the class to the hyperlink for the overlay js
           $element[$delta]['event-status-link-container']['#attributes']['class'][] = 'event-status-link-container-overlay';
-          
-          $element[$delta]['#attached']['css'] = array(
-            drupal_get_path('module', 'np_event_summary') . '/js/jquery.qtip/jquery.qtip.css',
-            drupal_get_path('module', 'np_event_summary') . '/np_event_summary.css',
-          );
-          $element[$delta]['#attached']['js'] = array(
-            drupal_get_path('module', 'np_event_summary') . '/js/jquery.qtip/jquery.qtip.js',
-            drupal_get_path('module', 'np_event_summary') . '/np_event_summary.js',
-          );
         }
         else if (isset($settings['anchor'])) {
           $element[$delta]['event-status-link-container']['rating'] = array(

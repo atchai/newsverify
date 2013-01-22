@@ -33,12 +33,17 @@ css[flexslider.css][name] = 'FlexSlider'
 css[flexslider.css][description] = 'FlexSlider CSS'
 css[flexslider.css][options][weight] = 0
 
+css[jquery.qtip.min.css][name] = 'QTip'
+css[jquery.qtip.min.css][description] = 'jQuery QTip CSS'
+css[jquery.qtip.min.css][options][weight] = 5
+
 css[global.css.less][name] = 'NP: Global'
 css[global.css.less][description] = 'NewsPlatform Global'
 css[global.css.less][options][weight] = 10
 
 scripts[0] = 'js/jquery.masonry.min.js'
 scripts[1] = 'js/jquery.flexslider-min.js'
+scripts[1] = 'js/jquery.qtip.min.js'
 scripts[2] = 'js/jquery.example.js'
 scripts[99] = 'js/np.js'
 
@@ -93,6 +98,7 @@ settings[alpha_css][omega-branding.css] = 'omega-branding.css'
 settings[alpha_css][omega-menu.css] = 'omega-menu.css'
 settings[alpha_css][omega-forms.css] = 'omega-forms.css'
 settings[alpha_css][flexslider.css] = 'flexslider.css'
+settings[alpha_css][jquery.qtip.min.css] = 'jquery.qtip.min.css'
 settings[alpha_css][global.css.less] = 'global.css.less'
 settings[alpha_css][np-alpha-default-normal.css.less] = 'np-alpha-default-normal.css.less'
 settings[alpha_css][omega-text.css] = '0'
