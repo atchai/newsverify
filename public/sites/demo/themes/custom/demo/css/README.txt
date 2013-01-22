@@ -25,7 +25,7 @@ Any custom CSS files should be placed in this folder.
 Five CSS files are provided by default. These files will be loaded according to the 
 media queries established in your theme's settings. The default values are provided below.
 
-To use these stylesheets, rename the files and snp with the name of your theme.
+To use these stylesheets, rename the files and demo with the name of your theme.
 For example, if your theme is named beta, the files would be named:
   global.css (this file does not get renamed)
   beta-alpha-default.css  
@@ -40,13 +40,13 @@ global.css
   * This layout does not use the 960gs for its layout. It provides a linearized 
     view of your site's content. 
 
-snp-alpha-default.css
+demo-alpha-default.css
   * Loaded for all layouts using the alpha grid (i.e. not the mobile layout).
   * Default media query: n/a. Applied to all layouts using the alpha grid.
   * By default the alpha grid is applied when the device width is at least 
     740px wide.
 
-snp-alpha-default-narrow.css  
+demo-alpha-default-narrow.css  
   * Loaded for all layouts using the alpha grid. Styles will "cascade" to 
     wider layouts. You may overwrite any styles in the normal or wide 
     layout-specific CSS files if you wish.
@@ -55,7 +55,7 @@ snp-alpha-default-narrow.css
       (max-device-width: 800px) and (min-width: 740px) 
       and (orientation:landscape)
 
-snp-alpha-default-normal.css
+demo-alpha-default-normal.css
   * By default this style sheet will be loaded for the normal and wide layouts 
   * Styles will "cascade" to the wide layout as well. 
   * Default media query for the normal layout is: 
@@ -63,7 +63,7 @@ snp-alpha-default-normal.css
       all and (max-device-width: 1024px) and (min-width: 1024px) 
       and (orientation:landscape)
 
-snp-alpha-default-wide.css
+demo-alpha-default-wide.css
   * By default this style sheet will apply only to the widescreen layout.
   * Default media query for the wide layout is: 
       all and (min-width: 1220px)

@@ -44,6 +44,9 @@ function np_core_permission() {
  * Implements hook_block_info().
  */
 function np_core_block_info() {
+  $blocks['np_core_small_logo'] = array(
+    'info' => t('News Platform: Small logo'),
+  );
   $blocks['np_core_site_slogan'] = array(
     'info' => t('News Platform: Site Slogan'),
   );
@@ -64,6 +67,12 @@ function np_core_block_info() {
  */
 function np_core_block_view($delta = '') {
   switch ($delta) {
+    case 'np_core_small_logo':
+      $block['subject'] = '';
+      $block['content'] = array(
+        '#markup' => l(theme('image', array('path' => drupal_get_path('module', 'np_core') . '/images/small_logo.png')), '<front>', array('html' => TRUE))
+      );
+      break;
     case 'np_core_site_slogan':
       $block['subject'] = '';
       $block['content'] = array(

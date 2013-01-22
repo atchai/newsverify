@@ -1,7 +1,7 @@
 (function($) {
 
 /* JQuery Masonry
- * See preprocess-html.inc in snp theme to see where Drupal.np.masonry() is called.
+ * See preprocess-html.inc in subthemes to see where Drupal.np.masonry() is called.
  * We do it this way because jQuery.masonry() needs to be called *after* custom webfonts are loaded
  * or else the height of the bricks is calculated incorrectly and the bricks overlap
 ----------------------------------------------------------------------------------------------------*/
@@ -29,7 +29,7 @@ Drupal.np = {
   },
 
   /* Menu - JS Interaction
-   * See preprocess-html.inc in snp theme to see where Drupal.np.masonry() is called.
+   * See preprocess-html.inc in np subthemes to see where Drupal.np.masonry() is called.
    * Called at the same time after the font loading, as size calculation is the same problem as
    * with the masonry function.
   ----------------------------------------------------------------------------------------------------*/

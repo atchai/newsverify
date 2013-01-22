@@ -3,7 +3,7 @@
 /* JQuery Masonry
  * See np.js in np theme to see Drupal.np.masonry() definition.
  */
-function snp_alpha_preprocess_html(&$vars) {
+function demo_alpha_preprocess_html(&$vars) {
   if (!isset($vars['page']['page_top'])) {
     $vars['page']['page_top'] = array();
   }

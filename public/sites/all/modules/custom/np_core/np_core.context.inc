@@ -26,9 +26,9 @@ function np_core_context_default_contexts() {
   $context->reactions = array(
     'block' => array(
       'blocks' => array(
-        'snp_core-snp_core_small_logo' => array(
-          'module' => 'snp_core',
-          'delta' => 'snp_core_small_logo',
+        'np_core-np_core_small_logo' => array(
+          'module' => 'np_core',
+          'delta' => 'np_core_small_logo',
           'region' => 'search',
           'weight' => '-10',
         ),
