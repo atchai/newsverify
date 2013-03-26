@@ -10,10 +10,10 @@ function demo_alpha_preprocess_html(&$vars) {
   $vars['page']['page_top']['js_init'] = array(
     '#markup' => '
       <script type="text/javascript">
-       $(document).ready(function() {
-         Drupal.np.masonry();
-         Drupal.np.menu();
-       });
+        jQuery(document).ready(function() {
+          Drupal.np.masonry();
+          Drupal.np.menu();
+        });
       </script>
     '
   );

@@ -1,5 +1,8 @@
 (function($) {
 
+// Configuration
+var mobileWidth = 767;
+
 /* JQuery Masonry
  * See preprocess-html.inc in subthemes to see where Drupal.np.masonry() is called.
  * We do it this way because jQuery.masonry() needs to be called *after* custom webfonts are loaded
@@ -7,24 +10,8 @@
 ----------------------------------------------------------------------------------------------------*/
 Drupal.np = {
   masonry: function () {
-    // Defined vars based on screen width
-    windowWidth = $(window).width();
-    mobileWidth = 767;
-
-    if (windowWidth >= mobileWidth) {
-
-      // .view-home masonry
-      $('.view-home ul.news-list, .view-taxonomy ul.news-list, .view-search ul.news-list').masonry({
-        itemSelector: 'li.news-item',
-        // Animation only working on window resize, not on page load for some reason
-        isAnimated: true,
-        animationOptions: {
-          duration: 1000,
-          easing: 'linear',
-          queue: false
-        },
-        isRTL: ($('html').attr('dir').toLowerCase() == 'rtl'),
-      });
+    if ($(window).width() >= mobileWidth) {
+      $('.view-home ul.news-list, .view-taxonomy ul.news-list, .view-search ul.news-list').isotope({itemSelector: 'li.news-item'});
     }
   },
 
@@ -34,11 +21,7 @@ Drupal.np = {
    * with the masonry function.
   ----------------------------------------------------------------------------------------------------*/
   menu: function () {
-    // Defined vars based on screen width
-    windowWidth = $(window).width();
-    mobileWidth = 767;
-
-    if (windowWidth >= mobileWidth) {
+    if ($(window).width() >= mobileWidth) {
 
       // Add the more link to the html
       $('<div id="menu-more-container"><a href="#">' + Drupal.t('More') + '</a></div>').insertAfter('#block-menu-menu-section');
@@ -97,21 +80,15 @@ Drupal.np = {
 
 Drupal.behaviors.np = {
   attach: function (context) {
-
     /* Mobile AND Desktop
     ----------------------------------------------------------------------------------------------------*/
     // Search Example
     $('.views-exposed-form .form-item-search-fulltext input.form-text').example(Drupal.t('Search'), {className: 'search_example'});
 
-    // Defined vars based on screen width
-    windowWidth = $(window).width();
-    mobileWidth = 767;
-
-    // Carousel Config (Mobile)
-    var carouselItemWidth = 300;
-
     /* Desktop Only
     ----------------------------------------------------------------------------------------------------*/
+    var windowWidth = $(window).width();
+
     if (windowWidth >= mobileWidth) {
 
       // Add event summary pop-up overlays
