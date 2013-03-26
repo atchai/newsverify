@@ -36,5 +36,5 @@
 /**
  * Multi-site directory aliasing
  */
-$sites['newsplatformdemo.dev'] = 'demo'; // Development
+$sites['opennewsplatform.dev'] = 'demo'; // Development
 $sites['opennewsplatform.atchai.com'] = 'demo'; // Demo
