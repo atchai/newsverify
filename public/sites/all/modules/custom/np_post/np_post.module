@@ -157,7 +157,12 @@ function np_post_field_widget_form(&$form, &$form_state, $field, $instance, $lan
               '#type' => 'link',
               '#title' => t('Edit Post'),
               '#href' => sprintf('node/%d/edit', $node->nid),
-              '#options' => array('attributes' => array('target' => '_blank'))
+              '#options' => array(
+                'attributes' => array(
+                  'target' => '_blank',
+                  'class' => array('button'),
+                ),
+              ),
             ),
             'remove' => array(
               '#name' => $field['field_name'] . '_' . $delta . '_remove_button',
