@@ -69,6 +69,7 @@ class AddThis {
 
   // Styles
   const CSS_32x32 = 'addthis_32x32_style';
+  const CSS_16x16 = 'addthis_16x16_style';
 
   private static $instance;
 
@@ -79,6 +80,7 @@ class AddThis {
    * @return AddThis
    */
   public static function getInstance() {
+    module_load_include('php', 'addthis', 'classes/AddThisJson');
     if (!isset(self::$instance)) {
       $addThis = new AddThis();
       $addThis->setJson(new AddThisJson());
@@ -95,8 +97,6 @@ class AddThis {
     return array(
       self::WIDGET_TYPE_DISABLED => t('Disabled'),
     );
-    // @todo Get all display types available and
-    // provide a array with their names.
   }
 
   public function getDisplayTypes() {
@@ -130,11 +130,12 @@ class AddThis {
     // Theme function might only give a display name and
     // render on default implementation.
     if (!isset($options['#display']) ||
-        (isset($options['#display']['type']) && $options['#display']['type'] != $display))
-    {
+        (isset($options['#display']['type']) && $options['#display']['type'] != $display)) {
+
       $options['#display'] = isset($options['#display']) ? $options['#display'] : array();
       $options['#display'] = array_merge($options['#display'], $display_information);
       $options['#display']['type'] = $display;
+
     }
 
     // When #entity and #entity_type exist, use the entity's URL.
@@ -166,7 +167,8 @@ class AddThis {
     // This should be the default implementation that is called.
     if (function_exists($display_information['module'] . '_addthis_display_markup__' . $display)) {
       $markup += call_user_func_array($display_information['module'] . '_addthis_display_markup__' . $display, array($options));
-    } elseif (in_array($display_information['module'], $addthis_display_markup_implementations)) {
+    }
+    elseif (in_array($display_information['module'], $addthis_display_markup_implementations)) {
       $markup += module_invoke($display_information['module'], 'addthis_display_markup', $display, $options);
     }
     // Allow other modules to alter markup.
@@ -178,7 +180,7 @@ class AddThis {
     $rows = array();
     $services = $this->json->decode($this->getServicesJsonUrl());
     if (empty($services)) {
-      drupal_set_message(t('AddThis services could not be loaded from ' . $this->getServicesJsonUrl()), 'warning');
+      drupal_set_message(t('AddThis services could not be loaded from @service_url', array('@service_url', $this->getServicesJsonUrl())), 'warning');
     }
     else {
       foreach ($services['data'] as $service) {
@@ -401,7 +403,7 @@ class AddThis {
   private function getAttributeTitle($entity) {
     if (isset($entity->title)) {
       return array(
-        self::TITLE_ATTRIBUTE => (check_plain($entity->title)  . ' - ' . variable_get('site_name')),
+        self::TITLE_ATTRIBUTE => (check_plain($entity->title) . ' - ' . variable_get('site_name')),
       );
     }
     return array();
@@ -451,7 +453,7 @@ class AddThis {
   private function validateSecureUrl($url) {
     global $base_root;
     if (strpos($base_root, 'https://') !== FALSE) {
-      return 'https' . substr($url, 0, 4);
+      $url = (strpos($url, 'http://') === 0 ? 'https://' . substr($url, 7) : $url);
     }
     return $url;
   }

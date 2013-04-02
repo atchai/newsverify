@@ -27,3 +27,45 @@ function admin_language_uninstall() {
   variable_del('admin_language_translate_toolbar');
   variable_del('admin_language_visibility');
 }
+
+/**
+ * Implements hook_schema().
+ */
+function admin_language_schema() {
+  $schema = array();
+
+  $schema['admin_language'] = array(
+    'description' => 'Stores user admin language selections.',
+    'fields' => array(
+      'uid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique user ID.',
+        'default' => 0,
+      ),
+      'language' => array(
+        'type' => 'varchar',
+        'length' => 12,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => "User's default administration language.",
+      ),
+    ),
+    'unique keys' => array(
+      'uid_language' => array('uid', 'language'),
+    ),
+    'primary key' => array('uid'),
+  );
+
+  return $schema;
+}
+
+/**
+ * Create the database table if it doesn't exist.
+ */
+function admin_language_update_7000() {
+  if (!db_table_exists('admin_language')) {
+    drupal_install_schema('admin_language');
+  }
+}

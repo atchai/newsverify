@@ -60,7 +60,10 @@ function fe_nodequeue_features_export_render($module_name = '', $data) {
   $code[] = '';
 
   foreach ($data as $name) {
-    if ($nodequeue = nodequeue_load_queue_by_name($name)) {
+    // Clone the nodequeue object so that our changes aren't statically
+    // cached.
+    $nodequeue_static = nodequeue_load_queue_by_name($name);
+    if (!empty($nodequeue_static) && $nodequeue = clone $nodequeue_static) {
       // sort roles and types arrays into ascending order so that we can
       // check for overridden db data without being affected by the
       // order in which this array gets stored/loaded.
@@ -70,6 +73,11 @@ function fe_nodequeue_features_export_render($module_name = '', $data) {
       if (!empty($nodequeue->types)) {
         sort($nodequeue->types);
       }
+
+      // Remove variables which are specific to the current site and should not
+      // be exported.
+      unset($nodequeue->qid);
+      unset($nodequeue->subqueues);
 
       $nodequeue_export = features_var_export($nodequeue, '  ');
 
@@ -98,13 +106,12 @@ function fe_nodequeue_features_revert($module) {
       continue;
     }
 
-    if (!($nodequeue_queue = nodequeue_load_queue_by_name($object['name']))) {
-      unset($object['qid']);
-      $result = _fe_nodequeue_save_queue((array) $object);
+    if ($nodequeue_queue = nodequeue_load_queue_by_name($object['name'])) {
+      // Update existing nodequeue in the situation that a nodequeue with the
+      // same name already exists.
+      $object['qid'] = $nodequeue_queue->qid;
     }
-    else {
-      $result = _fe_nodequeue_save_queue((array) $object);
-    }
+    $result = _fe_nodequeue_save_queue((array) $object);
   }
 
   return TRUE;
@@ -114,6 +121,13 @@ function fe_nodequeue_features_revert($module) {
  * Implements hook_features_revert().
  */
 function fe_nodequeue_features_rebuild($module) {
+  fe_nodequeue_features_revert($module);
+}
+
+ /**
+ * Implements hook_features_enable_feature().
+ */
+function fe_nodequeue_features_enable_feature($module) {
   fe_nodequeue_features_revert($module);
 }
 

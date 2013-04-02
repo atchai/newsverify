@@ -85,7 +85,7 @@ function field_collection_item_delete_confirm($form, &$form_state, $field_collec
  */
 function field_collection_item_delete_confirm_submit($form, &$form_state) {
   $field_collection_item = $form_state['field_collection_item'];
-  $field_collection_item->delete();
+  $field_collection_item->deleteRevision();
   drupal_set_message(t('%label has been deleted.', array('%label' => drupal_ucfirst($field_collection_item->label()))));
   $form_state['redirect'] = '<front>';
 }

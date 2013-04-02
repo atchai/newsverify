@@ -1,6 +1,16 @@
 <?php
 
 /**
+ * @file
+ * Provide features components for exporting core blocks and settings.
+ */
+
+/**
+ * Version number for the current fe_block export definition.
+ */
+define('FE_BLOCK_VERSION', '2.0');
+
+/**
  * Implements hook_features_api().
  */
 function fe_block_features_api() {
@@ -31,7 +41,7 @@ function fe_block_features_api() {
 function fe_block_settings_features_export_options() {
   $options = array();
 
-  $blocks = _block_rehash();
+  $blocks = _fe_block_get_blocks();
   usort($blocks, '_fe_block_compare');
 
   foreach ($blocks as $block) {
@@ -81,208 +91,511 @@ function fe_block_settings_features_export($data, &$export, $module_name = '') {
  * Implements hook_features_export_render().
  */
 function fe_block_settings_features_export_render($module_name = '', $data) {
-  global $custom_theme, $theme_key;
-  drupal_theme_initialize();
-  $backup = array($custom_theme, $theme_key);
-
-  $component = 'fe_block_settings';
-  $default_hook = 'default_' . $component;
-  $theme_default = variable_get('theme_default', 'garland');
-  $themes = list_themes();
-
   $code = array();
   $code[] = '  $export = array();';
   $code[] = '';
 
-  // Provide backwards compatibility.
-  $code[] = '  $export[\'version\'] = \'1.0\';';
+  // The way the blocks are exported has changed throughout the history of the
+  // module. We provide an export format version string to provide backwards
+  // compatibility. Note that it is ok to use the array key "version" here.
+  // Block ids always have a '-' in their string.
+  $code[] = '  $export[\'version\'] = \'' . FE_BLOCK_VERSION . '\';';
   $code[] = '';
 
-  // Retrieve node type visibility settings.
-  $block_node_types = array();
-  $result = db_query('SELECT module, delta, type FROM {block_node_type}');
-  foreach ($result as $record) {
-    $block_node_types[$record->module][$record->delta][$record->type] = TRUE;
+  // Get a list of all active themes to cycle through.
+  $themes = _fe_block_get_active_themes();
+
+  // Retrieve block settings for all blocks in all active themes.
+  $blocks = array();
+  foreach ($themes as $theme) {
+    $blocks[$theme] = _fe_block_info_by_theme($theme);
   }
 
-  // Filter all blocks, keeping only the ones that will be exported.
-  $blocks = _block_rehash();
-  usort($blocks, '_fe_block_compare');
-  foreach ($blocks as $key => $block) {
-    $block_id = _fe_block_build_id($block);
-    if (empty($block_id) || !in_array($block_id, $data)) {
-      unset($blocks[$key]);
-    }
-  }
+  // We use the first theme's block settings as master settings. Some settings
+  // are specific to each theme, but these are processed later in the loop.
+  $default_theme = reset($themes);
 
-  // Export theme independent visibility settings.
-  $code[] = '  // Theme independent visibility settings.';
+  // We try to build an export for each defined data element.
+  foreach ($data as $name) {
+    // Check if the block still exists in the block definitions.
+    if (!empty($blocks[$default_theme][$name])) {
+      $block = $blocks[$default_theme][$name];
 
-  $visibility = array();
-  foreach ($blocks as $block) {
-    $block_id = _fe_block_build_id($block);
-    $visibility[$block_id]['module'] = $block['module'];
-    // Use machine name with boxes.
-    if ($block['module'] == 'block') {
-      $visibility[$block_id]['machine_name'] = _fe_block_get_machine_name($block['delta']);
-    }
-    else {
-      $visibility[$block_id]['delta'] = $block['delta'];
-    }
-
-    // Export node type visibility.
-    $visibility[$block_id]['node_type'] = !empty($block_node_types[$block['module']][$block['delta']]) ? $block_node_types[$block['module']][$block['delta']] : array();
-
-    // @todo export role visibility.
-  }
-
-  // Sort the array and remove empty values.
-  _features_sanitize($visibility);
-
-  $code[] = '  $export[\'visibility\'] = ' . features_var_export($visibility, '  ') . ';';
-  $code[] = '';
-
-  // Export theme specific settings.
-  foreach ($themes as $_theme_key => $theme) {
-    if ($_theme_key == $theme_default || !empty($theme->status)) {
-      $code[] = '  // ' . $_theme_key;
-      $code[] = '  $theme = array();';
-      $code[] = '';
-
-      // Get the block list for the current theme.
-      $custom_theme = $theme_key = $_theme_key;
-      $blocks = _block_rehash();
-      usort($blocks, '_fe_block_compare');
-
-      foreach ($blocks as $block) {
-        unset($block['bid'], $block['info']);
-        $block_id = _fe_block_build_id($block);
-        if (empty($block_id)) {
-          continue;
-        }
-        if (in_array($block_id, $data)) {
-          // Use machine name with boxes.
-          if ($block['module'] == 'block') {
-            $block['machine_name'] = _fe_block_get_machine_name($block['delta']);
-            unset($block['delta']);
-          }
-          // Region.
-          if ($block['region'] == BLOCK_REGION_NONE) {
-            $block['status'] = 0;
-            $block['region'] = '';
-          }
-
-          $code[] = '  $theme[\'' . $block_id . '\'] = ' . features_var_export($block, '  ') . ';';
-          $code[] = '';
-        }
+      // We start to build the export object for this block.
+      // First we retrieve data that is valid for any theme.
+      $export_block = _fe_block_get_global_settings($block);
+      // Ensure core custom block export keys are transformed.
+      $export_block = _fe_block_prepare_custom_blocks_for_export($export_block);
+      // Add node type settings.
+      $export_block['node_types'] = _fe_block_get_block_node_types($block);
+      // Add role visibility settings.
+      $export_block['roles'] = _fe_block_get_block_roles($block);
+      // Add theme specific settings for every active theme.
+      $export_block['themes'] = array();
+      foreach ($themes as $theme) {
+        $export_block['themes'][$theme] = _fe_block_get_theme_specific_settings($blocks[$theme][$name]);
       }
 
-      $code[] = '  $export[\'theme\'][\'' . $_theme_key . '\'] = $theme;';
+      // Sort export array keys.
+      ksort($export_block);
+
+      // Export to code.
+      $code[] = '  $export[\'' . $name . '\'] = ' . features_var_export($export_block, '  ') . ';';
+      // Add an empty line.
       $code[] = '';
     }
   }
 
-  // Only return for enabled themes and the default theme.
-  $code[] = '  $theme_default = variable_get(\'theme_default\', \'garland\');';
-  $code[] = '  $themes = list_themes();';
-  $code[] = '  foreach ($export as $theme_key => $settings) {';
-  $code[] = '    if ($theme_key != $theme_default && empty($themes[$theme_key]->status)) {';
-  $code[] = '      unset($export[\'theme\'][$theme_key]);';
-  $code[] = '    }';
-  $code[] = '  }';
   $code[] = '  return $export;';
   $code = implode("\n", $code);
 
-  list($custom_theme, $theme_key) = $backup;
-  return array($default_hook => $code);
+  return array('default_fe_block_settings' => $code);
+}
+
+/**
+ * Returns the block definitions for a specific theme.
+ *
+ * @param string $theme
+ *   Machine name of the theme.
+ *
+ * @return array
+ *   Array of block definitions.
+ */
+function _fe_block_info_by_theme($theme) {
+  $blocks = array();
+  foreach (_fe_block_get_blocks($theme) as $block) {
+    // Blocks are only valid for export if we got a machine name for them.
+    if ($id = _fe_block_build_id($block)) {
+      $blocks[$id] = $block;
+    }
+  }
+  // Sort blocks by keys to get a consistent order.
+  ksort($blocks);
+  return $blocks;
+}
+
+/**
+ * Retrieve the global (non-theme-specific) part of a block definition.
+ *
+ * @param array $block
+ *   A block definition.
+ *
+ * @return array
+ *   The block definition filtered on non-theme-specific settings.
+ */
+function _fe_block_get_global_settings($block) {
+  $theme_specific_defaults = _fe_block_theme_specific_defaults();
+  // Filter on any keys other than the theme specific ones.
+  $return = array_diff_key($block, $theme_specific_defaults);
+
+  // Remove the serial.
+  if (isset($return['bid'])) {
+    unset($return['bid']);
+  }
+  // Remove the info from hook_block_info().
+  if (isset($return['info'])) {
+    unset($return['info']);
+  }
+
+  return $return;
+}
+
+/**
+ * Helper to prepare a core custom block for export.
+ *
+ * Replaces the block delta that is used by the core block module with a unique
+ * machine name.
+ *
+ * @param array $block
+ *   Block definition - can be only part of the original definition.
+ *
+ * @return array
+ *   Altered block array.
+ */
+function _fe_block_prepare_custom_blocks_for_export($block) {
+  if ($block['module'] == 'block') {
+    $block['machine_name'] = fe_block_get_machine_name($block['delta']);
+    unset($block['delta']);
+  }
+  return $block;
+}
+
+/**
+ * Helper function. Prepares an exported core custom block for import.
+ *
+ * @param array $block
+ *   Block definition from the import code.
+ *
+ * @return array
+ *   Altered array with machine_name replaced by delta.
+ */
+function _fe_block_prepare_custom_blocks_for_import($block) {
+  if ($block['module'] == 'block') {
+    $block['delta'] = fe_block_get_bid($block['machine_name'], TRUE);
+    unset($block['machine_name']);
+  }
+  return $block;
+}
+
+/**
+ * Helper function to get the theme specific settings for a block.
+ *
+ * @param array $block
+ *   A single block definition.
+ *
+ * @return array
+ *   A filtered block definition with only theme-specific settings.
+ */
+function _fe_block_get_theme_specific_settings($block) {
+  $defaults = _fe_block_theme_specific_defaults();
+  $settings = array_intersect_key($block, $defaults);
+  // Region.
+  if ($settings['region'] == BLOCK_REGION_NONE) {
+    $settings['status'] = 0;
+    $settings['region'] = '';
+  }
+  ksort($settings);
+  return $settings;
+}
+
+/**
+ * Helper function for filtering theme specific settings.
+ *
+ * @see _fe_block_get_global_settings()
+ * @see _fe_block_get_theme_specific_settings()
+ *
+ * @return array
+ *   An array of default settings, keyed by name.
+ */
+function _fe_block_theme_specific_defaults() {
+  return array(
+    'theme' => '',
+    'status' => '',
+    'weight' => 0,
+    'region' => '',
+  );
+}
+
+/**
+ * Get node type visibility settings for the specified block.
+ *
+ * @param array $block
+ *   Block definition array.
+ *
+ * @return array
+ *   Array of node types associated with the block.
+ */
+function _fe_block_get_block_node_types($block) {
+  $query = db_select('block_node_type', 'bnt')
+    ->condition('module', $block['module'])
+    ->condition('delta', $block['delta'])
+    ->fields('bnt', array('type'))
+    ->orderBy('bnt.type', 'ASC');
+  return $query->execute()->fetchCol();
+}
+
+/**
+ * Returns the blocks currently exported by modules.
+ *
+ * This is derived from _block_rehash().
+ *
+ * @param $theme
+ *   The theme to retrieve blocks for. If not provided, defaults to the
+ *   currently used theme.
+ *
+ * @return
+ *   Blocks currently exported by modules.
+ */
+function _fe_block_get_blocks($theme = NULL) {
+  global $theme_key;
+  $blocks = array();
+
+  drupal_theme_initialize();
+  if (!isset($theme)) {
+    // If theme is not specifically set, rehash for the current theme.
+    $theme = $theme_key;
+  }
+
+  $regions = system_region_list($theme);
+  // These are the blocks defined by code and modified by the database.
+  $current_blocks = array();
+  // These are {block}.bid values to be kept.
+  $bids = array();
+  $or = db_or();
+  // Gather the blocks defined by modules.
+  foreach (module_implements('block_info') as $module) {
+    $module_blocks = module_invoke($module, 'block_info');
+    foreach ($module_blocks as $delta => $block) {
+      // Compile a condition to retrieve this block from the database.
+      $condition = db_and()
+        ->condition('module', $module)
+        ->condition('delta', $delta);
+      $or->condition($condition);
+      // Add identifiers.
+      $block['module'] = $module;
+      $block['delta']  = $delta;
+      $block['theme']  = $theme;
+      $current_blocks[$module][$delta] = $block;
+    }
+  }
+  // Retrieve database settings for all blocks that are defined by modules.
+  $code_blocks = $current_blocks;
+  $database_blocks = db_select('block', 'b')
+    ->fields('b')
+    ->condition($or)
+    ->condition('theme', $theme)
+    ->execute();
+  foreach ($database_blocks as $block) {
+    // Preserve info which is not in the database.
+    $block->info = $current_blocks[$block->module][$block->delta]['info'];
+    // The cache mode can only by set from hook_block_info(), so that has
+    // precedence over the database's value.
+    if (isset($current_blocks[$block->module][$block->delta]['cache'])) {
+      $block->cache = $current_blocks[$block->module][$block->delta]['cache'];
+    }
+    // Blocks stored in the database override the blocks defined in code.
+    $current_blocks[$block->module][$block->delta] = get_object_vars($block);
+    // Preserve this block.
+    $bids[$block->bid] = $block->bid;
+  }
+  drupal_alter('block_info', $current_blocks, $theme, $code_blocks);
+  foreach ($current_blocks as $module => $module_blocks) {
+    foreach ($module_blocks as $delta => $block) {
+      if (!isset($block['pages'])) {
+        // {block}.pages is type 'text', so it cannot have a
+        // default value, and not null, so we need to provide
+        // value if the module did not.
+        $block['pages']  = '';
+      }
+      // Make sure weight is set.
+      if (!isset($block['weight'])) {
+        $block['weight'] = 0;
+      }
+      // Disable blocks that are not assigned to a region in the theme.
+      if (!empty($block['region']) && $block['region'] != BLOCK_REGION_NONE && !isset($regions[$block['region']]) && $block['status'] == 1) {
+        // Disabled modules are moved into the BLOCK_REGION_NONE later so no
+        // need to move the block to another region.
+        $block['status'] = 0;
+      }
+      // Set region to none if not enabled and make sure status is set.
+      if (empty($block['status'])) {
+        $block['status'] = 0;
+        $block['region'] = BLOCK_REGION_NONE;
+      }
+      // Add to the list of blocks we return.
+      $blocks[] = $block;
+    }
+  }
+  return $blocks;
+}
+
+/**
+ * Returns a list of machine names of active themes.
+ *
+ * @return array
+ *   An array of theme machine names.
+ */
+function _fe_block_get_active_themes() {
+  $theme_names = array();
+  foreach (list_themes() as $machine_name => $theme) {
+    if (!empty($theme->status)) {
+      $theme_names[] = $machine_name;
+    }
+  }
+  sort($theme_names);
+  return $theme_names;
 }
 
 /**
  * Implements hook_features_revert().
  */
 function fe_block_settings_features_revert($module_name = NULL) {
-  global $custom_theme, $theme_key;
   $component = 'fe_block_settings';
   $defaults = features_get_default($component, $module_name);
   if (empty($defaults)) {
     return;
   }
 
-  // Provide backwards compatibility with the old export format that only
-  // supported theme specific settings.
-  if ($new_format = (isset($defaults['version']) && $defaults['version'] == '1.0')) {
-    $themes = $defaults['theme'];
-  }
-  else {
-    $themes = $defaults;
-  }
+  // We remove the version, as we now want to deal with actual block settings.
+  unset($defaults['version']);
 
-  // Revert theme specific settings.
-  foreach ($themes as $_theme_key => $theme) {
-    $custom_theme = $theme_key = $_theme_key;
-    _block_rehash();
+  $themes_rehashed = array();
+  $active_themes = _fe_block_get_active_themes();
+  // The fallback theme for theme specific settings.
+  $theme_default = variable_get('theme_default', 'bartik');
 
-    foreach ($theme as $block) {
-      // Convert machine name back to bid.
-      if ($block['module'] == 'block') {
-        $block['delta'] = _fe_block_get_bid($block['machine_name'], TRUE);
+  foreach ($defaults as $block) {
+    // Core custom blocks are prepared with a delta value.
+    $block = _fe_block_prepare_custom_blocks_for_import($block);
+
+    // Remove the additional settings from the block array, to process them
+    // later. We explicitely set NULL, if no setting was given in the defaults.
+    $block_themes = $block['themes'];
+    $block_node_types = isset($block['node_types']) ? $block['node_types'] : NULL;
+    $block_roles = isset($block['roles']) ? $block['roles'] : NULL;
+    unset($block['themes']);
+    unset($block['node_types']);
+    unset($block['roles']);
+
+    // Restore theme specific settings for every active theme.
+    foreach ($active_themes as $theme) {
+
+      // Rehash if we did not yet.
+      if (empty($themes_rehashed[$theme])) {
+        _block_rehash($theme);
+        $themes_rehashed[$theme] = TRUE;
       }
 
-      drupal_write_record('block', $block, array('module', 'delta', 'theme'));
+      // Get the theme specific setting for the active theme.
+      if (isset($block_themes[$theme])) {
+        $key = $theme;
+      }
+      // Or fallback on the default theme.
+      elseif (isset($block_themes[$theme_default])) {
+        $key = $theme_default;
+      }
+      // Or fallback on the first available theme spec.
+      else {
+        $key = key($block_themes);
+      }
+
+      // Write block settings.
+      $write = array_merge($block, $block_themes[$key]);
+      drupal_write_record('block', $write, array('module', 'delta', 'theme'));
+    }
+    // Ensure global settings.
+    _fe_block_settings_update_global_settings($block);
+
+    // Set node type settings
+    // (only if there were some defined, to avoid overwriting not yet exported
+    // data).
+    if (isset($block_node_types)) {
+      _fe_block_settings_update_block_node_type_settings($block, $block_node_types);
+    }
+
+    // Apply role visibility settings.
+    if (isset($block_roles)) {
+      _fe_block_settings_update_block_roles($block, $block_roles);
     }
   }
 
-
-  // Revert node type visibility settings. These have been introduced with the
-  // new export format.
-  if ($new_format) {
-    foreach ($defaults['visibility'] as $block) {
-      // Convert machine name back to bid.
-      if ($block['module'] == 'block') {
-        $block['delta'] = _fe_block_get_bid($block['machine_name']);
-      }
-
-      db_delete('block_node_type')
-        ->condition('module', $block['module'])
-        ->condition('delta', $block['delta'])
-        ->execute();
-      if (!empty($block['node_type'])) {
-        $query = db_insert('block_node_type')->fields(array('type', 'module', 'delta'));
-        foreach ($block['node_type'] as $type => $value) {
-          if ($value) {
-            $query->values(array(
-              'type' => $type,
-              'module' => $block['module'],
-              'delta' => isset($block['delta']) ? $block['delta'] : 0,
-            ));
-          }
-        }
-        $query->execute();
-      }
-    }
-  }
-  // Clear block cache
+  // Clear block cache.
   cache_clear_all(NULL, 'cache_block');
 
   return TRUE;
 }
 
 /**
- * Implements hook_features_disable_feature().
+ * Helper to update global block settings for a specific block.
  *
- * @param $module
- *   Name of module that has been disabled.
+ * @param array $block
+ *   block definition
+ */
+function _fe_block_settings_update_global_settings($block) {
+  $globals = _fe_block_get_global_settings($block);
+  db_update('block')
+    ->fields($globals)
+    ->condition('module', $block['module'])
+    ->condition('delta', $block['delta'])
+    ->execute();
+}
+
+/**
+ * Helper to update node type settings for a given block.
+ *
+ * @param array $block
+ *   block definition
+ * @param array $node_types
+ *   array of node types
+ */
+function _fe_block_settings_update_block_node_type_settings($block, $node_types) {
+
+  // First delete the old node type settings.
+  db_delete('block_node_type')
+    ->condition('module', $block['module'])
+    ->condition('delta', $block['delta'])
+    ->execute();
+
+  if (!empty($node_types)) {
+    $insert = db_insert('block_node_type')
+      ->fields(array('module', 'delta', 'type'));
+    foreach ($node_types as $type) {
+      $insert->values(array(
+        'module' => $block['module'],
+        'delta' => $block['delta'],
+        'type' => $type,
+      ));
+    }
+    $insert->execute();
+  }
+}
+
+/**
+ * Helper to update the block role settings for a given block.
+ *
+ * @param array $block
+ *   block definiton
+ * @param array $roles
+ *   Associative array of roles
+ *   - key: role name
+ *   - value: (foreign) role id
+ */
+function _fe_block_settings_update_block_roles($block, $block_roles) {
+  static $roles;
+
+  // First get the current set of roles, so we can match role names to rids.
+  if (!isset($roles)) {
+    $roles = db_select('role', 'r')
+      ->fields('r', array('rid', 'name'))
+      ->execute()
+      ->fetchAllKeyed(1, 0);
+  }
+
+  // First delete the old block role settings.
+  db_delete('block_role')
+    ->condition('module', $block['module'])
+    ->condition('delta', $block['delta'])
+    ->execute();
+  // Then write the new settings, if any are present.
+  if (!empty($block_roles)) {
+    $insert = db_insert('block_role')
+      ->fields(array('module', 'delta', 'rid'));
+    // We use a found flag, to avoid empty inserts if no role names match.
+    $found = FALSE;
+    foreach ($block_roles as $name => $rid) {
+      // We only write for roles, matching the given role name.
+      if (isset($roles[$name])) {
+        $insert->values(array(
+          'module' => $block['module'],
+          'delta' => $block['delta'],
+          'rid' => $roles[$name],
+        ));
+        $found = TRUE;
+      }
+    }
+    if ($found) {
+      $insert->execute();
+    }
+  }
+}
+
+/**
+ * Implements hook_features_disable_feature().
  */
 function fe_block_settings_features_disable_feature($module) {
 }
 
 /**
  * Implements hook_features_enable_feature().
- *
- * @param $module
- *   Name of module that has been enabled.
  */
 function fe_block_settings_features_enable_feature($module) {
+  fe_block_settings_features_revert($module);
+}
+
+/**
+ * Implements hook_features_rebuild().
+ */
+function fe_block_settings_features_rebuild($module) {
   fe_block_settings_features_revert($module);
 }
 
@@ -302,7 +615,6 @@ function fe_block_boxes_features_export_options() {
   }
 
   // Normals.
-
   $query = "SELECT * FROM {{$table}} {$table} INNER JOIN {block_custom} b ON b.bid = {$table}.bid ORDER BY b.bid ASC";
   $result = db_query($query);
   foreach ($result as $obj) {
@@ -343,8 +655,7 @@ function fe_block_boxes_features_export_render($module_name = '', $data) {
   $code[] = '';
   foreach ($data as $machine_name) {
     // The object to be exported.
-    if ($object = $objects[$machine_name]) {
-
+    if (isset($objects[$machine_name]) && $object = $objects[$machine_name]) {
       $additions = array();
       // Load box.
       if (!empty($object->bid) && $box = block_custom_block_get($object->bid)) {
@@ -353,8 +664,7 @@ function fe_block_boxes_features_export_render($module_name = '', $data) {
 
         // Code.
         $identifier = $schema['export']['identifier'];
-        $code[] = ctools_export_object($component, $object, '  ', $identifier, $additions)
-                 . '  $' . $identifier . '->body = ' . features_var_export($box['body']) . ';';
+        $code[] = ctools_export_object($component, $object, '  ', $identifier, $additions) . '  $' . $identifier . '->body = ' . features_var_export($box['body']) . ';';
         $code[] = '';
         $code[] = '  $export[\'' . $machine_name . '\'] = $' . $identifier . ';';
         $code[] = '';
@@ -371,8 +681,7 @@ function fe_block_boxes_features_export_render($module_name = '', $data) {
  * Implements hook_features_revert().
  */
 function fe_block_boxes_features_revert($module_name = NULL) {
-  $table = 'fe_block_boxes';
-  $defaults = features_get_default($table, $module_name);
+  $defaults = features_get_default('fe_block_boxes', $module_name);
   if (empty($defaults)) {
     return;
   }
@@ -383,13 +692,22 @@ function fe_block_boxes_features_revert($module_name = NULL) {
       continue;
     }
 
-    $bid = _fe_block_get_bid($object->machine_name);
+    $bid = fe_block_get_bid($object->machine_name);
     if (empty($bid) || !($box = block_custom_block_get($bid))) {
       $result = _fe_block_save_box((array) $object);
       if (!empty($result['bid'])) {
-        $arg = array(':bid' => $result['bid'], ':machine_name' => $object->machine_name);
-        db_query("DELETE FROM {{$table}} WHERE bid = :bid OR machine_name = :machine_name", $arg);
-        db_query("INSERT INTO {{$table}} (bid, machine_name) VALUES (:bid, :machine_name)", $arg);
+        $or = db_or()
+          ->condition('bid', $result['bid'])
+          ->condition('machine_name', $object->machine_name);
+        db_delete('fe_block_boxes')
+          ->condition($or)
+          ->execute();
+        db_insert('fe_block_boxes')
+          ->fields(array(
+            'bid' => $result['bid'],
+            'machine_name' => $object->machine_name,
+          ))
+          ->execute();
       }
     }
     else {
@@ -405,26 +723,23 @@ function fe_block_boxes_features_revert($module_name = NULL) {
 
 /**
  * Implements hook_features_disable_feature().
- *
- * @param $module
- *   Name of module that has been disabled.
  */
 function fe_block_boxes_features_disable_feature($module) {
 }
 
 /**
  * Implements hook_features_enable_feature().
- *
- * @param $module
- *   Name of module that has been enabled.
  */
 function fe_block_boxes_features_enable_feature($module) {
   fe_block_boxes_features_revert($module);
 }
 
 /**
- * Drupal hooks.
+ * Implements hook_features_rebuild().
  */
+function fe_block_boxes_features_rebuild($module) {
+  fe_block_boxes_features_revert($module);
+}
 
 /**
  * Implements hook_form_alter().
@@ -438,7 +753,7 @@ function fe_block_form_alter(&$form, $form_state, $form_id) {
   }
   elseif ($form_id == 'block_admin_configure' && $form['module']['#value'] == 'block' && user_access('administer features')) {
     $bid = $form['delta']['#value'];
-    $machine_name = _fe_block_get_machine_name($bid);
+    $machine_name = fe_block_get_machine_name($bid);
     $default_values['machine_name'] = empty($machine_name) ? '' : $machine_name;
     $default_values['bid'] = $bid;
   }
@@ -478,8 +793,8 @@ function fe_block_machine_name_validate($form, &$form_state) {
   $table = 'fe_block_boxes';
 
   $query = db_select($table)
-                ->condition('bid', $form_state['values']['bid'], '<>')
-                ->condition('machine_name', $form_state['values']['machine_name']);
+    ->condition('bid', $form_state['values']['bid'], '<>')
+    ->condition('machine_name', $form_state['values']['machine_name']);
 
   $count = $query->countQuery()->execute()->fetchField();
 
@@ -498,16 +813,18 @@ function fe_block_machine_name_submit($form, &$form_state) {
   // Insert
   if (empty($form_state['values']['bid'])) {
     $form_state['values']['bid'] = db_select('block_custom')
-                                     ->fields('block_custom', array('bid'))
-                                     ->condition('info', $form_state['values']['info'])
-                                     ->execute()->fetch()->bid;
+       ->fields('block_custom', array('bid'))
+       ->condition('info', $form_state['values']['info'])
+       ->execute()->fetch()->bid;
   }
   if (empty($form_state['values']['bid'])) {
     return;
   }
 
   $table = 'fe_block_boxes';
-  db_delete($table)->condition('bid', $form_state['values']['bid'])->execute();
+  db_delete($table)
+    ->condition('bid', $form_state['values']['bid'])
+    ->execute();
   if (!empty($form_state['values']['machine_name'])) {
     drupal_write_record($table, $form_state['values']);
   }
@@ -543,50 +860,82 @@ function _fe_block_compare($a, $b) {
 }
 
 /**
- * Get box machine name.
+ * Provided for backwards compatibility. Use fe_block_get_machine_name().
  */
 function _fe_block_get_machine_name($bid) {
-  static $cache = array();
-  if (!isset($cache[$bid])) {
-
-    $query = db_select('fe_block_boxes')
-                ->fields('fe_block_boxes', array('machine_name') )
-                ->condition('bid', $bid)->execute();
-
-    if ($block = $query->fetch()) {
-      $cache[$bid] = $block->machine_name;
-    }
-    else {
-      return NULL;
-    }
-  }
-  return $cache[$bid];
+  debug(t('The function @function is deprecated.', array('@function' => __FUNCTION__ . '()')));
+  return fe_block_get_machine_name($bid);
 }
 
 /**
- * Get box bid.
+ * Returns the machine name that corresponds to a given block id.
+ *
+ * @param int $bid
+ *   The block id for which to retrieve the machine name.
+ *
+ * @return string | FALSE
+ *   The machine name, or FALSE if it could not be found.
+ */
+function fe_block_get_machine_name($bid) {
+  $machine_names = &drupal_static(__FUNCTION__);
+  if (!isset($machine_names[$bid])) {
+    $result = db_select('fe_block_boxes')
+      ->fields('fe_block_boxes', array('machine_name'))
+      ->condition('bid', $bid)
+      ->execute()
+      ->fetch();
+
+    if (empty($result)) {
+      return FALSE;
+    }
+    $machine_names[$bid] = $result->machine_name;
+  }
+  return $machine_names[$bid];
+}
+
+/**
+ * Provided for backwards compatibility. Use fe_block_get_bid() instead.
  */
 function _fe_block_get_bid($machine_name, $reset = FALSE) {
-  static $cache = array();
-  if (!isset($cache[$machine_name]) || $reset) {
-    $query = db_select('fe_block_boxes')
-      ->fields('fe_block_boxes', array('bid') )
-      ->condition('machine_name', $machine_name)->execute();
+  debug(t('The function @function is deprecated.', array('@function' => __FUNCTION__ . '()')));
+  return fe_block_get_bid($machine_name, $reset);
+}
 
-    $cache[$machine_name] = (int) $query->fetch()->bid;
+/**
+ * Returns the block id that corresponds to a given machine name.
+ *
+ * @param string $machine_name
+ *   The machine name of a block for which to retrieve the block id.
+ *
+ * @return int | FALSE
+ *   The block id, or FALSE if the machine name was not found.
+ */
+function fe_block_get_bid($machine_name, $reset = FALSE) {
+  $bids = &drupal_static(__FUNCTION__);
+  if (!isset($bids[$machine_name]) || $reset) {
+    $result = db_select('fe_block_boxes')
+      ->fields('fe_block_boxes', array('bid'))
+      ->condition('machine_name', $machine_name)
+      ->execute()
+      ->fetch();
+
+    if (empty($result)) {
+      return FALSE;
+    }
+    $bids[$machine_name] = (int) $result->bid;
   }
-  return $cache[$machine_name];
+  return $bids[$machine_name];
 }
 
 /**
  * Generate block ID.
  */
 function _fe_block_build_id($block) {
-  if (empty($block['module']) || (empty($block['delta']) && !is_numeric($block['delta'])) ) {
+  if (empty($block['module']) || (empty($block['delta']) && !is_numeric($block['delta']))) {
     return NULL;
   }
   if ($block['module'] == 'block') {
-    $machine_name = _fe_block_get_machine_name($block['delta']);
+    $machine_name = fe_block_get_machine_name($block['delta']);
     if (empty($machine_name)) {
       return NULL;
     }
@@ -613,8 +962,7 @@ function _fe_block_save_box($settings = array()) {
     $conflict = db_query("SELECT COUNT(*) as count FROM {block_custom} WHERE info = :info", array('info' => $settings['info']));
   }
   else {
-    $conflict = db_query("SELECT COUNT(*) as count FROM {block_custom} WHERE info = :info AND bid <> :bid",
-                            array('info' => $settings['info'], ':bid' => $settings['bid']));
+    $conflict = db_query("SELECT COUNT(*) as count FROM {block_custom} WHERE info = :info AND bid <> :bid", array('info' => $settings['info'], ':bid' => $settings['bid']));
   }
 
   if (!empty($conflict->fetch()->count)) {
@@ -638,4 +986,143 @@ function _fe_block_save_box($settings = array()) {
   }
 
   return $settings;
+}
+
+/**
+ * Implements hook_module_implements_alter().
+ */
+function fe_block_module_implements_alter(&$implementations, $hook) {
+  if ($hook == 'default_fe_block_settings_alter') {
+    // Ensure fe_block is the first imlementation to be called, so we can
+    // convert to the newest format.
+    $group = $implementations['fe_block'];
+    unset($implementations['fe_block']);
+    $rest = array_reverse($implementations, TRUE);
+    $rest['fe_block'] = $group;
+    $implementations = array_reverse($rest, TRUE);
+  }
+}
+
+/**
+ * Implements hook_default_fe_block_settings_alter().
+ */
+function fe_block_default_fe_block_settings_alter(&$defaults) {
+  // Convert the settings in the newest format.
+  $defaults = _fe_block_settings_convert($defaults);
+}
+
+/**
+ * Helper function to get the block roles visibility settings.
+ *
+ * @param array $block
+ *   the block definition array
+ *
+ * @return array
+ *   associated role settings for the block
+ *   - key: role name
+ *   - value: role id
+ */
+function _fe_block_get_block_roles($block) {
+  $query = db_select('block_role', 'br')
+    ->condition('br.module', $block['module'])
+    ->condition('br.delta', $block['delta']);
+  $query->innerJoin('role', 'r', 'r.rid = br.rid');
+  $query->fields('r', array('name', 'rid'))
+    ->orderBy('r.name', 'ASC');
+  $roles = $query->execute()->fetchAllKeyed(0, 1);
+  return $roles;
+}
+
+/**
+ * Helper function to convert an older export into the new format.
+ *
+ * @param array $defaults
+ *   array of fe_block_settings definition.
+ *
+ * @return array
+ *   array of current fe_block_settings definition
+ */
+function _fe_block_settings_convert($defaults) {
+
+  $version = (isset($defaults['version'])) ? $defaults['version'] : 0;
+
+  // Directly return if the version is the current one.
+  if ($version == FE_BLOCK_VERSION) {
+    return $defaults;
+  }
+  elseif ($version == '1.0') {
+
+    // We try to get the default theme for the global definitions, else we take
+    // the first.
+    $theme_default = variable_get('theme_default', 'bartik');
+    if (!isset($defaults['theme'][$theme_default])) {
+      $theme_default = key($defaults['theme']);
+    }
+
+    $blocks = array();
+    // We get the basic blocks from the visibility array.
+    foreach ($defaults['visibility'] as $block_id => $base) {
+      $node_types = array();
+      if (isset($base['node_type'])) {
+        // Node types were specified in node_type => TRUE/FALSE. Now we simply
+        // list the selected node types.
+        $node_types = array_keys(array_filter($base));
+        unset($base['node_type']);
+      }
+
+      $block = $base;
+      $block['node_types'] = $node_types;
+
+      // Global settings.
+      $globals = _fe_block_get_global_settings($defaults['theme'][$theme_default][$block_id]);
+      $block = array_merge($globals, $block);
+
+      // Build theme specific array.
+      $block['themes'] = array();
+      foreach ($defaults['theme'] as $theme => $items) {
+        $block['themes'][$theme] = _fe_block_get_theme_specific_settings($items[$block_id]);
+      }
+      $blocks[$block_id] = $block;
+    }
+    // Set current version so we can compare it with current version defaults.
+    $blocks['version'] = FE_BLOCK_VERSION;
+    return $blocks;
+  }
+  // The oldest version.
+  // There we got an array of themes that holded the block settings.
+  elseif ($version == 0) {
+
+    // We try to get the default theme for the global definitions, else we take
+    // the first.
+    $theme_default = variable_get('theme_default', 'bartik');
+    if (!isset($defaults[$theme_default])) {
+      $theme_default = key($defaults);
+    }
+
+    $blocks = array();
+    foreach ($defaults as $theme => $items) {
+      foreach ($items as $block_id => $item) {
+
+        // Avoid php notices.
+        if (!isset($blocks[$block_id])) {
+          $blocks[$block_id] = array(
+            'themes' => array(),
+          );
+        }
+
+        // Set theme specific settings.
+        $blocks[$block_id]['themes'][$theme] = _fe_block_get_theme_specific_settings($item);
+
+        // We add the global settings for the default theme.
+        if ($theme == $theme_default) {
+          $globals = _fe_block_get_global_settings($item);
+          $blocks[$block_id] = array_merge($blocks[$block_id], $globals);
+        }
+      }
+    }
+    // Set current version so we can compare it with current version defaults.
+    $blocks['version'] = FE_BLOCK_VERSION;
+
+    return $blocks;
+  }
 }

@@ -3,10 +3,11 @@ description = Makes sure all administration pages are displayed in the preferred
 dependencies[] = locale
 package = Multilanguage
 core = 7.x
+configure = admin/config/regional/language/admin_language
 
-; Information added by drupal.org packaging script on 2011-08-22
+; Information added by drupal.org packaging script on 2013-02-26
 version = "7.x-1.x-dev"
 core = "7.x"
 project = "admin_language"
-datestamp = "1314014537"
+datestamp = "1361881898"
 

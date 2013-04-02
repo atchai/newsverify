@@ -5,7 +5,7 @@
  * administrator.
  */
 
-define('ADMIN_LANGUAGE_DEFAULT_PAGES', "admin\nadmin/*\nadmin_menu/*\nnode/add/*\nnode/*/edit\nnode/*/devel\nnode/*/translate");
+define('ADMIN_LANGUAGE_DEFAULT_PAGES', "admin\nadmin/*\nadmin_menu/*\nnode/add/*\nnode/*/edit\nnode/*/devel\nnode/*/translate\nfile/ajax/*\nsystem/ajax");
 define('ADMIN_LANGUAGE_BLACKLIST', 0);
 define('ADMIN_LANGUAGE_WHITELIST', 1);
 
@@ -106,8 +106,10 @@ function admin_language_init() {
     if (_admin_language_switch_language()) {
       global $user;
 
-      if (isset($user->admin_language)) {
-        switch ($user->admin_language) {
+      $account = user_load($user->uid);
+
+      if (isset($account->admin_language)) {
+        switch ($account->admin_language) {
           case 'admin':
             // nothing to do, use default value of $admin_language
             break;
@@ -116,8 +118,8 @@ function admin_language_init() {
             $admin_language = $default->language;
             break;
           default:
-            if (isset($languages[$user->admin_language])) {
-              $admin_language = $user->admin_language;
+            if (isset($languages[$account->admin_language])) {
+              $admin_language = $account->admin_language;
             }
         }
       }
@@ -321,6 +323,54 @@ function admin_language_preprocess_toolbar(&$variables) {
 
     // ...and restore the previous language
     $language = $current_language;
+  }
+}
+
+/**
+ * Implements hook_user_insert().
+ */
+function admin_language_user_insert(&$edit, $account, $category) {
+  if (!empty($edit['admin_language'])) {
+    db_insert('admin_language')->fields(array(
+      'uid' => $account->uid,
+      'language' => $edit['admin_language'],
+    ))->execute();
+  }
+}
+
+/**
+ * Implements hook_user_update().
+ */
+function admin_language_user_update(&$edit, $account, $category) {
+  if (!empty($edit['admin_language'])) {
+    db_delete('admin_language')->condition('uid', $account->uid)->execute();
+
+    db_insert('admin_language')->fields(array(
+      'uid' => $account->uid,
+      'language' => $edit['admin_language'],
+    ))->execute();
+  }
+}
+
+/**
+ * Implements hook_user_delete().
+ */
+function admin_language_user_delete($account) {
+  db_delete('admin_language')->condition('uid', $account->uid)->execute();
+}
+
+/**
+ * Implements hook_user_load().
+ */
+function admin_language_user_load($users) {
+  $query = db_select('admin_language', 'al')
+    ->fields('al')
+    ->condition('uid', array_keys($users), 'IN');
+
+  $result = $query->execute();
+
+  while ($record = $result->fetchObject()) {
+    $users[$record->uid]->admin_language = $record->language;
   }
 }
 
@@ -538,8 +588,6 @@ function _admin_language_switch_language() {
  * to the user profile and user registration forms.
  */
 function _admin_language_user_form_add_language_select(&$form) {
-  global $user;
-
   $languages = language_list('enabled');
   $languages = $languages[1];
 
@@ -573,9 +621,9 @@ function _admin_language_user_form_add_language_select(&$form) {
   $form['admin_language']['admin_language'] = array(
     '#type' => count($names) <= 5 ? 'radios' : 'select',
     '#title' => t('Default administration language'),
-    '#default_value' => admin_language_preferred($user),
+    '#default_value' => admin_language_preferred($form['#user']),
     '#options' => $names,
-    '#description' => t('Select the default language to use for all administration pages. See the !settings-url for a list of affected pages.', array('!settings-url' => l(t('administration language settings'), 'admin/settings/language/admin_language'))),
+    '#description' => t('Select the default language to use for all administration pages. See the !settings-url for a list of affected pages.', array('!settings-url' => l(t('administration language settings'), 'admin/config/regional/language/admin_language'))),
   );
 }
 
@@ -584,8 +632,6 @@ function _admin_language_user_form_add_language_select(&$form) {
  * of available languages on the user profile form.
  */
 function _admin_language_user_form_remove_admin_language($form) {
-  global $user;
-
   $admin_language = variable_get('admin_language_default', 'en');
 
   // remove the admin language from the available options

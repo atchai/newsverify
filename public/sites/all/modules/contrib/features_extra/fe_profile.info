@@ -6,9 +6,9 @@ dependencies[] = features
 dependencies[] = profile
 core = 7.x
 
-; Information added by drupal.org packaging script on 2012-09-28
-version = "7.x-1.0-alpha1"
+; Information added by drupal.org packaging script on 2013-02-15
+version = "7.x-1.0-alpha2"
 core = "7.x"
 project = "features_extra"
-datestamp = "1348854967"
+datestamp = "1360912912"
 

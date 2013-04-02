@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Install, uninstall and schema functions for the Features Extra Block module.
+ * Install, uninstall and schema hooks for the Features Extra Block module.
  */
 
 /**

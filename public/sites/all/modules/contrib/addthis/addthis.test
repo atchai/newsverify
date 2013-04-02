@@ -72,67 +72,49 @@ class AddThisFunctionalityTestCase extends DrupalWebTestCase {
   }
 
   private function addThisSystemSettingsShouldBeAbleToBeSaved() {
-    $edit = array();
+    $edit_basic = array();
 
+    // Basic settings
     $profileId = TestHelper::generateRandomLowercaseString();
-    $edit[AddThis::PROFILE_ID_KEY] = $profileId;
-
-    $servicesCssUrl = AddThis::DEFAULT_SERVICES_CSS_URL;
-    $edit[AddThis::SERVICES_CSS_URL_KEY] = $servicesCssUrl;
-
-    $servicesJsonUrl = AddThis::DEFAULT_SERVICES_JSON_URL;
-    $edit[AddThis::SERVICES_JSON_URL_KEY] = $servicesJsonUrl;
-
-    $widgetJsUrl = AddThis::DEFAULT_WIDGET_JS_URL;
-    $edit[AddThis::WIDGET_JS_URL_KEY] = $widgetJsUrl;
+    $edit_basic[AddThis::PROFILE_ID_KEY] = $profileId;
 
     $uiDelay = 400;
-    $edit[AddThis::UI_DELAY_KEY] = $uiDelay;
+    $edit_basic[AddThis::UI_DELAY_KEY] = $uiDelay;
 
     $uiHeaderBackgroundColor = '#000000';
-    $edit[AddThis::UI_HEADER_BACKGROUND_COLOR_KEY] = $uiHeaderBackgroundColor;
+    $edit_basic[AddThis::UI_HEADER_BACKGROUND_COLOR_KEY] = $uiHeaderBackgroundColor;
 
     $uiHeaderColor = '#ffffff';
-    $edit[AddThis::UI_HEADER_COLOR_KEY] = $uiHeaderColor;
+    $edit_basic[AddThis::UI_HEADER_COLOR_KEY] = $uiHeaderColor;
 
     $coBrand = TestHelper::generateRandomLowercaseString();
-    $edit[AddThis::CO_BRAND_KEY] = $coBrand;
+    $edit_basic[AddThis::CO_BRAND_KEY] = $coBrand;
 
-    $edit[AddThis::COMPLIANT_508_KEY] = TRUE;
+    $edit_basic[AddThis::COMPLIANT_508_KEY] = TRUE;
 
     $edit[AddThis::CLICKBACK_TRACKING_ENABLED_KEY] = TRUE;
-    
-    $edit[AddThis::GOOGLE_ANALYTICS_TRACKING_ENABLED_KEY] = TRUE;
-    
-    $edit[AddThis::GOOGLE_ANALYTICS_SOCIAL_TRACKING_ENABLED_KEY] = TRUE;
 
-    $edit[AddThis::ADDRESSBOOK_ENABLED_KEY] = TRUE;
+    // Can only be tested with Google Analytics module installed.
+    //$edit_basic[AddThis::GOOGLE_ANALYTICS_TRACKING_ENABLED_KEY] = TRUE;
 
-    $edit[AddThis::CLICK_TO_OPEN_COMPACT_MENU_ENABLED_KEY] = TRUE;
+    //$edit_basic[AddThis::GOOGLE_ANALYTICS_SOCIAL_TRACKING_ENABLED_KEY] = TRUE;
 
-    $edit[AddThis::OPEN_WINDOWS_ENABLED_KEY] = TRUE;
+    $edit_basic[AddThis::ADDRESSBOOK_ENABLED_KEY] = TRUE;
 
-    $edit[AddThis::STANDARD_CSS_ENABLED_KEY] = TRUE;
+    $edit_basic[AddThis::CLICK_TO_OPEN_COMPACT_MENU_ENABLED_KEY] = TRUE;
 
-    $edit[AddThis::CUSTOM_CONFIGURATION_CODE_ENABLED_KEY] = TRUE;
+    $edit_basic[AddThis::OPEN_WINDOWS_ENABLED_KEY] = TRUE;
 
-    $customConfigurationCode = TestHelper::generateRandomLowercaseString();
-    $edit[AddThis::CUSTOM_CONFIGURATION_CODE_KEY] = $customConfigurationCode;
+    $edit_basic[AddThis::STANDARD_CSS_ENABLED_KEY] = TRUE;
 
     $serviceName = '2linkme';
-    $edit["addthis_enabled_services[$serviceName]"] = $serviceName;
+    $edit_basic["addthis_enabled_services[$serviceName]"] = $serviceName;
 
-    $this->drupalPost('admin/config/user-interface/addthis', $edit, t('Save configuration'));
+    $this->drupalPost('admin/config/user-interface/addthis', $edit_basic, t('Save configuration'));
 
     $this->assertText(t('The configuration options have been saved.'), 'AddThis system settings should be able to be saved.');
 
     $this->addThisProfileIdShouldBeAbleToBeSaved($profileId);
-
-    $this->addThisServicesCssUrlShouldBeAbleToBeSaved($servicesCssUrl);
-
-    $this->addThisServicesJsonUrlShouldBeAbleToBeSaved($servicesJsonUrl);
-
-    $this->addThisWidgetJsUrlShouldBeAbleToBeSaved($widgetJsUrl);
 
     $this->addThisUiDelayShouldBeAbleToBeSaved($uiDelay);
 
@@ -146,9 +128,10 @@ class AddThisFunctionalityTestCase extends DrupalWebTestCase {
 
     $this->addThisClickbackTrackingEnabledSettingShouldBeAbleToBeSaved();
 
-    $this->addThisGoogleAnalyticsTrackingEnabledSettingShouldBeAbleToBeSaved();
+    // Can only be tested with Google Analytics module installed.
+    //$this->addThisGoogleAnalyticsTrackingEnabledSettingShouldBeAbleToBeSaved();
 
-    $this->addThisGoogleAnalyticsSocialTrackingEnabledSettingShouldBeAbleToBeSaved();
+    //$this->addThisGoogleAnalyticsSocialTrackingEnabledSettingShouldBeAbleToBeSaved();
 
     $this->addThisClickToOpenCompactMenuEnabledSettingShouldBeAbleToBeSaved();
 
@@ -158,11 +141,37 @@ class AddThisFunctionalityTestCase extends DrupalWebTestCase {
 
     $this->addThisEnabledServicesShouldBeAbleToBeSaved($serviceName);
 
+    // Advanced configuration
+    $edit_basic = array();
+
+    $servicesCssUrl = AddThis::DEFAULT_SERVICES_CSS_URL;
+    $edit_basic[AddThis::SERVICES_CSS_URL_KEY] = $servicesCssUrl;
+
+    $servicesJsonUrl = AddThis::DEFAULT_SERVICES_JSON_URL;
+    $edit_basic[AddThis::SERVICES_JSON_URL_KEY] = $servicesJsonUrl;
+
+    $widgetJsUrl = AddThis::DEFAULT_WIDGET_JS_URL;
+    $edit_basic[AddThis::WIDGET_JS_URL_KEY] = $widgetJsUrl;
+
+    $edit_basic[AddThis::CUSTOM_CONFIGURATION_CODE_ENABLED_KEY] = TRUE;
+
+    $customConfigurationCode = TestHelper::generateRandomLowercaseString();
+    $edit_basic[AddThis::CUSTOM_CONFIGURATION_CODE_KEY] = $customConfigurationCode;
+
+    $this->drupalPost('admin/config/user-interface/addthis/advanced', $edit_basic, t('Save configuration'));
+
+    $this->addThisServicesCssUrlShouldBeAbleToBeSaved($servicesCssUrl);
+
+    $this->addThisServicesJsonUrlShouldBeAbleToBeSaved($servicesJsonUrl);
+
+    $this->addThisWidgetJsUrlShouldBeAbleToBeSaved($widgetJsUrl);
+
     $this->addThisCustomConfigurationCodeEnabledSettingShouldBeAbleToBeSaved();
   }
 
   private function addThisProfileIdShouldBeAbleToBeSaved($profileId) {
-    $this->assertFieldByName(AddThis::PROFILE_ID_KEY, $profileId, 'AddThis profile ID should be able to be saved.');
+    $this->assertFieldByName(AddThis::PROFILE_ID_KEY, $profileId, 
+                             'AddThis profile ID should be able to be saved.');
   }
 
   private function addThisServicesCssUrlShouldBeAbleToBeSaved($servicesCssUrl) {

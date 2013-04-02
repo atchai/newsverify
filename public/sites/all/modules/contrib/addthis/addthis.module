@@ -63,6 +63,20 @@ function addthis_menu() {
     'access arguments' => array(AddThis::PERMISSION_ADMINISTER_ADDTHIS),
     'type' => MENU_NORMAL_ITEM,
     'file' => AddThis::ADMIN_INCLUDE_FILE,
+    'weight' => 0,
+  );
+  $menu_items['admin/config/user-interface/addthis/basic'] = array(
+    'title' => t('Basic settings'),
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+  $menu_items['admin/config/user-interface/addthis/advanced'] = array(
+    'title' => t('Advanced settings'),
+    'type' => MENU_LOCAL_TASK,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('addthis_admin_settings_advanced_form'),
+    'access arguments' => array(AddThis::PERMISSION_ADMINISTER_ADDTHIS),
+    'file' => AddThis::ADMIN_INCLUDE_FILE,
+    'weight' => 10
   );
   return $menu_items;
 }
@@ -106,7 +120,7 @@ function addthis_form_field_ui_field_edit_form_alter(&$form, &$form_state, $form
 }
 
 /**
- * Implements hook_rdf_namespaces()
+ * Implements hook_rdf_namespaces().
  */
 function addthis_rdf_namespaces() {
   if (AddThis::getInstance()->isFacebookLikeCountSupportEnabled()) {
@@ -165,8 +179,9 @@ function theme_addthis_wrapper($variables) {
 }
 
 /**
- * Theme the elements that are created in the AddThis module. This is
- * created with hook_addthis_element.
+ * Theme the elements that are created in the AddThis module.
+ *
+ * This is created with hook_addthis_element.
  */
 function theme_addthis_element($variables) {
   $element = $variables['addthis_element'];
