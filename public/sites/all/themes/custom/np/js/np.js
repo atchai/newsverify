@@ -100,7 +100,8 @@ Drupal.behaviors.np = {
           position: {
             my: 'top right',
             at: 'bottom left',
-            target: $(this).find('.event-status-link-container-overlay a.event-summary-link')
+            target: $(this).find('.event-status-link-container-overlay a.event-summary-link'),
+            viewport: $(window)
           },
           show: {
             event: 'click',
