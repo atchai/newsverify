@@ -29,7 +29,6 @@ function np_home_fe_nodequeue_export_fields() {
 
   // Exported nodequeues: home
   $nodequeues['home'] = array(
-    'qid' => '1',
     'name' => 'home',
     'title' => 'Home',
     'subqueue_title' => '',
@@ -43,7 +42,6 @@ function np_home_fe_nodequeue_export_fields() {
     'reference' => '0',
     'reverse' => '0',
     'i18n' => '0',
-    'subqueues' => '1',
     'types' => array(
       0 => 'story',
     ),

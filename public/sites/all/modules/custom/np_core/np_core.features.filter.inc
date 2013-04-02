@@ -14,7 +14,7 @@ function np_core_filter_default_formats() {
   $formats['html'] = array(
     'format' => 'html',
     'name' => 'HTML',
-    'cache' => '0',
+    'cache' => '1',
     'status' => '1',
     'weight' => '-9',
     'filters' => array(),
@@ -24,7 +24,7 @@ function np_core_filter_default_formats() {
   $formats['plain_text'] = array(
     'format' => 'plain_text',
     'name' => 'Plain text',
-    'cache' => '0',
+    'cache' => '1',
     'status' => '1',
     'weight' => '-8',
     'filters' => array(
@@ -52,7 +52,7 @@ function np_core_filter_default_formats() {
   $formats['publisher_html'] = array(
     'format' => 'publisher_html',
     'name' => 'Publisher HTML',
-    'cache' => '0',
+    'cache' => '1',
     'status' => '1',
     'weight' => '-10',
     'filters' => array(

@@ -3535,6 +3535,7 @@ $display_output =  t(\'!username | !datetime ago\', array(\'!username\' => $sub_
       'locked' => '0',
       'module' => 'field_collection',
       'settings' => array(
+        'hide_blank_items' => TRUE,
         'path' => '',
       ),
       'translatable' => '0',
