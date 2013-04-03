@@ -1,0 +1,30 @@
+/* WYSIWYG Editor Styles
+----------------------------------------------------------------------------------------------------*/
+
+body {
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-size: 13px;
+  line-height: 16px;
+  font-weight: normal;
+  color: #000;
+}
+
+/* Typography
+----------------------------------------------------------------------------------------------------*/
+
+a,
+a:visited,
+a:hover,
+a:active {
+  color: #000;
+  text-decoration: underline;
+}
+
+/* Images
+----------------------------------------------------------------------------------------------------*/
+
+.image-container {
+  -webkit-box-shadow: 4px 4px 5px #ddd;
+  -moz-box-shadow: 4px 4px 5px #ddd;
+  box-shadow: 4px 4px 5px #ddd;
+}

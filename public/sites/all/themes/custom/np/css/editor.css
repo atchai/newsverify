@@ -1,0 +1,73 @@
+/* WYSIWYG Editor Styles
+----------------------------------------------------------------------------------------------------*/
+
+/* Typography
+----------------------------------------------------------------------------------------------------*/
+
+p {
+  margin: 0 0 10px 0;
+}
+
+a {
+  color: #000;
+  text-decoration: underline;
+}
+
+a:visited {
+  color: #000;
+}
+
+a:hover {
+  color: #ff0000;
+}
+
+a:active {
+  color: #ff0000;
+}
+
+ul,
+ol {
+  padding-left: 20px;
+}
+
+
+/* Images
+----------------------------------------------------------------------------------------------------*/
+
+.image-container > p {
+  padding: 10px 10px 10px 10px;
+}
+
+.image-container-618xh,
+.image-container-309xh {
+  margin: 0 0 10px 0;
+}
+
+.image-container-618xh {
+  width: 618px;
+}
+
+.image-container-309xh {
+  width: 309px;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.image-618xh,
+.image-container-618xh img,
+.image-container-309xh img,
+.node-event-view-mode-inline img,
+.node-post-view-mode-in_event_page img,
+.node-event-view-mode-full img {
+  max-width: 100%;
+  height: auto;
+}
+
+.image-align-right {
+  float: right;
+}
+
+.image-align-left {
+  float: left;
+  margin-left: 0; // LTR
+}
