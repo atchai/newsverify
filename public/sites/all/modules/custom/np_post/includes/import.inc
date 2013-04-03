@@ -395,7 +395,11 @@ class NPPostProcessor {
         $item->save();
 
         // Add field_collection item to Author node and save
-        $this->author->field_accounts = array($this->lang => array(array('value' => $item->item_id)));
+        $this->author->field_accounts = array($this->lang => array(array(
+            'value' => $item->item_id,
+            'revision_id' => $item->revision_id,
+        )));
+
         node_save($this->author);
 
         // Set status
