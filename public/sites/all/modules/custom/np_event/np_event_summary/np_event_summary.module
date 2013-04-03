@@ -59,7 +59,11 @@ function np_event_summary_field_formatter_settings_summary($field, $instance, $v
   $summary = array();
 
   if ($display['type'] == 'event_status_summary') {
-    $summary[] = $settings['overlay'] ? t('On click display event overlay') : t('Going to anchor !anchor', array('!anchor' => $settings['anchor']));
+    if ($settings['overlay']) {
+      $summary[] = t('On click display event overlay');
+    } elseif (isset($settings['anchor'])) {
+      $summary[] = t('Going to anchor !anchor', array('!anchor' => $settings['anchor']));
+    }
   }
 
   return implode('<br />', $summary);

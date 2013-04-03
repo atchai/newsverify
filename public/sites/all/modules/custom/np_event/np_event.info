@@ -70,6 +70,7 @@ features[field][] = node-event-field_where_v_narrative
 features[field][] = node-event-field_where_v_status
 features[field][] = taxonomy_term-verification_status-field_rating
 features[field_group][] = group_sources|node|event|default
+features[field_group][] = group_verification|node|event|default
 features[field_group][] = group_what|node|event|default
 features[field_group][] = group_what|node|event|form
 features[field_group][] = group_when|node|event|default

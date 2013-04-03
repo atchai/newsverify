@@ -21,7 +21,7 @@ function np_event_field_group_info() {
   $field_group->parent_name = '';
   $field_group->data = array(
     'label' => 'Sources',
-    'weight' => '9',
+    'weight' => '10',
     'children' => array(
       0 => 'field_sources',
     ),
@@ -44,6 +44,38 @@ function np_event_field_group_info() {
   $field_group = new stdClass();
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
   $field_group->api_version = 1;
+  $field_group->identifier = 'group_verification|node|event|default';
+  $field_group->group_name = 'group_verification';
+  $field_group->entity_type = 'node';
+  $field_group->bundle = 'event';
+  $field_group->mode = 'default';
+  $field_group->parent_name = '';
+  $field_group->data = array(
+    'label' => 'Verification',
+    'weight' => '7',
+    'children' => array(
+      0 => 'field_verification_narrative',
+      1 => 'field_verification_status',
+    ),
+    'format_type' => 'div',
+    'format_settings' => array(
+      'label' => 'Verification',
+      'instance_settings' => array(
+        'classes' => '',
+        'description' => '',
+        'show_label' => '0',
+        'label_element' => 'h3',
+        'effect' => 'none',
+        'speed' => 'none',
+      ),
+      'formatter' => 'open',
+    ),
+  );
+  $export['group_verification|node|event|default'] = $field_group;
+
+  $field_group = new stdClass();
+  $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
+  $field_group->api_version = 1;
   $field_group->identifier = 'group_what|node|event|default';
   $field_group->group_name = 'group_what';
   $field_group->entity_type = 'node';
@@ -52,13 +84,13 @@ function np_event_field_group_info() {
   $field_group->parent_name = '';
   $field_group->data = array(
     'label' => 'What',
-    'weight' => '12',
+    'weight' => '13',
     'children' => array(
       0 => 'field_what_description',
-      1 => 'field_what_posts',
-      2 => 'field_what_v_narrative',
-      3 => 'field_what_v_status',
-      4 => 'field_what_never_empty',
+      1 => 'field_what_never_empty',
+      2 => 'field_what_posts',
+      3 => 'field_what_v_narrative',
+      4 => 'field_what_v_status',
     ),
     'format_type' => 'div',
     'format_settings' => array(
@@ -119,13 +151,13 @@ function np_event_field_group_info() {
   $field_group->parent_name = '';
   $field_group->data = array(
     'label' => 'When',
-    'weight' => '10',
+    'weight' => '11',
     'children' => array(
-      0 => 'field_when_posts',
-      1 => 'field_when_v_narrative',
-      2 => 'field_when_v_status',
-      3 => 'field_when_date',
-      4 => 'field_when_never_empty',
+      0 => 'field_when_date',
+      1 => 'field_when_never_empty',
+      2 => 'field_when_posts',
+      3 => 'field_when_v_narrative',
+      4 => 'field_when_v_status',
     ),
     'format_type' => 'div',
     'format_settings' => array(
@@ -186,13 +218,13 @@ function np_event_field_group_info() {
   $field_group->parent_name = '';
   $field_group->data = array(
     'label' => 'Where',
-    'weight' => '11',
+    'weight' => '12',
     'children' => array(
-      0 => 'field_where_posts',
-      1 => 'field_where_v_narrative',
-      2 => 'field_where_v_status',
-      3 => 'field_where_location',
-      4 => 'field_where_never_empty',
+      0 => 'field_where_location',
+      1 => 'field_where_never_empty',
+      2 => 'field_where_posts',
+      3 => 'field_where_v_narrative',
+      4 => 'field_where_v_status',
     ),
     'format_type' => 'div',
     'format_settings' => array(
