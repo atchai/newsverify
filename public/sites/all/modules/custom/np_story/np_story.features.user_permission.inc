@@ -14,7 +14,8 @@ function np_story_user_default_permissions() {
   $permissions['create story content'] = array(
     'name' => 'create story content',
     'roles' => array(
-      0 => 'authenticated user',
+      0 => 'Administrator',
+      1 => 'authenticated user',
     ),
     'module' => 'node',
   );
@@ -23,7 +24,8 @@ function np_story_user_default_permissions() {
   $permissions['delete any story content'] = array(
     'name' => 'delete any story content',
     'roles' => array(
-      0 => 'authenticated user',
+      0 => 'Administrator',
+      1 => 'authenticated user',
     ),
     'module' => 'node',
   );
@@ -32,7 +34,8 @@ function np_story_user_default_permissions() {
   $permissions['delete own story content'] = array(
     'name' => 'delete own story content',
     'roles' => array(
-      0 => 'authenticated user',
+      0 => 'Administrator',
+      1 => 'authenticated user',
     ),
     'module' => 'node',
   );
@@ -41,7 +44,8 @@ function np_story_user_default_permissions() {
   $permissions['edit any story content'] = array(
     'name' => 'edit any story content',
     'roles' => array(
-      0 => 'authenticated user',
+      0 => 'Administrator',
+      1 => 'authenticated user',
     ),
     'module' => 'node',
   );
@@ -50,7 +54,8 @@ function np_story_user_default_permissions() {
   $permissions['edit own story content'] = array(
     'name' => 'edit own story content',
     'roles' => array(
-      0 => 'authenticated user',
+      0 => 'Administrator',
+      1 => 'authenticated user',
     ),
     'module' => 'node',
   );

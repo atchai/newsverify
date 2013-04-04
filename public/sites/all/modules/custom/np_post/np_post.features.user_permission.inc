@@ -13,7 +13,27 @@ function np_post_user_default_permissions() {
   // Exported permission: create post content.
   $permissions['create post content'] = array(
     'name' => 'create post content',
-    'roles' => array(),
+    'roles' => array(
+      0 => 'Administrator',
+    ),
+    'module' => 'node',
+  );
+
+  // Exported permission: delete any post content.
+  $permissions['delete any post content'] = array(
+    'name' => 'delete any post content',
+    'roles' => array(
+      0 => 'Administrator',
+    ),
+    'module' => 'node',
+  );
+
+  // Exported permission: delete own post content.
+  $permissions['delete own post content'] = array(
+    'name' => 'delete own post content',
+    'roles' => array(
+      0 => 'Administrator',
+    ),
     'module' => 'node',
   );
 
@@ -21,7 +41,8 @@ function np_post_user_default_permissions() {
   $permissions['edit any post content'] = array(
     'name' => 'edit any post content',
     'roles' => array(
-      0 => 'authenticated user',
+      0 => 'Administrator',
+      1 => 'authenticated user',
     ),
     'module' => 'node',
   );
@@ -30,7 +51,8 @@ function np_post_user_default_permissions() {
   $permissions['edit own post content'] = array(
     'name' => 'edit own post content',
     'roles' => array(
-      0 => 'authenticated user',
+      0 => 'Administrator',
+      1 => 'authenticated user',
     ),
     'module' => 'node',
   );

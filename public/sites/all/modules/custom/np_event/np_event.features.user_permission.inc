@@ -14,7 +14,8 @@ function np_event_user_default_permissions() {
   $permissions['create event content'] = array(
     'name' => 'create event content',
     'roles' => array(
-      0 => 'authenticated user',
+      0 => 'Administrator',
+      1 => 'authenticated user',
     ),
     'module' => 'node',
   );
@@ -23,7 +24,8 @@ function np_event_user_default_permissions() {
   $permissions['delete any event content'] = array(
     'name' => 'delete any event content',
     'roles' => array(
-      0 => 'authenticated user',
+      0 => 'Administrator',
+      1 => 'authenticated user',
     ),
     'module' => 'node',
   );
@@ -32,7 +34,8 @@ function np_event_user_default_permissions() {
   $permissions['delete own event content'] = array(
     'name' => 'delete own event content',
     'roles' => array(
-      0 => 'authenticated user',
+      0 => 'Administrator',
+      1 => 'authenticated user',
     ),
     'module' => 'node',
   );
@@ -40,14 +43,18 @@ function np_event_user_default_permissions() {
   // Exported permission: delete terms in 5.
   $permissions['delete terms in 5'] = array(
     'name' => 'delete terms in 5',
-    'roles' => array(),
+    'roles' => array(
+      0 => 'Administrator',
+    ),
     'module' => 'taxonomy',
   );
 
   // Exported permission: delete terms in 6.
   $permissions['delete terms in 6'] = array(
     'name' => 'delete terms in 6',
-    'roles' => array(),
+    'roles' => array(
+      0 => 'Administrator',
+    ),
     'module' => 'taxonomy',
   );
 
@@ -55,7 +62,8 @@ function np_event_user_default_permissions() {
   $permissions['edit any event content'] = array(
     'name' => 'edit any event content',
     'roles' => array(
-      0 => 'authenticated user',
+      0 => 'Administrator',
+      1 => 'authenticated user',
     ),
     'module' => 'node',
   );
@@ -64,7 +72,8 @@ function np_event_user_default_permissions() {
   $permissions['edit own event content'] = array(
     'name' => 'edit own event content',
     'roles' => array(
-      0 => 'authenticated user',
+      0 => 'Administrator',
+      1 => 'authenticated user',
     ),
     'module' => 'node',
   );
@@ -72,14 +81,18 @@ function np_event_user_default_permissions() {
   // Exported permission: edit terms in 5.
   $permissions['edit terms in 5'] = array(
     'name' => 'edit terms in 5',
-    'roles' => array(),
+    'roles' => array(
+      0 => 'Administrator',
+    ),
     'module' => 'taxonomy',
   );
 
   // Exported permission: edit terms in 6.
   $permissions['edit terms in 6'] = array(
     'name' => 'edit terms in 6',
-    'roles' => array(),
+    'roles' => array(
+      0 => 'Administrator',
+    ),
     'module' => 'taxonomy',
   );
 

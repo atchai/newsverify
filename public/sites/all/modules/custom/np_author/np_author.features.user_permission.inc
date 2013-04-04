@@ -14,7 +14,8 @@ function np_author_user_default_permissions() {
   $permissions['create author content'] = array(
     'name' => 'create author content',
     'roles' => array(
-      0 => 'authenticated user',
+      0 => 'Administrator',
+      1 => 'authenticated user',
     ),
     'module' => 'node',
   );
@@ -23,7 +24,8 @@ function np_author_user_default_permissions() {
   $permissions['delete any author content'] = array(
     'name' => 'delete any author content',
     'roles' => array(
-      0 => 'authenticated user',
+      0 => 'Administrator',
+      1 => 'authenticated user',
     ),
     'module' => 'node',
   );
@@ -32,7 +34,8 @@ function np_author_user_default_permissions() {
   $permissions['delete own author content'] = array(
     'name' => 'delete own author content',
     'roles' => array(
-      0 => 'authenticated user',
+      0 => 'Administrator',
+      1 => 'authenticated user',
     ),
     'module' => 'node',
   );
@@ -40,7 +43,9 @@ function np_author_user_default_permissions() {
   // Exported permission: delete terms in 3.
   $permissions['delete terms in 3'] = array(
     'name' => 'delete terms in 3',
-    'roles' => array(),
+    'roles' => array(
+      0 => 'Administrator',
+    ),
     'module' => 'taxonomy',
   );
 
@@ -48,7 +53,8 @@ function np_author_user_default_permissions() {
   $permissions['delete terms in 4'] = array(
     'name' => 'delete terms in 4',
     'roles' => array(
-      0 => 'authenticated user',
+      0 => 'Administrator',
+      1 => 'authenticated user',
     ),
     'module' => 'taxonomy',
   );
@@ -57,7 +63,8 @@ function np_author_user_default_permissions() {
   $permissions['edit any author content'] = array(
     'name' => 'edit any author content',
     'roles' => array(
-      0 => 'authenticated user',
+      0 => 'Administrator',
+      1 => 'authenticated user',
     ),
     'module' => 'node',
   );
@@ -66,7 +73,8 @@ function np_author_user_default_permissions() {
   $permissions['edit own author content'] = array(
     'name' => 'edit own author content',
     'roles' => array(
-      0 => 'authenticated user',
+      0 => 'Administrator',
+      1 => 'authenticated user',
     ),
     'module' => 'node',
   );
@@ -74,7 +82,9 @@ function np_author_user_default_permissions() {
   // Exported permission: edit terms in 3.
   $permissions['edit terms in 3'] = array(
     'name' => 'edit terms in 3',
-    'roles' => array(),
+    'roles' => array(
+      0 => 'Administrator',
+    ),
     'module' => 'taxonomy',
   );
 
@@ -82,7 +92,8 @@ function np_author_user_default_permissions() {
   $permissions['edit terms in 4'] = array(
     'name' => 'edit terms in 4',
     'roles' => array(
-      0 => 'authenticated user',
+      0 => 'Administrator',
+      1 => 'authenticated user',
     ),
     'module' => 'taxonomy',
   );

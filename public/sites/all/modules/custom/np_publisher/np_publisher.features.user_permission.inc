@@ -14,7 +14,8 @@ function np_publisher_user_default_permissions() {
   $permissions['administer menu'] = array(
     'name' => 'administer menu',
     'roles' => array(
-      0 => 'authenticated user',
+      0 => 'Administrator',
+      1 => 'authenticated user',
     ),
     'module' => 'menu',
   );
