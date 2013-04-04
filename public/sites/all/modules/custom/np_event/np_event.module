@@ -7,6 +7,30 @@
 include_once 'np_event.features.inc';
 
 /**
+ * Implements hook_form_FORM_ID_alter()
+ */
+function np_event_form_event_node_form_alter(&$form, &$form_state, $form_id) {
+  if (isset($form['field_when_date'])) {
+    if (!isset($form['field_when_date']['#after_build'])) {
+      $form['field_when_date']['#after_build'] = array();
+    }
+    $form['field_when_date']['#after_build'][] = 'np_event_when_date_after_build';
+  }
+}
+
+/**
+ * Form element process callback for field_when_date field
+ */
+function np_event_when_date_after_build($element) {
+  $lang = (isset($element['#language'])) ? $element['#language'] : LANGUAGE_NONE;
+  // Ensure "All Day" is ticked by default, if no value is set
+  if (isset($element[$lang][0]['all_day']) && empty($element[$lang][0]['value']['time']['#default_value'])) {
+    $element[$lang][0]['all_day']['#checked'] = TRUE;
+  }
+  return $element;
+}
+
+/**
  * Implements hook_preprocess_node().
  * 
  * - Shift the verification status inside the div header
