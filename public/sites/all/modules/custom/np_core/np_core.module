@@ -141,52 +141,11 @@ function np_core_wysiwyg_editor_settings_alter(&$settings, &$context) {
     }
 
     // Hide image dialogs
-    $settings['removePlugins'] = 'image,forms';
+    $settings['removePlugins'] = 'forms,div';
 
     // Hide link dialog "Advanced" tab
-    $settings['removeDialogTabs'] = 'link:advanced';
+    $settings['removeDialogTabs'] = 'link:advanced;image:Link;image:advanced';
 }
-
-/**
- * Implementation of hook_insert_styles().
- */
-function np_core_insert_styles() {
-    return array(
-        'np_image_half' => array(
-            'label' => t('Half Width'),
-            'image_style_name' => '309xh',
-            'image_align' => 'left',
-        ),
-        'np_image_full' => array(
-            'label' => t('Full Width'),
-            'image_style_name' => '618xh',
-            'image_align' => 'right',
-        ),
-    );
-}
-
-/**
- * Implementation of hook_insert_content().
- * Return a styled image with a caption
- */
-function np_core_insert_content($item, $style, $widget) {
-    $class = array(
-        'image-container',
-        'image-container-' . $style['image_style_name'],
-        'image-align-' . $style['image_align'],
-    );
-    $img = theme('image_insert_image', array(
-        'item' => $item,
-        'widget' => $widget,
-        'style_name' => $style['image_style_name']
-    ));
-    $caption = '<p>__alt__</p>';
-    return theme('container', array('element' => array(
-        '#attributes' => array('class' => implode(' ', $class)),
-        '#children' => $img . $caption,
-    )));
-}
-
 
 /**
  * Implements hook_page_alter().

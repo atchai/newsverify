@@ -39,7 +39,8 @@ ol {
 }
 
 .image-container-618xh,
-.image-container-309xh {
+.image-container-309xh,
+.image-container-206xh {
   margin: 0 0 10px 0;
 }
 
@@ -49,6 +50,15 @@ ol {
 
 .image-container-309xh {
   width: 309px;
+}
+
+.image-container-206xh {
+  width: 206px;
+}
+
+.image-container-309xh,
+.image-container-206xh,
+.image-bare {
   margin-left: 20px;
   margin-right: 20px;
 }
@@ -56,6 +66,8 @@ ol {
 .image-618xh,
 .image-container-618xh img,
 .image-container-309xh img,
+.image-container-206xh img,
+.image-bare,
 .node-event-view-mode-inline img,
 .node-post-view-mode-in_event_page img,
 .node-event-view-mode-full img {

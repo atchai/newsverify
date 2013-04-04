@@ -5,6 +5,7 @@ php = 5.2.4
 dependencies[] = image
 features[features_api][] = api:1
 features[image][] = 150x105
+features[image][] = 206xh
 features[image][] = 280x170
 features[image][] = 300x195
 features[image][] = 300x197

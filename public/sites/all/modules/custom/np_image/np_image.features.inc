@@ -32,6 +32,29 @@ function np_image_image_default_styles() {
     ),
   );
 
+  // Exported image style: 206xh.
+  $styles['206xh'] = array(
+    'name' => '206xh',
+    'effects' => array(
+      1 => array(
+        'label' => 'Scale',
+        'help' => 'Scaling will maintain the aspect-ratio of the original image. If only a single dimension is specified, the other dimension will be calculated.',
+        'effect callback' => 'image_scale_effect',
+        'dimensions callback' => 'image_scale_dimensions',
+        'form callback' => 'image_scale_form',
+        'summary theme' => 'image_scale_summary',
+        'module' => 'image',
+        'name' => 'image_scale',
+        'data' => array(
+          'width' => '206',
+          'height' => '',
+          'upscale' => 1,
+        ),
+        'weight' => '1',
+      ),
+    ),
+  );
+
   // Exported image style: 280x170.
   $styles['280x170'] = array(
     'name' => '280x170',

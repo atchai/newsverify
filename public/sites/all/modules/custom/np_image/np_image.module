@@ -5,3 +5,126 @@
  */
 
 include_once 'np_image.features.inc';
+
+/**
+ * Implementation of hook_field_widget_WIDGET_TYPE_form_alter().
+ */
+function np_image_field_widget_image_image_form_alter(&$element, &$form_state, $context) {
+    foreach (element_children($element) as $delta) {
+        if (!isset($element[$delta]['#process'])) {
+            $element[$delta]['#process'] = array();
+        }
+        $element[$delta]['#process'][] = 'np_image_image_widget_process';
+    }
+}
+
+/**
+ * Process callback for imagefield form widget
+ */
+function np_image_image_widget_process($element, &$form_state, $form) {
+    if (isset($element['title'])) {
+        $element['title']['#title'] = t('Caption');
+        $element['title']['#description'] = t('This will be displayed below the image as a caption. One of the caption styles above must be selected.');
+    }
+    return $element;
+}
+
+/**
+ * Implementation of hook_insert_styles().
+ */
+function np_image_insert_styles() {
+    return array(
+        'np_image_third_left' => array(
+            'label' => t('Third Width (206px), Left Aligned'),
+            'image_style_name' => '206xh',
+            'image_align' => 'left',
+            'image_caption' => FALSE,
+        ),
+        'np_image_third_left_caption' => array(
+            'label' => t('Third Width (206px), Left Aligned, Caption'),
+            'image_style_name' => '206xh',
+            'image_align' => 'left',
+            'image_caption' => TRUE,
+        ),
+        'np_image_third_right' => array(
+            'label' => t('Third Width (206px), Right Aligned'),
+            'image_style_name' => '206xh',
+            'image_align' => 'right',
+            'image_caption' => FALSE,
+        ),
+        'np_image_third_right_caption' => array(
+            'label' => t('Third Width (206px), Right Aligned, Caption'),
+            'image_style_name' => '206xh',
+            'image_align' => 'right',
+            'image_caption' => TRUE,
+        ),
+        'np_image_half_left' => array(
+            'label' => t('Half Width (309px), Left Aligned'),
+            'image_style_name' => '309xh',
+            'image_align' => 'left',
+            'image_caption' => FALSE,
+        ),
+        'np_image_half_left_caption' => array(
+            'label' => t('Half Width (309px), Left Aligned, Caption'),
+            'image_style_name' => '309xh',
+            'image_align' => 'left',
+            'image_caption' => TRUE,
+        ),
+        'np_image_half_right' => array(
+            'label' => t('Half Width (309px), Right Aligned'),
+            'image_style_name' => '309xh',
+            'image_align' => 'right',
+            'image_caption' => FALSE,
+        ),
+        'np_image_half_right_caption' => array(
+            'label' => t('Half Width (309px), Right Aligned, Caption'),
+            'image_style_name' => '309xh',
+            'image_align' => 'right',
+            'image_caption' => TRUE,
+        ),
+        'np_image_full' => array(
+            'label' => t('Full Width (618px)'),
+            'image_style_name' => '618xh',
+            'image_align' => 'right',
+            'image_caption' => FALSE,
+        ),
+        'np_image_full_caption' => array(
+            'label' => t('Full Width (618px), Caption'),
+            'image_style_name' => '618xh',
+            'image_align' => 'right',
+            'image_caption' => TRUE,
+        ),
+    );
+}
+
+/**
+ * Implementation of hook_insert_content().
+ * Return a styled image with a caption
+ */
+function np_image_insert_content($item, $style, $widget) {
+    $vars = array(
+        'item' => $item,
+        'widget' => $widget,
+        'style_name' => $style['image_style_name'],
+    );
+
+    $classes = array();
+    $classes[] = 'image-align-' . $style['image_align'];
+
+    // If there's no caption for this style, just return the img
+    if (!$style['image_caption']) {
+        $classes[] = 'image-bare';
+        $vars['widget']['settings']['insert_class'] = implode(' ', $classes);
+
+        return theme('image_insert_image', $vars);
+    }
+
+    // Wrap the image and caption placeholder in a container element
+    $classes[] = 'image-container';
+    $classes[] = 'image-container-' . $style['image_style_name'];
+
+    return theme('container', array('element' => array(
+        '#attributes' => array('class' => implode(' ', $classes)),
+        '#children' => theme('image_insert_image', $vars) . '<p>__title__</p>',
+    )));
+}
