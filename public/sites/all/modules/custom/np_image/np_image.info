@@ -11,6 +11,7 @@ features[image][] = 300x195
 features[image][] = 300x197
 features[image][] = 309xh
 features[image][] = 320x210
+features[image][] = 40xh
 features[image][] = 480x320
 features[image][] = 618xh
 features[image][] = 620x413

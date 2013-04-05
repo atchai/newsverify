@@ -4096,7 +4096,7 @@ $display_output =  t(\'!username | !datetime ago\', array(\'!username\' => $sub_
         ),
       ),
       'deleted' => '0',
-      'description' => '',
+      'description' => 'Assign this verification status a rating to control the default verification status graphic. A value of "1" is the lowest verification status (displayed in red) and "4" is the highest (displayed in green).',
       'display' => array(
         'default' => array(
           'label' => 'above',
@@ -4118,7 +4118,118 @@ $display_output =  t(\'!username | !datetime ago\', array(\'!username\' => $sub_
         'module' => 'options',
         'settings' => array(),
         'type' => 'options_select',
-        'weight' => '1',
+        'weight' => '2',
+      ),
+    ),
+  );
+
+  // Exported field: 'taxonomy_term-verification_status-field_verification_status_image'.
+  $fields['taxonomy_term-verification_status-field_verification_status_image'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_verification_status_image',
+      'foreign keys' => array(
+        'fid' => array(
+          'columns' => array(
+            'fid' => 'fid',
+          ),
+          'table' => 'file_managed',
+        ),
+      ),
+      'indexes' => array(
+        'fid' => array(
+          0 => 'fid',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'image',
+      'settings' => array(
+        'default_image' => 0,
+        'uri_scheme' => 'public',
+      ),
+      'translatable' => '0',
+      'type' => 'image',
+    ),
+    'field_instance' => array(
+      'bundle' => 'verification_status',
+      'deleted' => '0',
+      'description' => 'You can optionally upload an image to represent this verification status, wherever it\'s displayed on the front end of the site. If this field is left blank the default verification status graphic will be used instead.',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'image',
+          'settings' => array(
+            'image_link' => '',
+            'image_style' => '',
+          ),
+          'type' => 'image',
+          'weight' => 1,
+        ),
+      ),
+      'entity_type' => 'taxonomy_term',
+      'field_name' => 'field_verification_status_image',
+      'label' => 'Image',
+      'required' => 0,
+      'settings' => array(
+        'alt_field' => 0,
+        'default_image' => 0,
+        'file_directory' => '',
+        'file_extensions' => 'png gif jpg jpeg',
+        'max_filesize' => '',
+        'max_resolution' => '',
+        'min_resolution' => '',
+        'title_field' => 0,
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'image',
+        'settings' => array(
+          'insert' => 0,
+          'insert_absolute' => 0,
+          'insert_class' => '',
+          'insert_default' => 'auto',
+          'insert_styles' => array(
+            'auto' => 0,
+            'icon_link' => 0,
+            'image' => 0,
+            'image_150x105' => 0,
+            'image_206xh' => 0,
+            'image_280x170' => 0,
+            'image_300x195' => 0,
+            'image_300x197' => 0,
+            'image_309xh' => 0,
+            'image_320x210' => 0,
+            'image_480x320' => 0,
+            'image_618xh' => 0,
+            'image_620x413' => 0,
+            'image_66x51' => 0,
+            'image_70x60' => 0,
+            'image_89x80' => 0,
+            'image_large' => 0,
+            'image_medium' => 0,
+            'image_thumbnail' => 0,
+            'link' => 0,
+            'np_image_full' => 0,
+            'np_image_full_caption' => 0,
+            'np_image_half_left' => 0,
+            'np_image_half_left_caption' => 0,
+            'np_image_half_right' => 0,
+            'np_image_half_right_caption' => 0,
+            'np_image_third_left' => 0,
+            'np_image_third_left_caption' => 0,
+            'np_image_third_right' => 0,
+            'np_image_third_right_caption' => 0,
+          ),
+          'insert_width' => '',
+          'preview_image_style' => 'thumbnail',
+          'progress_indicator' => 'throbber',
+        ),
+        'type' => 'image_image',
+        'weight' => '3',
       ),
     ),
   );
@@ -4126,6 +4237,7 @@ $display_output =  t(\'!username | !datetime ago\', array(\'!username\' => $sub_
   // Translatables
   // Included for use with string extractors like potx.
   t('AddThis');
+  t('Assign this verification status a rating to control the default verification status graphic. A value of "1" is the lowest verification status (displayed in red) and "4" is the highest (displayed in green).');
   t('Author');
   t('Coordinates');
   t('Date');
@@ -4133,6 +4245,7 @@ $display_output =  t(\'!username | !datetime ago\', array(\'!username\' => $sub_
   t('Enter in decimal or compass format. For example, in decimal format - Longitude: 12.3465 Latitude: 46.0388 or in Compass format - Longitude: 46° 2\' 21.81" N  Latitude: 12° 20\' 40.71" E"');
   t('Facebook Like');
   t('First What Post');
+  t('Image');
   t('Last Updated');
   t('Location');
   t('Name');
@@ -4152,6 +4265,7 @@ $display_output =  t(\'!username | !datetime ago\', array(\'!username\' => $sub_
   t('When');
   t('Where');
   t('Why we think its');
+  t('You can optionally upload an image to represent this verification status, wherever it\'s displayed on the front end of the site. If this field is left blank the default verification status graphic will be used instead.');
 
   return $fields;
 }

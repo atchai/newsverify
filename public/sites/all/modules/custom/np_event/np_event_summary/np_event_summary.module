@@ -88,6 +88,12 @@ function np_event_summary_field_formatter_view($entity_type, $entity, $field, $i
           $rating = $term->field_rating[LANGUAGE_NONE][0]['value'];
         }
 
+        // Get the rating image of the verification status value
+        $image = FALSE;
+        if (isset($term->field_verification_status_image[LANGUAGE_NONE][0])) {
+          $image = $term->field_verification_status_image[LANGUAGE_NONE][0];
+        }
+
         $element[$delta] = array(
           '#type' => 'container',
           '#attributes' => array(
@@ -115,16 +121,7 @@ function np_event_summary_field_formatter_view($entity_type, $entity, $field, $i
           $output = node_view(node_load($entity->nid, $entity->vid), 'summary');
 
           $element[$delta]['event-status-link-container']['rating'] = array(
-            '#markup' => l('<span class="rating-area"><span class="rating-area-inner rating-area-inner-' . $rating . '">&nbsp;</span></span>', 'node/' . $entity->nid, array(
-              'html' => TRUE,
-              'attributes' => array(
-                'class' => array(
-                  'event-summary-link',
-                  'event-summary-link-rating-' . $rating,
-                  'event-summary-link-empty'
-                ),
-              )
-            )),
+            '#markup' => np_event_summary_rating($entity->nid, $rating, $term->name, $image)
           );
 
           $element[$delta]['event-status-link-container']['link'] = array(
@@ -153,17 +150,7 @@ function np_event_summary_field_formatter_view($entity_type, $entity, $field, $i
         }
         else if (isset($settings['anchor'])) {
           $element[$delta]['event-status-link-container']['rating'] = array(
-            '#markup' => l('<span class="rating-area"><span class="rating-area-inner rating-area-inner-' . $rating . '">&nbsp;</span></span>', 'node/' . $entity->nid, array(
-              'html' => TRUE,
-              'attributes' => array(
-                'class' => array(
-                  'event-summary-link',
-                  'event-summary-link-rating-' . $rating,
-                  'event-summary-link-empty'
-                ),
-              ),
-              'fragment' => $settings['anchor']
-            )),
+            '#markup' => np_event_summary_rating($entity->nid, $rating, $term->name, $image, $settings['anchor'])
           );
 
           $element[$delta]['event-status-link-container']['link'] = array(
@@ -194,4 +181,34 @@ function np_event_summary_field_formatter_view($entity_type, $entity, $field, $i
       break;
   }
   return $element;
+}
+
+/**
+ * Helper function to render the correct rating "graphic" (either the default coloured "progress bar" or a custom image)
+ */
+function np_event_summary_rating($nid, $rating_value, $rating_text, $image = FALSE, $anchor = FALSE) {
+    $path = 'node/' . $nid;
+    $opts = array(
+        'html' => TRUE,
+        'attributes' => array(
+            'class' => array(
+                'event-summary-link',
+                'event-summary-link-rating-' . $rating_value,
+                'event-summary-link-empty'
+            ),
+        ),
+    );
+    if ($anchor !== FALSE) {
+        $opts['fragment'] = $anchor;
+    }
+    if ($image !== FALSE) {
+        $content = theme('image_style', array(
+            'style_name' => '40xh',
+            'path' => $image['uri'],
+            'alt' => $rating_text,
+        ));
+    } else {
+        $content = '<span class="rating-area-inner rating-area-inner-' . $rating_value . '">&nbsp;</span>';
+    }
+    return l('<span class="rating-area">' . $content . '</span>', $path, $opts);
 }
