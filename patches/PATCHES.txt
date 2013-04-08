@@ -1,6 +1,10 @@
 PATCHES
 -------
 
+Patch: drupal-7.x-fix_pdoexception_grant_permissions-737816-26-do-not-test.patch
+Project: core
+URL: http://drupal.org/node/737816#comment-6978566
+
 Patch: fix-undefined-error-bad-data.patch
 Project: geofield
 URL: ?
