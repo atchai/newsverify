@@ -13,11 +13,7 @@ function np_event_metatag_export_default() {
   // Exported Metatag config instance: node:event.
   $config['node:event'] = array(
     'instance' => 'node:event',
-    'config' => array(
-      'abstract' => array(
-        'value' => '[node:field-cmptd-description-full]',
-      ),
-    ),
+    'config' => array(),
   );
 
   return $config;
