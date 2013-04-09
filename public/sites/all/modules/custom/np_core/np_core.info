@@ -10,6 +10,7 @@ dependencies[] = ctools
 dependencies[] = diff
 dependencies[] = facebook_comments
 dependencies[] = features
+dependencies[] = l10n_client
 dependencies[] = less
 dependencies[] = libraries
 dependencies[] = menu
