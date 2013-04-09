@@ -50,10 +50,10 @@ function np_event_strongarm() {
     'extra_fields' => array(
       'form' => array(
         'title' => array(
-          'weight' => '15',
+          'weight' => '16',
         ),
         'path' => array(
-          'weight' => '23',
+          'weight' => '24',
         ),
       ),
       'display' => array(),

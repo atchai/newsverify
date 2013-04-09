@@ -119,7 +119,7 @@ function np_event_field_group_info() {
   $field_group->parent_name = '';
   $field_group->data = array(
     'label' => 'What Happened',
-    'weight' => '20',
+    'weight' => '21',
     'children' => array(
       0 => 'field_what_description',
       1 => 'field_what_posts',
@@ -186,13 +186,13 @@ function np_event_field_group_info() {
   $field_group->parent_name = '';
   $field_group->data = array(
     'label' => 'When',
-    'weight' => '18',
+    'weight' => '19',
     'children' => array(
-      0 => 'field_when_posts',
-      1 => 'field_when_v_narrative',
-      2 => 'field_when_v_status',
-      3 => 'field_when_date',
-      4 => 'field_when_never_empty',
+      0 => 'field_when_date',
+      1 => 'field_when_never_empty',
+      2 => 'field_when_posts',
+      3 => 'field_when_v_narrative',
+      4 => 'field_when_v_status',
     ),
     'format_type' => 'fieldset',
     'format_settings' => array(
@@ -253,13 +253,13 @@ function np_event_field_group_info() {
   $field_group->parent_name = '';
   $field_group->data = array(
     'label' => 'Where',
-    'weight' => '19',
+    'weight' => '20',
     'children' => array(
-      0 => 'field_where_posts',
-      1 => 'field_where_v_narrative',
-      2 => 'field_where_v_status',
-      3 => 'field_where_location',
-      4 => 'field_what_never_empty',
+      0 => 'field_what_never_empty',
+      1 => 'field_where_location',
+      2 => 'field_where_posts',
+      3 => 'field_where_v_narrative',
+      4 => 'field_where_v_status',
     ),
     'format_type' => 'fieldset',
     'format_settings' => array(

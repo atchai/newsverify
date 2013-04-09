@@ -233,7 +233,7 @@ function np_page_field_default_fields() {
             'buttons_size' => 'addthis_16x16_style',
             'counter_orientation' => 'horizontal',
             'extra_css' => '',
-            'share_services' => 'facebook_like',
+            'share_services' => 'facebook_like,twitter',
           ),
           'type' => 'addthis_basic_toolbox',
           'weight' => '0',
