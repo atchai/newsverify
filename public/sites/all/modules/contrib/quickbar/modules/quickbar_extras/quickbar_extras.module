@@ -1,0 +1,193 @@
+<?php
+/**
+ * Implements hook_init().
+ */
+function quickbar_extras_init() {
+  drupal_add_css(drupal_get_path('module', 'quickbar_extras') . '/css/quickbar_extras.css');
+  
+  if (arg(3) == 'quickbar' && arg(5) == 'edit') {
+    drupal_add_js(drupal_get_path('module', 'quickbar_extras') . '/js/quickbar_extras.admin.js');
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function quickbar_extras_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'quickbar_configure_form') {
+    $rid = $form_state['build_info']['args'][0];
+    $menus = unserialize(variable_get('quickbar_role_menus', array()));
+    $menu_used = $menus[arg(4)];
+    
+    $form['quickbar_extras'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Extra settings'),
+      '#collapsible' => 1,
+      '#collapsed' => 0,
+      '#attributes' => array('class' => array('quickbar-extras')),
+    );
+    
+    // Pulls all menu links from the database
+    $result = db_query("SELECT mlid, link_title FROM {menu_links}
+                       WHERE menu_name = :menu
+                       AND plid = 0
+                       AND hidden = 0
+                       AND link_path NOT LIKE '%\%%'
+                       ORDER BY weight ASC", array(':menu' => $menu_used));
+    
+    $settings = unserialize(variable_get('quickbar_extras_settings_' . $rid, ''));
+    
+    $form['quickbar_extras']['organize'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Organize Menu Links'),
+      '#collapsible' => 1,
+      '#collapsed' => 0,
+      '#attributes' => array('class' => array('quickbar-organize')),
+    );
+    
+    while ($record = $result->fetchAssoc()) {
+      $mlid = $record['mlid'];
+      $title = $record['link_title'];
+      $form['quickbar_extras']['organize']['mlid_' . $mlid] = array(
+        '#type' => 'select',
+        '#title' => $title,
+        '#options' => array(
+          'left' => t('Left'),
+          'right' => t('Right'),
+        ),
+        '#default_value' => $settings['menu']['mlid_' . $mlid],
+        '#attributes' => array('class' => array('menu-options')),
+      );
+    }
+    
+    $form['quickbar_extras']['user'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('User Settings'),
+      '#collapsible' => 1,
+      '#collapsed' => 1,
+      '#attributes' => array('class' => array('user-settings')),
+      'show_username' => array(
+        '#type' => 'checkbox',
+        '#title' => t('Show username in toolbar'),
+        '#description' => t('If checked, the username will show on the right side of the toolbar.'),
+        '#default_value' => (isset($settings['show_username']) ? $settings['show_username'] : 0),
+      ),
+      'options' => array(
+        '#type' => 'fieldset',
+        '#title' => 'Username Options',
+        '#attributes' => array('id' => 'username-options'),
+        'show_username_prefix' => array(
+          '#type' => 'textfield',
+          '#title' => t('Prefix to username'),
+          '#description' => t("This field's data will be displayed before the username. Be sure to include a space after the text if necessary."),
+          '#default_value' => (isset($settings['show_username_prefix']) ? $settings['show_username_prefix'] : 'Hello, '),
+        ),
+        'show_username_suffix' => array(
+          '#type' => 'textfield',
+          '#title' => t('Suffix to username'),
+          '#description' => t("This field's data will be displayed after the username. Be sure to include a space before the text if necessary."),
+          '#default_value' => (isset($settings['show_username_suffix']) ? $settings['show_username_suffix'] : '!'),
+        ),
+        'show_username_link' => array(
+          '#type' => 'checkbox',
+          '#title' => t('Username links to user profile page'),
+          '#description' => t('If checked, the username will be a link that the user can use to access their profile page.'),
+          '#default_value' => (isset($settings['show_username_link']) ? $settings['show_username_link'] : 0),
+        ),
+      ),
+    );
+    
+    $form['#submit'][] = 'quickbar_extras_configure_form_submit';
+    
+    // Push submit button to bottom of form
+    $form['submit']['#weight'] = 1000;
+  }
+}
+
+/**
+ * Submission handler for quickbar_extras_form_alter().
+ */
+function quickbar_extras_configure_form_submit(&$form, &$form_state) {
+  $rid = $form_state['build_info']['args'][0];
+  $mlids = $form_state['values']['quickbar_extras']['organize'];
+  $menu_settings = array();
+  foreach ($mlids as $mlid => $position) {
+    $menu_settings['menu'][$mlid] = $position;
+  }
+  
+  $user_settings = $form_state['values']['quickbar_extras']['user'];
+  $menu_settings['show_username'] = $user_settings['show_username'];
+  $menu_settings['show_username_prefix'] = $user_settings['options']['show_username_prefix'];
+  $menu_settings['show_username_suffix'] = $user_settings['options']['show_username_suffix'];
+  $menu_settings['show_username_link'] = $user_settings['options']['show_username_link'];
+
+  variable_set('quickbar_extras_settings_' . $rid, serialize($menu_settings));
+}
+
+/**
+ * Implements hook_preprocess_quickbar().
+ */
+function quickbar_extras_preprocess_quickbar(&$vars) {
+  $roles = unserialize(variable_get('quickbar_role_weights', ''));
+  $settings = array();
+  
+  if (is_array($roles)) {
+    // Sort roles
+    asort($roles);
+    
+    // Loop through the roles looking for a role that matches the current users
+    // role and also has a menu associated with it.
+    foreach($roles as $rid => $weight) {
+      if ($settings = variable_get('quickbar_extras_settings_' . $rid, array())) {
+        $settings = unserialize($settings);
+        break;
+      }
+    }
+  }
+  
+  $menu_keys = array_keys($vars['tree'][0]['admin']);
+  
+  if (!empty($settings['menu'])) {
+    $move_menus = array();
+    // We are first going to pull all of the menu ids out of the variable...
+    foreach ($settings['menu'] as $menu_id => $position) {
+      // ... if the current menu id being checked has a value of 'right'...
+      if ($position == 'right') {
+        // ... then we need to look in the menu items getting ready to be displayed...
+        foreach ($menu_keys as $menu_key) {
+          $menu_class = split(' ', $menu_key);
+          $menu_id = str_replace('mlid_' , '', $menu_id);
+          // ... if there is a match, add it to our move_menu array for further processing
+          if ($menu_class[0] == 'menu-' . $menu_id) {
+            $move_menus[] = $menu_key;
+          }
+        }
+      }
+    }
+    
+    if (!empty($move_menus)) {
+      foreach ($move_menus as $move_menu) {
+        $vars['tree'][0]['right'][$move_menu] = $vars['tree'][0]['admin'][$move_menu];
+        unset($vars['tree'][0]['admin'][$move_menu]);
+      }
+    }
+    
+    if (!empty($settings['show_username'])) {
+      global $user;
+      
+      $username_prefix = ($settings['show_username_prefix'] ? $settings['show_username_prefix'] : 'Hello, ');
+      $username_suffix = ($settings['show_username_suffix'] ? $settings['show_username_suffix'] : '!');
+      if ($settings['show_username_link']) {
+        $vars['tree'][0]['right']['username'] = array(
+          'title' => $username_prefix . l($user->name, 'user/' . $user->uid, array('attributes' => array('class' => 'username-link'))) . $username_suffix,
+          'html' => 1,
+        );
+      }
+      else {
+        $vars['tree'][0]['right']['username'] = array(
+          'title' => $username_prefix . $user->name . $username_suffix,
+        );
+      }
+    }
+  }
+}

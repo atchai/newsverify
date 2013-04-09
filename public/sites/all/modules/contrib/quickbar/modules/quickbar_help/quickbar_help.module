@@ -1,0 +1,228 @@
+<?php
+
+/**
+ * Implementation of hook_permission()
+ */
+function quickbar_help_permission() {
+  return array(
+    'administer quickbar_help' => array(
+      'title'       => t('Administer quickbar_help'),
+      'description' => t('TODO'),
+    ),
+    'access quickbar_help' => array(
+      'title'       => t('Access quickbar_help'),
+      'description' => t('TODO'),      
+    )
+  );
+}
+
+/**
+ * Implements hook_init().
+ */
+function quickbar_help_init() {
+  drupal_add_css(drupal_get_path('module', 'quickbar_help') . '/css/quickbar_help.css');
+  drupal_add_js(drupal_get_path('module', 'quickbar_help') . '/js/quickbar_help.js');
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function quickbar_help_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'quickbar_configure_form') {
+    // We need to make the submit button heavy
+    $form['submit']['#weight'] = 1000;
+    
+    $form['help'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Help Settings'),
+      '#collapsible' => 1,
+      '#collapsed' => 0,
+    );
+    
+    $current_help = array();
+    $result = db_select('quickbar_help', 'qh')
+                ->fields('qh')
+                ->condition('rid', arg(4))
+                ->execute();
+    while ($record = $result->fetchAssoc()) {
+      $current_help[$record['path']] = $record;
+    }
+    
+    $menus = unserialize(variable_get('quickbar_role_menus', array()));
+    $menu_used = $menus[arg(4)];
+    // Pulls all menu links from the database
+    //...excludes menu_item_container "links" since there's nothing to display anyway
+    $result = db_query("SELECT link_path, link_title FROM {menu_links}
+                       WHERE menu_name = :menu
+                       AND module <> 'menu_item_container'
+                       AND hidden = 0
+                       AND link_path NOT LIKE '%\%%'
+                       GROUP BY link_path
+                       ORDER BY depth ASC, weight ASC", array(':menu' => $menu_used));
+    
+    $menu_found = 0;
+    while ($record = $result->fetchAssoc()) {
+      $path = str_replace('<front>', '/', $record['link_path']);
+      $title = $record['link_title'];
+      
+      $form['help'][$path] = array(
+        '#type' => 'fieldset',
+        '#title' => $title,
+        '#description' => t('Enter the text that will be linked to %path', array('%path' => ($path == '/' ? '<front>' : '/' . $path))),
+        '#collapsible' => 1,
+        '#collapsed' => 1,
+      );
+      $form['help'][$path]['text'] = array(
+        '#type' => 'text_format',
+        '#title' => t('Help Text'),
+        '#default_value' => (isset($current_help[$path]['text']) ? $current_help[$path]['text'] : ''),
+        '#format' => (isset($current_help[$path]['format']) ? $current_help[$path]['format'] : NULL),
+      );
+      $menu_found = 1;
+    }
+    
+    if (!$menu_found) {
+      $form['help']['text'] = array(
+        '#type' => 'item',
+        '#value' => t('<em>There is not a menu associated with this role.</em>'),
+      );
+    }
+    
+    $form['#submit'][] = 'quickbar_help_configure_form_submit';
+  }
+}
+
+/**
+ * Submission handler for quickbar_help_form_alter().
+ */
+function quickbar_help_configure_form_submit(&$form, &$form_state) {
+  $rid = $form_state['build_info']['args'][0];
+  
+  $result = db_query("SELECT path FROM {quickbar_help} WHERE rid = :rid", array(':rid' => $rid));
+  $current_paths = array();
+  while ($record = $result->fetchField()) {
+    $current_paths[] = $record;
+  }
+  
+  foreach ($form_state['values']['help'] as $path => $help) {
+    $text = $help['text']['value'];
+    $format = $help['text']['format'];
+    
+    // If we need to update the db record since this path is already in the db...
+    if (in_array($path, $current_paths)) {
+      if ($text != '') {
+        db_update('quickbar_help')
+          ->fields(array(
+            'text' => $text,
+            'format' => $format,
+          ))
+          ->condition('path', $path)
+          ->condition('rid', $rid)
+          ->execute();
+      }
+      // The contents are empty, we need to remove the row in the db
+      else {
+        db_delete('quickbar_help')
+          ->condition('path', $path)
+          ->condition('rid', $rid)
+          ->execute();
+      }
+    }
+    // ...otherwise, the path isn't already in the db so we are going to insert it
+    else {
+      // We don't want to add a blank entry
+      if ($text != '') {
+        db_insert('quickbar_help')
+          ->fields(array(
+            'rid'    => $rid,
+            'text'   => $text,
+            'path'   => $path,
+            'format' => 0,
+            'format' => $format,
+          ))
+          ->execute();
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_preprocess_quickbar().
+ */
+function quickbar_help_preprocess_quickbar(&$vars) {
+  // Declare initial variables.
+  global $user;
+  $set_class = 'not-active';
+  
+  $current_path = drupal_get_path_alias();
+  // Since any path can be the front page, we need to check for it specifically
+  if (drupal_is_front_page()) {
+    $current_path = '/';
+  }
+  
+  // Need a serialized array for default value.
+  $roles = unserialize(variable_get('quickbar_role_weights', ''));
+  
+  if (is_array($roles)) {
+    // Sort roles
+    asort($roles);
+    
+    // Loop through the roles looking for a role that matches the current users
+    // role and also has a menu associated with it.
+    $menus = unserialize(variable_get('quickbar_role_menus', array()));
+    foreach ($roles as $rid => $weight) {
+      if (!empty($user->roles[$rid]) && $menus[$rid]) {
+        $result = db_query("SELECT path FROM {quickbar_help} WHERE path = :path AND rid = :rid", array(':path' => $current_path, ':rid' => $rid))->fetchField();
+        
+        if ($result) {
+          $set_class = 'active';
+          break;
+        }
+      }
+    }
+  }
+  
+  $vars['tree'][0]['help']['help-icon'] = array(
+  );
+  
+  $vars['tree_0']['help'] = theme('links', array('links' => $vars['tree'][0]['help'], 'attributes' => array('class' => "links clear-block $set_class", 'id' => 'quickbar-help')));
+}
+
+/**
+ * Implements hook_page_build().
+ */
+function quickbar_help_page_build(&$page) {
+  // Declare initial variables.
+  global $user;
+
+  // Need a serialized array for default value.
+  $roles = unserialize(variable_get('quickbar_role_weights', ''));
+
+  $path = drupal_get_path_alias();
+  if (drupal_is_front_page()) {
+    $path = '/';
+  }
+
+  if (is_array($roles)) {
+    // Sort roles
+    asort($roles);
+    
+    // Loop through the roles looking for a role that matches the current users
+    // role and also has a menu associated with it.
+    $menus = unserialize(variable_get('quickbar_role_menus', array()));
+    foreach ($roles as $rid => $weight) {
+      if (!empty($user->roles[$rid]) && $menus[$rid]) {
+        $item = db_query("SELECT text, format FROM {quickbar_help}
+                         WHERE path = :path
+                         AND rid = :rid", array(':path' => $path, ':rid' => $rid))->fetchAssoc();
+        
+        if ($item['text']) {
+          $page['page_bottom']['quickbar_help'] = array(
+            '#type' => 'markup',
+            '#markup' => "<div id='quickbar-help-box'><span class='close-button'></span>" . check_markup($item['text'], $item['format']) . '</div>',
+          );
+        }
+      }
+    }
+  }
+}

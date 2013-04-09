@@ -1,0 +1,57 @@
+<?php
+
+function quickbar_help_install() {
+	// This has to be heavier than quickbar
+	db_update('system')
+		->fields(array('weight' => 5))
+		->condition('name', 'quickbar_help')
+		->condition('type', 'module')
+		->execute();	
+}
+
+function quickbar_help_uninstall() {
+	db_delete('variable')
+		->condition('name', 'quickbar_help_%', 'LIKE')
+		->execute();
+}
+
+function quickbar_help_schema() {
+	$schema['quickbar_help'] = array(
+    'description' => 'Holds help definitions.',
+    'fields' => array(
+      'hid' => array(
+        'description' => 'The primary identifier for a help record.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE
+       ),
+			'rid' => array(
+				'type' => 'int',
+				'not null' => TRUE,
+				'description' => 'Role ID of associated menu.'
+			),
+      'text' => array(
+        'type' => 'text',
+        'not null' => TRUE,
+				'size' => 'big',
+        'description' => 'Help text.',
+      ),
+      'path' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'Shortcut path.',
+      ),
+      'format' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => 'filter_formats.format; for example, filtered_html.',
+      ),
+    ),
+    'primary key' => array('hid'),
+  );
+
+  return $schema;
+}

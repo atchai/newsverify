@@ -1,0 +1,7 @@
+<?php
+
+function quickbar_extras_uninstall() {
+	db_delete('variable')
+		->condition('name', 'quickbar_extras_%', 'LIKE')
+		->execute();
+}

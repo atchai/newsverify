@@ -1,0 +1,27 @@
+#quickbar #quickbar-right {
+  float: right;
+}
+
+div#quickbar div.depth-0 ul.links li a.username-link {
+  float: none;
+  padding: 0;
+}
+
+div#quickbar div.depth-0 ul.links li:hover a.username-link {
+  background: transparent;
+}
+
+div#quickbar div.depth-0 ul.links li.username {
+  margin: 0 10px 0 15px;
+}
+
+
+/* Admin page styles */
+form#quickbar-configure-form fieldset.quickbar-extras > div > div {
+  float: left;
+  width: 15%;
+}
+
+form#quickbar-configure-form fieldset.quickbar-extras fieldset.additional-options {
+  clear: left;
+}

@@ -1,0 +1,22 @@
+<?php
+
+/**
+ * Implements hook_enable().
+ */
+function quickbar_enable() {
+  // Weight quickbar to come after other modules.
+  db_update('system')
+    ->fields(array('weight' => 1))
+    ->condition('name', 'quickbar')
+    ->condition('type', 'module')
+    ->execute();
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function quickbar_uninstall() {
+  db_delete('variable')
+    ->condition('name', 'quickbar_%', 'LIKE')
+    ->execute();
+}

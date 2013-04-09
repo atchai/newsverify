@@ -1,0 +1,12 @@
+name = Quickbar
+description = Add a roled-based toolbar to the top of the page.
+package = Quickbar
+core = 7.x
+
+configure = admin/config/user-interface/quickbar
+; Information added by drupal.org packaging script on 2011-09-13
+version = "7.x-2.0-beta1"
+core = "7.x"
+project = "quickbar"
+datestamp = "1315951012"
+
