@@ -1,0 +1,40 @@
+<?php
+
+/**
+ * @file
+ * Installation file for Facebook comments module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function facebook_comments_schema() {
+  return array(
+    'facebook_comments' => array(
+      'description' => 'The main table to hold the facebook comments data.',
+      'fields' => array(
+        'nid' => array(
+          'description' => 'The foreign key to node.nid',
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ),
+        'enabled' => array(
+          'description' => 'Comments enabled or not',
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+          'default' => 0,
+        ),
+        'amount' => array(
+          'description' => 'Amount of comments to display',
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+          'default' => 15,
+        ),
+      ),
+      'primary key' => array('nid'),
+    ),
+  );
+}

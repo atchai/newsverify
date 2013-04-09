@@ -32,6 +32,7 @@ features[field][] = node-story-field_story_summary
 features[field][] = node-story-field_story_thumb
 features[field][] = node-story-field_submitted
 features[field][] = node-story-field_tags
+features[metatag][] = node:story
 features[node][] = story
 features[user_permission][] = create story content
 features[user_permission][] = delete any story content

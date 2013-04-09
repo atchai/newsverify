@@ -6,6 +6,7 @@ dependencies[] = ctools
 dependencies[] = entityreference
 dependencies[] = features
 dependencies[] = link
+dependencies[] = metatag
 dependencies[] = np_author
 dependencies[] = strongarm
 dependencies[] = taxonomy

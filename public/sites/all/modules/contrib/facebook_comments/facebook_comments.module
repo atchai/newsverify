@@ -1,0 +1,313 @@
+<?php
+
+/**
+ * Implements of hook_permission().
+ */
+function facebook_comments_permission() {
+  return array(
+    'administer facebook comments' => array(
+      'title' => t('Administer Facebook comments'),
+    ),
+    'moderate facebook comments' => array(
+      'title' => t('Enable/disable Facebook comments per node'),
+    ),
+  );
+}
+
+/**
+ * Implements of hook_menu().
+ */
+function facebook_comments_menu() {
+  $items = array();
+  $items['admin/config/content/facebook-comments'] = array(
+    'title' => 'Facebook comments settings',
+    'description' => 'Configure Facebook comments settings like the Facebook App ID.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('facebook_comments_admin'),
+    'access arguments' => array('administer facebook comments'),
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function facebook_comments_block_info() {
+  $blocks = array();
+  $blocks['facebook-comments'] = array(
+    'info' => t('Facebook comments'),
+  );
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function facebook_comments_block_view($delta = '') {
+  $block = array();
+  if ($delta == 'facebook-comments') {
+    $width = variable_get('facebook_comments_block_width', 208);
+    $amount = variable_get('facebook_comments_block_amount', 15);
+    $block = array(
+      'subject' => t('Facebook comments'),
+      'content' => facebook_comments_display($width, $amount),
+    );
+  }
+  return $block;
+}
+
+/**
+ * Configure Facebook comments settings like the Facebook App ID.
+ *
+ * @see facebook_comments_admin_applyall()
+ */
+function facebook_comments_admin() {
+  $form = array();
+  $form['facebook_comments_appid'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Facebook App ID'),
+    '#default_value' => variable_get('facebook_comments_appid', ''),
+    '#description' => t('Enter the Facebook App ID to ensure that all comments can be grouped for moderation.'),
+  );
+  $form['facebook_comments_style'] = array(
+    '#type' => 'select',
+    '#title' => t('Color Scheme'),
+    '#default_value' => variable_get('facebook_comments_style', 'light'), 
+    '#options' => array('light' => t('Light'), 'dark' => t('Dark')),
+  );
+  $form['facebook_comments_viewmode'] = array(
+    '#type' => 'select',
+    '#title' => t('View mode'),
+    '#default_value' => variable_get('facebook_comments_viewmode', 'full'),
+    '#options' => array('both' => t('Both full node and teaser'), 'full' => t('Full node'), 'teaser' => t('Teaser')),
+  );
+  $form['facebook_comments_width'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Facebook comment plugin width (nodes)'),
+    '#default_value' => variable_get('facebook_comments_width', 620),
+    '#description' => t('The width of the Facebook comment plugin for nodes, in pixels. Example: 620'),
+  );
+  $form['facebook_comments_block_width'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Facebook comment block plugin width (block)'),
+    '#default_value' => variable_get('facebook_comments_block_width', 208),
+    '#description' => t('The width of the Facebook comment plugin for the block, in pixels. Example: 250'),
+  );
+  $form['facebook_comments_block_amount'] = array(
+    '#type' => 'select',
+    '#title' => t('Amount of comments to display (block)'),
+    '#options' => array(1 => 1, 2 => 2, 3 => 3, 5 => 5, 7 => 7, 10 => 10, 15 => 15, 20 => 20, 30 => 30),
+    '#default_value' => variable_get('facebook_comments_block_amount', 15),
+  );
+
+  $defaulttypes = array();
+  $types = node_type_get_types();
+  foreach ($types as $key => $type) {
+    $defaulttypes[$key] = $type->name;
+  }
+  $form['facebook_comments_types'] = array(
+    '#type' => 'checkboxes',
+    '#title' => t('Facebook comment default content types'),
+    '#options' => $defaulttypes,
+    '#default_value' => variable_get('facebook_comments_types', array()),
+    '#description' => t('Check the content types that should have Facebook comments enabled by default.'),
+  );
+  $form['facebook_comments_applyall'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Enable Facebook comments on existing content for the selected content types.'),
+    '#default_value' => FALSE,
+  );
+  $form['#submit'][] = 'facebook_comments_admin_applyall';
+  return system_settings_form($form);
+}
+
+/**
+ * Form submission handler for facebook_comments_admin().
+ *
+ * @see facebook_comments_admin()
+ */
+function facebook_comments_admin_applyall(&$form, $form_state) {
+  if ($form_state['values']['facebook_comments_applyall']) {
+    $types = array();
+    foreach ($form_state['values']['facebook_comments_types'] as $key => $value) {
+      if (!empty($value)) $types[] = $key;
+    }
+    $results = db_select('node', 'n')
+      ->fields('n', array('nid'))
+      ->condition('type', $types, 'IN')
+      ->execute();
+    while ($result = $results->fetchAssoc()) {
+      db_merge('facebook_comments')
+        ->key(array('nid' => $result['nid']))
+        ->fields(array('enabled' => 1))
+        ->execute();
+    }
+    drupal_set_message('Facebook comments have been enabled on existing content for the selected content types.');
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ *
+ * Add the Facebook commenting options for a node.
+ */
+function facebook_comments_form_node_form_alter(&$form, $form_state) {
+  // Check if the user has permission to enabled and disable Facebook comments for this node
+  if (!user_access('moderate facebook comments')) return;
+  // Load the default values
+  $node = $form['#node'];
+  // If this is a preview then get the values from the form, not the db
+  if (isset($form_state['values']['op']) && $form_state['values']['op'] == t('Preview')) {
+    $defaults = new StdClass;
+    $defaults->enabled = $form_state['values']['facebook_comments_enabled'];
+    $defaults->amount = $form_state['values']['facebook_comments_amount'];
+  }
+  elseif (isset($node->nid) && $node->nid > 0) {
+    // Load the values from the db if we are viewing an existing node.
+    $defaults = db_select('facebook_comments', 'f')
+      ->fields('f', array('enabled', 'amount'))
+      ->condition('f.nid', $node->nid, '=')
+      ->execute()
+      ->fetchObject();
+    // If the node is existed before we installed facebook_comments add default values.
+    if(!$defaults) {
+      $defaulttypes = variable_get('facebook_comments_types', array());
+      $defaults = new StdClass;
+      $defaults->enabled =  !empty($defaulttypes[$node->type]) ? 1 : 0;;
+      $defaults->amount = 15;
+    }
+  }
+  else {
+    // Init standard values
+    $defaulttypes = variable_get('facebook_comments_types', array());
+    $defaults = new StdClass;
+    $defaults->enabled = !empty($defaulttypes[$node->type]) ? 1 : 0;
+    $defaults->amount = 15;
+  }
+  $form['facebook_comments'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Facebook comments'),
+    '#group' => 'additional_settings',
+    '#attributes' => array('class' => array('edit-facebook-comments')),
+    '#attached' => array(
+      'js' => array('vertical-tabs' => drupal_get_path('module', 'facebook_comments') . "/facebook_comments_vertical_tabs.js"),
+    ),    
+  );
+  $form['facebook_comments']['facebook_comments_description'] = array(
+    '#prefix' => '<div class="description">',
+    '#suffix' => '</div>',
+    '#markup' => t('The Facebook App ID can be set <a href="@link">here</a>.', array('@link' => url('admin/config/content/facebook-comments'))),
+  );
+  // Enable or disable Facebook comments for this node
+  $form['facebook_comments']['facebook_comments_enabled'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Enable Facebook comments'),
+    '#default_value' => $defaults->enabled,
+  );
+  // Amount of comments
+  $form['facebook_comments']['facebook_comments_amount'] = array(
+    '#type' => 'select',
+    '#title' => t('Amount of comments to display'),
+    '#options' => array(1 => 1, 2 => 2, 3 => 3, 5 => 5, 7 => 7, 10 => 10, 15 => 15, 20 => 20, 30 => 30),
+    '#default_value' => $defaults->amount,
+  );
+}
+
+/**
+ * Implements hook_node_insert().
+ */
+function facebook_comments_node_insert($node) {
+  if (isset($node->facebook_comments_enabled) && !empty($node->facebook_comments_enabled)) {
+    db_insert('facebook_comments')
+      ->fields(array(
+        'nid' => $node->nid,
+        'enabled' => $node->facebook_comments_enabled,
+        'amount' => $node->facebook_comments_amount,
+    ))
+    ->execute();
+  }
+}
+
+/**
+ * Implements hook_node_update().
+ */
+function facebook_comments_node_update($node) {
+  if (isset($node->facebook_comments_enabled)) {
+    db_merge('facebook_comments')
+      ->key(array('nid' => $node->nid))
+      ->fields(array(
+        'enabled' => $node->facebook_comments_enabled,
+        'amount' => $node->facebook_comments_amount,
+      ))
+      ->execute();
+  }
+}
+
+/**
+ * Implements hook_node_delete().
+ */
+function facebook_comments_node_delete($node) {
+  db_delete('facebook_comments')
+    ->condition('nid', $node->nid)
+    ->execute();
+}
+
+/**
+ * Implements hook_node_view().
+ */
+function facebook_comments_node_view($node, $view_mode, $langcode) {
+  // Check the view mode to display the comments or not
+  $fc_viewmode = variable_get('facebook_comments_viewmode', 'full');
+  if ($fc_viewmode != "both" && $view_mode != $fc_viewmode) return;
+  // Check if Facebook comments are enabled for this node
+  $comments = db_select('facebook_comments', 'f')
+    ->fields('f', array('enabled', 'amount'))
+    ->condition('f.nid', $node->nid, '=')
+    ->execute()
+    ->fetchObject();
+  if (!isset($comments->enabled) || !$comments->enabled) return;
+  // Add the Facebook App ID if it exists
+  $width = variable_get('facebook_comments_width', 620);
+  $output = facebook_comments_display($width, $comments->amount);
+  $node->content['facebook_comments'] = array(
+    '#markup' => $output, 
+    '#weight' => 1002, 
+  );
+}
+
+/**
+ * Generate the output of a Facebook commenting plugin.
+ *
+ * @param width
+ *   The width of the plugin in pixels.
+ * @param amount
+ *   The amount of comments to display.
+ */
+function facebook_comments_display($width, $amount) {
+  // Add the Facebook App ID if it exists
+  if ($appid = variable_get('facebook_comments_appid', '')) {    
+    $element = array(
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'property' => 'fb:app_id',
+        'content' => $appid,
+      ),
+    );
+    drupal_add_html_head($element, 'facebook_comments');
+  }
+  // Generate the URL
+  global $base_url;
+  $url = $base_url .'/'. drupal_get_path_alias($_GET['q']);
+  // Add user defined settings
+  $style = variable_get('facebook_comments_style', 'light');
+  $output = '<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, "script", "facebook-jssdk"));</script>
+<div class="fb-comments" data-href="'. $url .'" data-num-posts="'. $amount .'" data-width="'. $width .'" data-colorscheme="'.$style.'"></div>';
+  return $output;
+}

@@ -78,6 +78,7 @@ features[field_group][] = group_when|node|event|default
 features[field_group][] = group_when|node|event|form
 features[field_group][] = group_where|node|event|default
 features[field_group][] = group_where|node|event|form
+features[metatag][] = node:event
 features[node][] = event
 features[taxonomy][] = verification_status
 features[user_permission][] = create event content
