@@ -60,13 +60,7 @@ function np_core_context_default_contexts() {
           'module' => 'views',
           'delta' => 'footer_ads-block',
           'region' => 'after_content',
-          'weight' => '-10',
-        ),
-        'block-2' => array(
-          'module' => 'block',
-          'delta' => '2',
-          'region' => 'footer_first',
-          'weight' => '-10',
+          'weight' => '0',
         ),
         'menu_block-1' => array(
           'module' => 'menu_block',
