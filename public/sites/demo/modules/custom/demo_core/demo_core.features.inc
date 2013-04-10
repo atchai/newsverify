@@ -44,15 +44,10 @@ function demo_core_default_search_api_index() {
         },
         "search_api_alter_node_access" : { "status" : 0, "weight" : "0", "settings" : [] },
         "search_api_alter_node_status" : { "status" : 1, "weight" : "0", "settings" : [] },
-        "search_api_alter_language_control" : {
-          "status" : 0,
-          "weight" : "0",
-          "settings" : { "lang_field" : "", "languages" : [] }
-        },
-        "search_api_alter_add_viewed_entity" : { "status" : 0, "weight" : "0", "settings" : { "mode" : "full" } },
+        "search_api_alter_add_hierarchy" : { "status" : 0, "weight" : "0", "settings" : { "fields" : [] } },
+        "search_api_alter_add_viewed_entity" : { "status" : 1, "weight" : "0", "settings" : { "mode" : "full" } },
         "search_api_alter_add_url" : { "status" : 0, "weight" : "0", "settings" : [] },
-        "search_api_alter_add_aggregation" : { "status" : 0, "weight" : "0", "settings" : [] },
-        "search_api_alter_add_hierarchy" : { "status" : 0, "weight" : "0", "settings" : { "fields" : [] } }
+        "search_api_alter_add_aggregation" : { "status" : 0, "weight" : "0", "settings" : [] }
       },
       "processors" : {
         "search_api_case_ignore" : {
@@ -89,14 +84,14 @@ function demo_core_default_search_api_index() {
           "settings" : {
             "fields" : {
               "title" : true,
-              "field_verification_status" : true,
               "field_location" : true,
               "field_tags" : true,
+              "field_verification_status" : true,
               "field_story_summary" : true,
               "body:value" : true,
-              "field_verification_status:name" : true,
               "field_location:name" : true,
-              "field_tags:name" : true
+              "field_tags:name" : true,
+              "field_verification_status:name" : true
             },
             "spaces" : "[^\\\\p{L}\\\\p{N}-]",
             "ignorable" : ""
@@ -122,29 +117,11 @@ function demo_core_default_search_api_index() {
         "type" : { "type" : "string" },
         "title" : { "type" : "text", "boost" : "5.0" },
         "status" : { "type" : "integer" },
-        "promote" : { "type" : "boolean" },
-        "sticky" : { "type" : "boolean" },
         "created" : { "type" : "date" },
         "changed" : { "type" : "date" },
-        "author" : { "type" : "integer", "entity_type" : "user" },
-        "field_post_author" : { "type" : "integer", "entity_type" : "node" },
-        "field_story_summary" : { "type" : "text" },
-        "field_location" : { "type" : "integer", "entity_type" : "taxonomy_term" },
-        "field_tags" : { "type" : "list\\u003Cinteger\\u003E", "entity_type" : "taxonomy_term" },
-        "field_verification_status" : { "type" : "integer", "entity_type" : "taxonomy_term" },
-        "field_what_description" : { "type" : "text" },
-        "field_what_posts" : { "type" : "list\\u003Cinteger\\u003E", "entity_type" : "node" },
-        "field_when_posts" : { "type" : "list\\u003Cinteger\\u003E", "entity_type" : "node" },
-        "field_where_posts" : { "type" : "list\\u003Cinteger\\u003E", "entity_type" : "node" },
-        "field_author_rating" : { "type" : "integer", "entity_type" : "taxonomy_term" },
         "search_api_language" : { "type" : "string" },
-        "body:value" : { "type" : "text" },
-        "field_location:name" : { "type" : "text", "boost" : "2.0" },
-        "field_tags:name" : { "type" : "list\\u003Ctext\\u003E", "boost" : "3.0" },
-        "field_verification_status:name" : { "type" : "text" },
-        "field_what_posts:title" : { "type" : "list\\u003Ctext\\u003E" },
-        "field_when_posts:title" : { "type" : "list\\u003Ctext\\u003E" },
-        "field_where_posts:title" : { "type" : "list\\u003Ctext\\u003E" }
+        "search_api_viewed" : { "type" : "text" },
+        "body:value" : { "type" : "text" }
       }
     },
     "enabled" : "1",
