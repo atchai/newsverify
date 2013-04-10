@@ -29,6 +29,12 @@ function np_author_context_default_contexts() {
   $context->reactions = array(
     'block' => array(
       'blocks' => array(
+        'np_event-np_author_events' => array(
+          'module' => 'np_event',
+          'delta' => 'np_author_events',
+          'region' => 'after_content',
+          'weight' => '-10',
+        ),
         'menu-menu-our-approach' => array(
           'module' => 'menu',
           'delta' => 'menu-our-approach',

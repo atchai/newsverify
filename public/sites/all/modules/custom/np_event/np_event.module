@@ -80,3 +80,88 @@ function np_event_preprocess_node(&$vars) {
   }
 
 }
+
+/**
+ * Implements hook_block_info().
+ */
+function np_event_block_info() {
+    return array(
+        'np_author_events' => array(
+            'info' => t('NewsPlatform: Author Events'),
+        ),
+    );
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function np_event_block_view($delta = '') {
+    if ($delta != 'np_author_events') {
+        return;
+    }
+
+    $items = np_event_author_events();
+    if (empty($items)) {
+        return;
+    }
+
+    return array(
+        'subject' => t('Events'),
+        'content' => array(
+            '#theme' => 'item_list',
+            '#items' => $items,
+        ),
+    );
+}
+
+function np_event_author_events() {
+    // Get current node object and ensure it is of type "Author"
+    $author = menu_get_object();
+    if (empty($author->nid) || empty($author->type) || $author->type != 'author') {
+        return;
+    }
+
+    // Select from node table
+    $query = db_select('node', 'event');
+
+    // Left join the three post entity reference fields
+    foreach(array('when', 'where', 'what') as $type) {
+        $query->leftJoin('field_data_field_' . $type . '_posts', 'posts_' . $type, 'event.nid = posts_' . $type . '.entity_id');
+        $authorConditions[] = 'posts_' . $type . '.field_' . $type . '_posts_target_id = authors.entity_id';
+    }
+
+    // Left join the author entity reference field onto the three previous joins
+    $query->leftJoin('field_data_field_post_author', 'authors', implode(' OR ', $authorConditions));
+
+    // Set query fields, event conditions, author condition, ordering and grouping
+    $query->fields('event', array('nid'))
+        ->condition('event.type', 'event')
+        ->condition('event.status', 1)
+        ->condition('authors.field_post_author_target_id', $author->nid)
+        ->orderBy('event.created', 'ASC')
+        ->groupBy('event.nid');
+
+    // Execute the query
+    $result = $query->execute();
+    if (!$result) {
+        return;
+    }
+
+    // Build list of events
+    $items = array();
+    while($nid = $result->fetchField()) {
+        // Load event node
+        $event = node_load($nid);
+        if ($event === FALSE) {
+            continue;
+        }
+
+        // Wrap event node
+        $event = entity_metadata_wrapper('node', $event);
+
+        // Add list item for this event
+        $items[] = l($event->title->value(), $event->url->value());
+    }
+
+    return $items;
+}

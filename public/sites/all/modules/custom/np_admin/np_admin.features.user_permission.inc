@@ -386,6 +386,7 @@ function np_admin_user_default_permissions() {
     'name' => 'translate interface',
     'roles' => array(
       0 => 'Administrator',
+      1 => 'authenticated user',
     ),
     'module' => 'locale',
   );
