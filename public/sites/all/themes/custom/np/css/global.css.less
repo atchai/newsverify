@@ -1072,16 +1072,16 @@ ul.inline li {
   padding: 10px 10px 10px 10px;
 
   h3 {
-    padding: 0 20px 0 0;
+    padding: 0 0 0 20px; // LTR
 
     .status-container {
       display: inline-block;
-      margin: 0 20px 0 0;
+      margin: 0 0 0 20px; // LTR
     }
 
     .field-group-format-toggler {
       display: block;
-      float: right;
+      float: left; // LTR
     }
   }
 }
@@ -1089,14 +1089,14 @@ ul.inline li {
 .collapsible {
   h3 {
     background: url(../img/group_arrow_down.png) no-repeat;
-    background-position: 100% 50%;
+    background-position: 0 50%; // LTR
   }
 }
 
 .collapsed {
   h3 {
     background: url(../img/group_arrow_up.png) no-repeat;
-    background-position: 100% 50%;
+    background-position: 0 50%; // LTR
   }
 }
 
