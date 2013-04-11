@@ -14,7 +14,7 @@ function np_publisher_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'quickbar_extras_settings_2';
-  $strongarm->value = 'a:5:{s:4:"menu";a:2:{s:8:"mlid_403";s:4:"left";s:8:"mlid_406";s:4:"left";}s:13:"show_username";i:1;s:20:"show_username_prefix";s:7:"Hello, ";s:20:"show_username_suffix";s:0:"";s:18:"show_username_link";i:0;}';
+  $strongarm->value = 'a:5:{s:4:"menu";a:7:{s:8:"mlid_403";s:4:"left";s:8:"mlid_404";s:4:"left";s:8:"mlid_405";s:4:"left";s:8:"mlid_406";s:4:"left";s:8:"mlid_407";s:4:"left";s:8:"mlid_408";s:4:"left";s:8:"mlid_420";s:4:"left";}s:13:"show_username";i:1;s:20:"show_username_prefix";s:7:"Hello, ";s:20:"show_username_suffix";s:0:"";s:18:"show_username_link";i:0;}';
   $export['quickbar_extras_settings_2'] = $strongarm;
 
   $strongarm = new stdClass();

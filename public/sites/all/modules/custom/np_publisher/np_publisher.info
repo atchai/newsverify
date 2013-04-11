@@ -19,6 +19,7 @@ features[menu_links][] = menu-publisher-quickbar:admin/content/events
 features[menu_links][] = menu-publisher-quickbar:node/add
 features[menu_links][] = menu-publisher-quickbar:node/add/event
 features[menu_links][] = menu-publisher-quickbar:node/add/story
+features[menu_links][] = menu-publisher-quickbar:user/logout
 features[user_permission][] = administer menu
 features[variable][] = quickbar_extras_settings_2
 features[variable][] = quickbar_role_menus

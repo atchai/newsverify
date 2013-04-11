@@ -118,12 +118,32 @@ function np_publisher_menu_default_menu_links() {
     'expanded' => '0',
     'weight' => '-48',
   );
+  // Exported menu link: menu-publisher-quickbar:user/logout
+  $menu_links['menu-publisher-quickbar:user/logout'] = array(
+    'menu_name' => 'menu-publisher-quickbar',
+    'link_path' => 'user/logout',
+    'router_path' => 'user/logout',
+    'link_title' => 'Log Out',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+      'alter' => TRUE,
+    ),
+    'module' => 'menu',
+    'hidden' => '0',
+    'external' => '0',
+    'has_children' => '0',
+    'expanded' => '0',
+    'weight' => '0',
+  );
   // Translatables
   // Included for use with string extractors like potx.
   t('Add Content');
   t('Authors');
   t('Event');
   t('Events');
+  t('Log Out');
   t('My Content');
   t('Story');
 
