@@ -23,5 +23,4 @@ features[variable][] = language_default
 features[variable][] = site_default_country
 features[variable][] = site_mail
 features[variable][] = site_name
-features[variable][] = site_slogan
 features[variable][] = theme_default
