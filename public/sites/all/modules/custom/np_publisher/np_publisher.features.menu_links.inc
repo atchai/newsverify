@@ -26,7 +26,7 @@ function np_publisher_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '-47',
+    'weight' => '-46',
   );
   // Exported menu link: menu-publisher-quickbar:admin/content/authors
   $menu_links['menu-publisher-quickbar:admin/content/authors'] = array(
@@ -44,7 +44,7 @@ function np_publisher_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '-45',
+    'weight' => '-44',
   );
   // Exported menu link: menu-publisher-quickbar:admin/content/events
   $menu_links['menu-publisher-quickbar:admin/content/events'] = array(
@@ -62,14 +62,32 @@ function np_publisher_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '-46',
+    'weight' => '-45',
   );
-  // Exported menu link: menu-publisher-quickbar:node/add
-  $menu_links['menu-publisher-quickbar:node/add'] = array(
+  // Exported menu link: menu-publisher-quickbar:node/add/author
+  $menu_links['menu-publisher-quickbar:node/add/author'] = array(
     'menu_name' => 'menu-publisher-quickbar',
-    'link_path' => 'node/add',
-    'router_path' => 'node/add',
-    'link_title' => 'Add Content',
+    'link_path' => 'node/add/author',
+    'router_path' => 'node/add/author',
+    'link_title' => 'Add Author',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+    ),
+    'module' => 'menu',
+    'hidden' => '0',
+    'external' => '0',
+    'has_children' => '0',
+    'expanded' => '0',
+    'weight' => '-47',
+  );
+  // Exported menu link: menu-publisher-quickbar:node/add/event
+  $menu_links['menu-publisher-quickbar:node/add/event'] = array(
+    'menu_name' => 'menu-publisher-quickbar',
+    'link_path' => 'node/add/event',
+    'router_path' => 'node/add/event',
+    'link_title' => 'Add Event',
     'options' => array(
       'attributes' => array(
         'title' => '',
@@ -82,30 +100,12 @@ function np_publisher_menu_default_menu_links() {
     'expanded' => '0',
     'weight' => '-50',
   );
-  // Exported menu link: menu-publisher-quickbar:node/add/event
-  $menu_links['menu-publisher-quickbar:node/add/event'] = array(
+  // Exported menu link: menu-publisher-quickbar:node/add/page
+  $menu_links['menu-publisher-quickbar:node/add/page'] = array(
     'menu_name' => 'menu-publisher-quickbar',
-    'link_path' => 'node/add/event',
-    'router_path' => 'node/add/event',
-    'link_title' => 'Event',
-    'options' => array(
-      'attributes' => array(
-        'title' => '',
-      ),
-    ),
-    'module' => 'menu',
-    'hidden' => '0',
-    'external' => '0',
-    'has_children' => '0',
-    'expanded' => '0',
-    'weight' => '-49',
-  );
-  // Exported menu link: menu-publisher-quickbar:node/add/story
-  $menu_links['menu-publisher-quickbar:node/add/story'] = array(
-    'menu_name' => 'menu-publisher-quickbar',
-    'link_path' => 'node/add/story',
-    'router_path' => 'node/add/story',
-    'link_title' => 'Story',
+    'link_path' => 'node/add/page',
+    'router_path' => 'node/add/page',
+    'link_title' => 'Add Page',
     'options' => array(
       'attributes' => array(
         'title' => '',
@@ -117,6 +117,24 @@ function np_publisher_menu_default_menu_links() {
     'has_children' => '0',
     'expanded' => '0',
     'weight' => '-48',
+  );
+  // Exported menu link: menu-publisher-quickbar:node/add/story
+  $menu_links['menu-publisher-quickbar:node/add/story'] = array(
+    'menu_name' => 'menu-publisher-quickbar',
+    'link_path' => 'node/add/story',
+    'router_path' => 'node/add/story',
+    'link_title' => 'Add Story',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+    ),
+    'module' => 'menu',
+    'hidden' => '0',
+    'external' => '0',
+    'has_children' => '0',
+    'expanded' => '0',
+    'weight' => '-49',
   );
   // Exported menu link: menu-publisher-quickbar:user/logout
   $menu_links['menu-publisher-quickbar:user/logout'] = array(
@@ -135,17 +153,18 @@ function np_publisher_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '0',
+    'weight' => '-43',
   );
   // Translatables
   // Included for use with string extractors like potx.
-  t('Add Content');
+  t('Add Author');
+  t('Add Event');
+  t('Add Page');
+  t('Add Story');
   t('Authors');
-  t('Event');
   t('Events');
   t('Log Out');
   t('My Content');
-  t('Story');
 
 
   return $menu_links;
