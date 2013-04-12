@@ -4156,7 +4156,7 @@ $display_output =  t(\'!username | !datetime ago\', array(\'!username\' => $sub_
     'field_instance' => array(
       'bundle' => 'verification_status',
       'deleted' => '0',
-      'description' => 'You can optionally upload an image to represent this verification status, wherever it\'s displayed on the front end of the site. If this field is left blank the default verification status graphic will be used instead.',
+      'description' => 'You may optionally upload an image to represent this verification status wherever it\'s displayed on the front end of the site. Verification images should be 40px wide by 5px tall, other sizes will be scaled to a width of 40px whilst keeping the original aspect ratio intact. If this field is left blank the default verification status graphic will be used instead.',
       'display' => array(
         'default' => array(
           'label' => 'above',
@@ -4203,6 +4203,7 @@ $display_output =  t(\'!username | !datetime ago\', array(\'!username\' => $sub_
             'image_300x197' => 0,
             'image_309xh' => 0,
             'image_320x210' => 0,
+            'image_40xh' => 0,
             'image_480x320' => 0,
             'image_618xh' => 0,
             'image_620x413' => 0,
@@ -4265,7 +4266,7 @@ $display_output =  t(\'!username | !datetime ago\', array(\'!username\' => $sub_
   t('When');
   t('Where');
   t('Why we think its');
-  t('You can optionally upload an image to represent this verification status, wherever it\'s displayed on the front end of the site. If this field is left blank the default verification status graphic will be used instead.');
+  t('You may optionally upload an image to represent this verification status wherever it\'s displayed on the front end of the site. Verification images should be 40px wide by 5px tall, other sizes will be scaled to a width of 40px whilst keeping the original aspect ratio intact. If this field is left blank the default verification status graphic will be used instead.');
 
   return $fields;
 }
