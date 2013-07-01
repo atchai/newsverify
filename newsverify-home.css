@@ -58,15 +58,6 @@ section.signup-section .signup-btn:hover {
     background-color: #1393cc;
 }
 
-section.signup-section .arrow {
-    display: block;
-    float: right;
-    width: 0;
-    height: 0;
-    border:  15px solid transparent;
-    border-left-color: #CC790B;
-}
-
 /* Content section */
 section.main-content {
     margin-top: 20px;
