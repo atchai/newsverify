@@ -2,10 +2,6 @@ body {
     font-family: Helvetica;
 }
 
-h1 {
-    font-family: "p22-underground-1";
-}
-
 hr {
     margin-top: 0;
     height:10px;
@@ -25,9 +21,27 @@ header {
     margin-bottom: 20px;
 }
 
+/* header section newsverify title */
+header h2 {
+    font-size: 27px;
+}
+
+/* header section h3 */
+header h3 {
+    font-size: 20px;
+    font-weight: lighter;
+    color: #999999;
+}
+
 /* steps section steps */
 section.steps-section .step {
     text-align: center;
+}
+
+/* steps section step titles */
+section.steps-section .step h2 {
+    font-weight: lighter;
+    color: #666666;
 }
 
 /* sign up section */
@@ -47,6 +61,7 @@ section.signup-section .signup-content {
 /* sign up section content text */
 section.signup-section .signup-text {
     margin-top: 21px;
+    color: #8c8c8c;
 }
 
 /* sign up section content button */
