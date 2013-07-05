@@ -86,18 +86,42 @@ section.main-content {
     margin-top: 20px;
     margin-bottom: 20px;
     margin: 20px 38px 60px -25px;
+    padding: 0 50px;
 }
 
+/*Content section heading*/
+section.main-content h2 {
+    color: #8c8c8c;
+}
+
+section.main-content p {
+    color: #666666;
+}
+
+/* footer */
 footer {
     margin-bottom: 20px;
 }
 
-footer .i-logo {
-    width: 190px;
-    margin-left: 0;
+/* footer nav bar */
+footer ul {
+    margin-top: 10px;
 }
 
+
+/*footer nav bar fonts*/
+footer ul li a {
+    font-size: 30px;
+}
+
+/* footer internews logo */
+footer .i-logo {
+    width: 190px;
+}
+
+/* footer atchai logo */
 footer .a-logo {
     width: 150px;
-    float: right;
 }
+
+
