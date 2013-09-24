@@ -200,7 +200,7 @@ function np_author_field_default_fields() {
             'view_mode' => 'full',
           ),
           'type' => 'field_collection_view',
-          'weight' => '5',
+          'weight' => '6',
         ),
         'in_event_page' => array(
           'label' => 'above',
@@ -368,10 +368,14 @@ function np_author_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => '11',
+          'label' => 'hidden',
+          'module' => 'image',
+          'settings' => array(
+            'image_link' => '',
+            'image_style' => '309xh',
+          ),
+          'type' => 'image',
+          'weight' => '4',
         ),
         'in_event_page' => array(
           'label' => 'above',
@@ -481,7 +485,7 @@ function np_author_field_default_fields() {
           'label' => 'above',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => '6',
+          'weight' => '7',
         ),
         'in_event_page' => array(
           'label' => 'above',
@@ -573,7 +577,7 @@ function np_author_field_default_fields() {
           'label' => 'above',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => '9',
+          'weight' => '10',
         ),
         'in_event_page' => array(
           'label' => 'above',
@@ -664,7 +668,7 @@ function np_author_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => '4',
+          'weight' => '5',
         ),
         'in_event_page' => array(
           'label' => 'above',
@@ -754,7 +758,7 @@ function np_author_field_default_fields() {
           'label' => 'above',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => '7',
+          'weight' => '8',
         ),
         'in_event_page' => array(
           'label' => 'above',
@@ -846,7 +850,7 @@ function np_author_field_default_fields() {
           'label' => 'above',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => '10',
+          'weight' => '11',
         ),
         'in_event_page' => array(
           'label' => 'above',
@@ -938,7 +942,7 @@ function np_author_field_default_fields() {
           'label' => 'above',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => '8',
+          'weight' => '9',
         ),
         'in_event_page' => array(
           'label' => 'above',
