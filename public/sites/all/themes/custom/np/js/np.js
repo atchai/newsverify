@@ -10,9 +10,14 @@ var mobileWidth = 767;
 ----------------------------------------------------------------------------------------------------*/
 Drupal.np = {
   masonry: function () {
-    if ($(window).width() >= mobileWidth) {
-      $('.view-home ul.news-list, .view-taxonomy ul.news-list, .view-search ul.news-list').isotope({itemSelector: 'li.news-item'});
-    }
+    // Bind masonry layout to window resize
+    $(window).bind('resize', function() {
+      $('.view-home ul.news-list, .view-taxonomy ul.news-list, .view-search ul.news-list').isotope({
+        itemSelector: 'li.news-item'
+      });
+    });
+    // Trigger resize for initial layout
+    $(window).trigger('resize');
   },
 
   /* Menu - JS Interaction
@@ -35,9 +40,9 @@ Drupal.np = {
         var cutoffItem = -1;
         $('#block-menu-menu-section ul.menu li').each(function(i) {
 
-          // With each new ul li, reduce the remaining horizontal space available. 
+          // With each new ul li, reduce the remaining horizontal space available.
           // outerWidth(true) includes width, padding, border and margin - e.g the true space taken.
-          // Note: .outerWidth(true) is not giving accurate results, it's returning a little too small. E.G 
+          // Note: .outerWidth(true) is not giving accurate results, it's returning a little too small. E.G
           // E.G if firefox inspect shows 110, it's returning 99. I *suspect* that is because of custom fonts
           // A workaround, is to approximate, so taking off another ~10%.
           // UPDATE: Have shifted to be triggered by google web fonts loader AFTER fonts have finished loading.
@@ -47,7 +52,7 @@ Drupal.np = {
           // Formally this should be 0, but I'm leaving a few pixels spare to cover for browser variations
           if (remainingWidth <= 10) {
             // We're now below the remaining width for one row. So the ul li item that should be the last in the
-            // row is the one before this one e.g i - 1 
+            // row is the one before this one e.g i - 1
             cutoffItem = i - 1;
 
             // Return false immediately to stop the each loop

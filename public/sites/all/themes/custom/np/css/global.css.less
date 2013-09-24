@@ -141,7 +141,8 @@ ul.inline li {
   padding: 5px 0 0 0;
 
   li.news-item {
-    margin: 0;
+    width: 300px;
+    margin: 5px 20px 8px 0; // LTR
     border-bottom: 1px solid #ddd;
 
     // Story
@@ -1281,6 +1282,35 @@ aside .block {
 
   }
 
+}
+
+/* Isotope Animations
+----------------------------------------------------------------------------------------------------*/
+
+.isotope,
+.isotope .isotope-item {
+  /* change duration value to whatever you like */
+  -webkit-transition-duration: 0.8s;
+     -moz-transition-duration: 0.8s;
+      -ms-transition-duration: 0.8s;
+       -o-transition-duration: 0.8s;
+          transition-duration: 0.8s;
+}
+
+.isotope {
+  -webkit-transition-property: height, width;
+     -moz-transition-property: height, width;
+      -ms-transition-property: height, width;
+       -o-transition-property: height, width;
+          transition-property: height, width;
+}
+
+.isotope .isotope-item {
+  -webkit-transition-property: -webkit-transform, opacity;
+     -moz-transition-property:    -moz-transform, opacity;
+      -ms-transition-property:     -ms-transform, opacity;
+       -o-transition-property:      -o-transform, opacity;
+          transition-property:         transform, opacity;
 }
 
 /* Mobile ONLY
