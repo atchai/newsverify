@@ -13,7 +13,11 @@ Drupal.np = {
     // Bind masonry layout to window resize
     $(window).bind('resize', function() {
       $('.view-home ul.news-list, .view-taxonomy ul.news-list, .view-search ul.news-list').isotope({
-        itemSelector: 'li.news-item'
+        itemSelector: 'li.news-item',
+        containerStyle: {
+          overflow: 'visible',
+          position: 'relative'
+        }
       });
     });
     // Trigger resize for initial layout
