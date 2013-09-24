@@ -14,25 +14,30 @@ Drupal.np = {
     if (webFontLoaded) {
       $(window).trigger('resize');
     } else {
-      Drupal.np.masonry();
-      Drupal.np.menu();
-      webFontLoaded = true;
+      // Wait until document has loaded, or run now if its ready
+      $(document).ready(function() {
+        Drupal.np.masonry();
+        Drupal.np.menu();
+        webFontLoaded = true;
+      });
     }
   },
 
   masonry: function () {
-    // Bind masonry layout to window resize
-    $(window).bind('resize', function() {
-      $('.view-home ul.news-list, .view-taxonomy ul.news-list, .view-search ul.news-list').isotope({
-        itemSelector: 'li.news-item',
-        containerStyle: {
-          overflow: 'visible',
-          position: 'relative'
-        }
-      });
+    // Initialise masonry
+    var $container = $('.view-home ul.news-list, .view-taxonomy ul.news-list, .view-search ul.news-list');
+    $container.isotope({
+      itemSelector: 'li.news-item',
+      containerStyle: {
+        overflow: 'visible',
+        position: 'relative'
+      }
     });
-    // Trigger resize for initial layout
-    $(window).trigger('resize');
+    // Reload items and masonry on window resize
+    $(window).bind('resize', function() {
+        $container.isotope('reloadItems');
+        $container.isotope('reLayout');
+    });
   },
 
   /* Menu - JS Interaction
