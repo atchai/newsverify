@@ -14,10 +14,8 @@ Drupal.np = {
     if (webFontLoaded) {
       $(window).trigger('resize');
     } else {
-      $(window).load(function() {
-        Drupal.np.masonry();
-        Drupal.np.menu();
-      });
+      Drupal.np.masonry();
+      Drupal.np.menu();
       webFontLoaded = true;
     }
   },
