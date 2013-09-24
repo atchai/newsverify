@@ -1,7 +1,8 @@
 (function($) {
 
 // Configuration
-var mobileWidth = 767;
+var mobileWidth = 767,
+    webFontLoaded = false;
 
 /* JQuery Masonry
  * See preprocess-html.inc in subthemes to see where Drupal.np.masonry() is called.
@@ -9,6 +10,18 @@ var mobileWidth = 767;
  * or else the height of the bricks is calculated incorrectly and the bricks overlap
 ----------------------------------------------------------------------------------------------------*/
 Drupal.np = {
+  webFontLoad: function() {
+    if (webFontLoaded) {
+      $(window).trigger('resize');
+    } else {
+      $(window).load(function() {
+        Drupal.np.masonry();
+        Drupal.np.menu();
+      });
+      webFontLoaded = true;
+    }
+  },
+
   masonry: function () {
     // Bind masonry layout to window resize
     $(window).bind('resize', function() {
