@@ -434,6 +434,10 @@ class NPPostImporter {
             $this->fetcher = new NPPostFacebookFetcher($this->url);
             $this->processor = new NPPostFacebookProcessor($this->url);
 
+        } else if (in_array($parts['host'], array('twitter.com'))) {
+            $this->fetcher = new NPPostTwitterFetcher($this->url);
+            $this->processor = new NPPostTwitterProcessor($this->url);
+
         } else {
             $this->fetcher = new NPPostEmbedlyFetcher($this->url);
             $this->processor = new NPPostEmbedlyProcessor($this->url);

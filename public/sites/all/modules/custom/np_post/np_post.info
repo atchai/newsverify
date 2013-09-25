@@ -39,3 +39,4 @@ features[variable][] = pathauto_taxonomy_term_provider_pattern
 files[] = includes/import.inc
 files[] = includes/import.embedly.inc
 files[] = includes/import.facebook.inc
+files[] = includes/import.twitter.inc
