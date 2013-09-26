@@ -116,6 +116,20 @@ function np_admin_user_default_permissions() {
     'module' => 'block',
   );
 
+  // Exported permission: administer contexts.
+  $permissions['administer contexts'] = array(
+    'name' => 'administer contexts',
+    'roles' => array(),
+    'module' => 'context_ui',
+  );
+
+  // Exported permission: administer facebook comments.
+  $permissions['administer facebook comments'] = array(
+    'name' => 'administer facebook comments',
+    'roles' => array(),
+    'module' => 'facebook_comments',
+  );
+
   // Exported permission: administer features.
   $permissions['administer features'] = array(
     'name' => 'administer features',
@@ -177,6 +191,13 @@ function np_admin_user_default_permissions() {
     'module' => 'less',
   );
 
+  // Exported permission: administer meta tags.
+  $permissions['administer meta tags'] = array(
+    'name' => 'administer meta tags',
+    'roles' => array(),
+    'module' => 'metatag',
+  );
+
   // Exported permission: administer modules.
   $permissions['administer modules'] = array(
     'name' => 'administer modules',
@@ -207,6 +228,13 @@ function np_admin_user_default_permissions() {
     'name' => 'administer permissions',
     'roles' => array(),
     'module' => 'user',
+  );
+
+  // Exported permission: administer quickbar.
+  $permissions['administer quickbar'] = array(
+    'name' => 'administer quickbar',
+    'roles' => array(),
+    'module' => 'quickbar',
   );
 
   // Exported permission: administer search_api.
@@ -349,6 +377,13 @@ function np_admin_user_default_permissions() {
     'module' => 'admin_menu',
   );
 
+  // Exported permission: edit meta tags.
+  $permissions['edit meta tags'] = array(
+    'name' => 'edit meta tags',
+    'roles' => array(),
+    'module' => 'metatag',
+  );
+
   // Exported permission: flush caches.
   $permissions['flush caches'] = array(
     'name' => 'flush caches',
@@ -367,6 +402,13 @@ function np_admin_user_default_permissions() {
     'module' => 'features',
   );
 
+  // Exported permission: moderate facebook comments.
+  $permissions['moderate facebook comments'] = array(
+    'name' => 'moderate facebook comments',
+    'roles' => array(),
+    'module' => 'facebook_comments',
+  );
+
   // Exported permission: notify of path changes.
   $permissions['notify of path changes'] = array(
     'name' => 'notify of path changes',
@@ -379,6 +421,13 @@ function np_admin_user_default_permissions() {
     'name' => 'select account cancellation method',
     'roles' => array(),
     'module' => 'user',
+  );
+
+  // Exported permission: submit translations to localization server.
+  $permissions['submit translations to localization server'] = array(
+    'name' => 'submit translations to localization server',
+    'roles' => array(),
+    'module' => 'l10n_client',
   );
 
   // Exported permission: translate interface.
@@ -398,6 +447,16 @@ function np_admin_user_default_permissions() {
       0 => 'Administrator',
     ),
     'module' => 'admin_language',
+  );
+
+  // Exported permission: use on-page translation.
+  $permissions['use on-page translation'] = array(
+    'name' => 'use on-page translation',
+    'roles' => array(
+      0 => 'Administrator',
+      1 => 'authenticated user',
+    ),
+    'module' => 'l10n_client',
   );
 
   // Exported permission: view the administration theme.
