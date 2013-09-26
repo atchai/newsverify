@@ -454,7 +454,6 @@ function np_admin_user_default_permissions() {
     'name' => 'use on-page translation',
     'roles' => array(
       0 => 'Administrator',
-      1 => 'authenticated user',
     ),
     'module' => 'l10n_client',
   );
