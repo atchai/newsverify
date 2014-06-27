@@ -13,7 +13,7 @@ function np_admin_user_default_roles() {
   // Exported role: Administrator.
   $roles['Administrator'] = array(
     'name' => 'Administrator',
-    'weight' => '2',
+    'weight' => 2,
   );
 
   return $roles;

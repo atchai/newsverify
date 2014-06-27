@@ -13,9 +13,9 @@ function np_post_taxonomy_default_vocabularies() {
       'name' => 'Provider',
       'machine_name' => 'provider',
       'description' => 'Social media networks (e.g. Twitter, Facebook, etc)',
-      'hierarchy' => '0',
+      'hierarchy' => 0,
       'module' => 'taxonomy',
-      'weight' => '0',
+      'weight' => 0,
     ),
   );
 }

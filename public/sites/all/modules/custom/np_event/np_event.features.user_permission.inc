@@ -10,88 +10,70 @@
 function np_event_user_default_permissions() {
   $permissions = array();
 
-  // Exported permission: create event content.
+  // Exported permission: 'create event content'.
   $permissions['create event content'] = array(
     'name' => 'create event content',
     'roles' => array(
-      0 => 'Administrator',
-      1 => 'authenticated user',
+      'Administrator' => 'Administrator',
+      'authenticated user' => 'authenticated user',
     ),
     'module' => 'node',
   );
 
-  // Exported permission: delete any event content.
+  // Exported permission: 'delete any event content'.
   $permissions['delete any event content'] = array(
     'name' => 'delete any event content',
     'roles' => array(
-      0 => 'Administrator',
-      1 => 'authenticated user',
+      'Administrator' => 'Administrator',
+      'authenticated user' => 'authenticated user',
     ),
     'module' => 'node',
   );
 
-  // Exported permission: delete own event content.
+  // Exported permission: 'delete own event content'.
   $permissions['delete own event content'] = array(
     'name' => 'delete own event content',
     'roles' => array(
-      0 => 'Administrator',
-      1 => 'authenticated user',
+      'Administrator' => 'Administrator',
+      'authenticated user' => 'authenticated user',
     ),
     'module' => 'node',
   );
 
-  // Exported permission: delete terms in 5.
-  $permissions['delete terms in 5'] = array(
-    'name' => 'delete terms in 5',
+  // Exported permission: 'delete terms in tags'.
+  $permissions['delete terms in tags'] = array(
+    'name' => 'delete terms in tags',
     'roles' => array(
-      0 => 'Administrator',
+      'Administrator' => 'Administrator',
     ),
     'module' => 'taxonomy',
   );
 
-  // Exported permission: delete terms in 6.
-  $permissions['delete terms in 6'] = array(
-    'name' => 'delete terms in 6',
-    'roles' => array(
-      0 => 'Administrator',
-    ),
-    'module' => 'taxonomy',
-  );
-
-  // Exported permission: edit any event content.
+  // Exported permission: 'edit any event content'.
   $permissions['edit any event content'] = array(
     'name' => 'edit any event content',
     'roles' => array(
-      0 => 'Administrator',
-      1 => 'authenticated user',
+      'Administrator' => 'Administrator',
+      'authenticated user' => 'authenticated user',
     ),
     'module' => 'node',
   );
 
-  // Exported permission: edit own event content.
+  // Exported permission: 'edit own event content'.
   $permissions['edit own event content'] = array(
     'name' => 'edit own event content',
     'roles' => array(
-      0 => 'Administrator',
-      1 => 'authenticated user',
+      'Administrator' => 'Administrator',
+      'authenticated user' => 'authenticated user',
     ),
     'module' => 'node',
   );
 
-  // Exported permission: edit terms in 5.
-  $permissions['edit terms in 5'] = array(
-    'name' => 'edit terms in 5',
+  // Exported permission: 'edit terms in tags'.
+  $permissions['edit terms in tags'] = array(
+    'name' => 'edit terms in tags',
     'roles' => array(
-      0 => 'Administrator',
-    ),
-    'module' => 'taxonomy',
-  );
-
-  // Exported permission: edit terms in 6.
-  $permissions['edit terms in 6'] = array(
-    'name' => 'edit terms in 6',
-    'roles' => array(
-      0 => 'Administrator',
+      'Administrator' => 'Administrator',
     ),
     'module' => 'taxonomy',
   );

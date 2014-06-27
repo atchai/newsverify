@@ -13,9 +13,9 @@ function np_location_taxonomy_default_vocabularies() {
       'name' => 'Location',
       'machine_name' => 'location',
       'description' => '',
-      'hierarchy' => '0',
+      'hierarchy' => 0,
       'module' => 'taxonomy',
-      'weight' => '0',
+      'weight' => 0,
     ),
   );
 }

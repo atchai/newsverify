@@ -13,17 +13,17 @@ function np_core_taxonomy_default_vocabularies() {
       'name' => 'Ad Groups',
       'machine_name' => 'ad_groups',
       'description' => 'Ad Groups',
-      'hierarchy' => '0',
+      'hierarchy' => 0,
       'module' => 'taxonomy',
-      'weight' => '0',
+      'weight' => 0,
     ),
     'section' => array(
       'name' => 'Section',
       'machine_name' => 'section',
       'description' => 'Site section',
-      'hierarchy' => '0',
+      'hierarchy' => 0,
       'module' => 'taxonomy',
-      'weight' => '0',
+      'weight' => 0,
     ),
   );
 }

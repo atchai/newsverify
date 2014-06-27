@@ -13,9 +13,9 @@ function np_event_taxonomy_default_vocabularies() {
       'name' => 'Verification Status',
       'machine_name' => 'verification_status',
       'description' => '',
-      'hierarchy' => '0',
+      'hierarchy' => 0,
       'module' => 'taxonomy',
-      'weight' => '0',
+      'weight' => 0,
     ),
   );
 }

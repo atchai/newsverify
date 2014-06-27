@@ -10,198 +10,198 @@
 function np_core_user_default_permissions() {
   $permissions = array();
 
-  // Exported permission: access content.
+  // Exported permission: 'access content'.
   $permissions['access content'] = array(
     'name' => 'access content',
     'roles' => array(
-      0 => 'Administrator',
-      1 => 'anonymous user',
-      2 => 'authenticated user',
+      'Administrator' => 'Administrator',
+      'anonymous user' => 'anonymous user',
+      'authenticated user' => 'authenticated user',
     ),
     'module' => 'node',
   );
 
-  // Exported permission: access content overview.
+  // Exported permission: 'access content overview'.
   $permissions['access content overview'] = array(
     'name' => 'access content overview',
     'roles' => array(
-      0 => 'Administrator',
-      1 => 'authenticated user',
+      'Administrator' => 'Administrator',
+      'authenticated user' => 'authenticated user',
     ),
     'module' => 'node',
   );
 
-  // Exported permission: administer content types.
+  // Exported permission: 'administer content types'.
   $permissions['administer content types'] = array(
     'name' => 'administer content types',
     'roles' => array(
-      0 => 'Administrator',
+      'Administrator' => 'Administrator',
     ),
     'module' => 'node',
   );
 
-  // Exported permission: administer nodes.
+  // Exported permission: 'administer nodes'.
   $permissions['administer nodes'] = array(
     'name' => 'administer nodes',
     'roles' => array(
-      0 => 'Administrator',
-      1 => 'authenticated user',
+      'Administrator' => 'Administrator',
+      'authenticated user' => 'authenticated user',
     ),
     'module' => 'node',
   );
 
-  // Exported permission: bypass node access.
+  // Exported permission: 'bypass node access'.
   $permissions['bypass node access'] = array(
     'name' => 'bypass node access',
     'roles' => array(
-      0 => 'Administrator',
+      'Administrator' => 'Administrator',
     ),
     'module' => 'node',
   );
 
-  // Exported permission: create simpleads content.
+  // Exported permission: 'create simpleads content'.
   $permissions['create simpleads content'] = array(
     'name' => 'create simpleads content',
     'roles' => array(
-      0 => 'Administrator',
-      1 => 'authenticated user',
+      'Administrator' => 'Administrator',
+      'authenticated user' => 'authenticated user',
     ),
     'module' => 'node',
   );
 
-  // Exported permission: delete any simpleads content.
+  // Exported permission: 'delete any simpleads content'.
   $permissions['delete any simpleads content'] = array(
     'name' => 'delete any simpleads content',
     'roles' => array(
-      0 => 'Administrator',
-      1 => 'authenticated user',
+      'Administrator' => 'Administrator',
+      'authenticated user' => 'authenticated user',
     ),
     'module' => 'node',
   );
 
-  // Exported permission: delete own simpleads content.
+  // Exported permission: 'delete own simpleads content'.
   $permissions['delete own simpleads content'] = array(
     'name' => 'delete own simpleads content',
     'roles' => array(
-      0 => 'Administrator',
-      1 => 'authenticated user',
+      'Administrator' => 'Administrator',
+      'authenticated user' => 'authenticated user',
     ),
     'module' => 'node',
   );
 
-  // Exported permission: delete revisions.
+  // Exported permission: 'delete revisions'.
   $permissions['delete revisions'] = array(
     'name' => 'delete revisions',
     'roles' => array(
-      0 => 'Administrator',
+      'Administrator' => 'Administrator',
     ),
     'module' => 'node',
   );
 
-  // Exported permission: delete terms in 1.
-  $permissions['delete terms in 1'] = array(
-    'name' => 'delete terms in 1',
+  // Exported permission: 'delete terms in provider'.
+  $permissions['delete terms in provider'] = array(
+    'name' => 'delete terms in provider',
     'roles' => array(
-      0 => 'Administrator',
-      1 => 'authenticated user',
+      'Administrator' => 'Administrator',
+      'authenticated user' => 'authenticated user',
     ),
     'module' => 'taxonomy',
   );
 
-  // Exported permission: delete terms in 7.
-  $permissions['delete terms in 7'] = array(
-    'name' => 'delete terms in 7',
+  // Exported permission: 'delete terms in section'.
+  $permissions['delete terms in section'] = array(
+    'name' => 'delete terms in section',
     'roles' => array(
-      0 => 'Administrator',
+      'Administrator' => 'Administrator',
     ),
     'module' => 'taxonomy',
   );
 
-  // Exported permission: edit any simpleads content.
+  // Exported permission: 'edit any simpleads content'.
   $permissions['edit any simpleads content'] = array(
     'name' => 'edit any simpleads content',
     'roles' => array(
-      0 => 'Administrator',
-      1 => 'authenticated user',
+      'Administrator' => 'Administrator',
+      'authenticated user' => 'authenticated user',
     ),
     'module' => 'node',
   );
 
-  // Exported permission: edit own simpleads content.
+  // Exported permission: 'edit own simpleads content'.
   $permissions['edit own simpleads content'] = array(
     'name' => 'edit own simpleads content',
     'roles' => array(
-      0 => 'Administrator',
-      1 => 'authenticated user',
+      'Administrator' => 'Administrator',
+      'authenticated user' => 'authenticated user',
     ),
     'module' => 'node',
   );
 
-  // Exported permission: edit terms in 1.
-  $permissions['edit terms in 1'] = array(
-    'name' => 'edit terms in 1',
+  // Exported permission: 'edit terms in provider'.
+  $permissions['edit terms in provider'] = array(
+    'name' => 'edit terms in provider',
     'roles' => array(
-      0 => 'Administrator',
-      1 => 'authenticated user',
+      'Administrator' => 'Administrator',
+      'authenticated user' => 'authenticated user',
     ),
     'module' => 'taxonomy',
   );
 
-  // Exported permission: edit terms in 7.
-  $permissions['edit terms in 7'] = array(
-    'name' => 'edit terms in 7',
+  // Exported permission: 'edit terms in section'.
+  $permissions['edit terms in section'] = array(
+    'name' => 'edit terms in section',
     'roles' => array(
-      0 => 'Administrator',
+      'Administrator' => 'Administrator',
     ),
     'module' => 'taxonomy',
   );
 
-  // Exported permission: revert revisions.
+  // Exported permission: 'revert revisions'.
   $permissions['revert revisions'] = array(
     'name' => 'revert revisions',
     'roles' => array(
-      0 => 'Administrator',
-      1 => 'authenticated user',
+      'Administrator' => 'Administrator',
+      'authenticated user' => 'authenticated user',
     ),
     'module' => 'node',
   );
 
-  // Exported permission: use text format html.
+  // Exported permission: 'use text format html'.
   $permissions['use text format html'] = array(
     'name' => 'use text format html',
     'roles' => array(
-      0 => 'Administrator',
-      1 => 'authenticated user',
+      'Administrator' => 'Administrator',
+      'authenticated user' => 'authenticated user',
     ),
     'module' => 'filter',
   );
 
-  // Exported permission: use text format publisher_html.
+  // Exported permission: 'use text format publisher_html'.
   $permissions['use text format publisher_html'] = array(
     'name' => 'use text format publisher_html',
     'roles' => array(
-      0 => 'Administrator',
-      1 => 'authenticated user',
+      'Administrator' => 'Administrator',
+      'authenticated user' => 'authenticated user',
     ),
     'module' => 'filter',
   );
 
-  // Exported permission: view own unpublished content.
+  // Exported permission: 'view own unpublished content'.
   $permissions['view own unpublished content'] = array(
     'name' => 'view own unpublished content',
     'roles' => array(
-      0 => 'Administrator',
-      1 => 'authenticated user',
+      'Administrator' => 'Administrator',
+      'authenticated user' => 'authenticated user',
     ),
     'module' => 'node',
   );
 
-  // Exported permission: view revisions.
+  // Exported permission: 'view revisions'.
   $permissions['view revisions'] = array(
     'name' => 'view revisions',
     'roles' => array(
-      0 => 'Administrator',
-      1 => 'authenticated user',
+      'Administrator' => 'Administrator',
+      'authenticated user' => 'authenticated user',
     ),
     'module' => 'node',
   );

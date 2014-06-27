@@ -24,12 +24,13 @@ function np_image_image_default_styles() {
         'module' => 'image',
         'name' => 'image_scale_and_crop',
         'data' => array(
-          'width' => '150',
-          'height' => '105',
+          'width' => 150,
+          'height' => 105,
         ),
-        'weight' => '1',
+        'weight' => 1,
       ),
     ),
+    'label' => '150x105',
   );
 
   // Exported image style: 206xh.
@@ -46,13 +47,14 @@ function np_image_image_default_styles() {
         'module' => 'image',
         'name' => 'image_scale',
         'data' => array(
-          'width' => '206',
+          'width' => 206,
           'height' => '',
           'upscale' => 1,
         ),
-        'weight' => '1',
+        'weight' => 1,
       ),
     ),
+    'label' => '206xh',
   );
 
   // Exported image style: 280x170.
@@ -69,12 +71,13 @@ function np_image_image_default_styles() {
         'module' => 'image',
         'name' => 'image_scale_and_crop',
         'data' => array(
-          'width' => '280',
-          'height' => '170',
+          'width' => 280,
+          'height' => 170,
         ),
-        'weight' => '1',
+        'weight' => 1,
       ),
     ),
+    'label' => '280x170',
   );
 
   // Exported image style: 300x195.
@@ -91,12 +94,13 @@ function np_image_image_default_styles() {
         'module' => 'image',
         'name' => 'image_scale_and_crop',
         'data' => array(
-          'width' => '300',
-          'height' => '195',
+          'width' => 300,
+          'height' => 195,
         ),
-        'weight' => '1',
+        'weight' => 1,
       ),
     ),
+    'label' => '300x195',
   );
 
   // Exported image style: 300x197.
@@ -113,12 +117,13 @@ function np_image_image_default_styles() {
         'module' => 'image',
         'name' => 'image_scale_and_crop',
         'data' => array(
-          'width' => '300',
-          'height' => '197',
+          'width' => 300,
+          'height' => 197,
         ),
-        'weight' => '1',
+        'weight' => 1,
       ),
     ),
+    'label' => '300x197',
   );
 
   // Exported image style: 309xh.
@@ -135,13 +140,14 @@ function np_image_image_default_styles() {
         'module' => 'image',
         'name' => 'image_scale',
         'data' => array(
-          'width' => '309',
+          'width' => 309,
           'height' => '',
           'upscale' => 1,
         ),
-        'weight' => '1',
+        'weight' => 1,
       ),
     ),
+    'label' => '309xh',
   );
 
   // Exported image style: 320x210.
@@ -158,12 +164,13 @@ function np_image_image_default_styles() {
         'module' => 'image',
         'name' => 'image_scale_and_crop',
         'data' => array(
-          'width' => '320',
-          'height' => '210',
+          'width' => 320,
+          'height' => 210,
         ),
-        'weight' => '1',
+        'weight' => 1,
       ),
     ),
+    'label' => '320x210',
   );
 
   // Exported image style: 40xh.
@@ -180,13 +187,14 @@ function np_image_image_default_styles() {
         'module' => 'image',
         'name' => 'image_scale',
         'data' => array(
-          'width' => '40',
+          'width' => 40,
           'height' => '',
           'upscale' => 0,
         ),
-        'weight' => '1',
+        'weight' => 1,
       ),
     ),
+    'label' => '40xh',
   );
 
   // Exported image style: 480x320.
@@ -203,12 +211,13 @@ function np_image_image_default_styles() {
         'module' => 'image',
         'name' => 'image_scale_and_crop',
         'data' => array(
-          'width' => '480',
-          'height' => '320',
+          'width' => 480,
+          'height' => 320,
         ),
-        'weight' => '1',
+        'weight' => 1,
       ),
     ),
+    'label' => '480x320',
   );
 
   // Exported image style: 618xh.
@@ -225,13 +234,14 @@ function np_image_image_default_styles() {
         'module' => 'image',
         'name' => 'image_scale',
         'data' => array(
-          'width' => '618',
+          'width' => 618,
           'height' => '',
           'upscale' => 1,
         ),
-        'weight' => '1',
+        'weight' => 1,
       ),
     ),
+    'label' => '618xh',
   );
 
   // Exported image style: 620x413.
@@ -248,12 +258,13 @@ function np_image_image_default_styles() {
         'module' => 'image',
         'name' => 'image_scale_and_crop',
         'data' => array(
-          'width' => '620',
-          'height' => '413',
+          'width' => 620,
+          'height' => 413,
         ),
-        'weight' => '1',
+        'weight' => 1,
       ),
     ),
+    'label' => '620x413',
   );
 
   // Exported image style: 66x51.
@@ -270,12 +281,13 @@ function np_image_image_default_styles() {
         'module' => 'image',
         'name' => 'image_scale_and_crop',
         'data' => array(
-          'width' => '66',
-          'height' => '51',
+          'width' => 66,
+          'height' => 51,
         ),
-        'weight' => '1',
+        'weight' => 1,
       ),
     ),
+    'label' => '66x51',
   );
 
   // Exported image style: 70x60.
@@ -292,12 +304,13 @@ function np_image_image_default_styles() {
         'module' => 'image',
         'name' => 'image_scale_and_crop',
         'data' => array(
-          'width' => '70',
-          'height' => '60',
+          'width' => 70,
+          'height' => 60,
         ),
-        'weight' => '1',
+        'weight' => 1,
       ),
     ),
+    'label' => '70x60',
   );
 
   // Exported image style: 89x80.
@@ -314,12 +327,13 @@ function np_image_image_default_styles() {
         'module' => 'image',
         'name' => 'image_scale_and_crop',
         'data' => array(
-          'width' => '89',
-          'height' => '80',
+          'width' => 89,
+          'height' => 80,
         ),
-        'weight' => '1',
+        'weight' => 1,
       ),
     ),
+    'label' => '89x80',
   );
 
   return $styles;

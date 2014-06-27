@@ -13,17 +13,17 @@ function np_author_taxonomy_default_vocabularies() {
       'name' => 'Author Rating',
       'machine_name' => 'author_rating',
       'description' => '',
-      'hierarchy' => '0',
+      'hierarchy' => 0,
       'module' => 'taxonomy',
-      'weight' => '0',
+      'weight' => 0,
     ),
     'tags' => array(
       'name' => 'Tags',
       'machine_name' => 'tags',
       'description' => '',
-      'hierarchy' => '0',
+      'hierarchy' => 0,
       'module' => 'taxonomy',
-      'weight' => '0',
+      'weight' => 0,
     ),
   );
 }

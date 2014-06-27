@@ -10,12 +10,12 @@
 function np_publisher_user_default_permissions() {
   $permissions = array();
 
-  // Exported permission: administer menu.
+  // Exported permission: 'administer menu'.
   $permissions['administer menu'] = array(
     'name' => 'administer menu',
     'roles' => array(
-      0 => 'Administrator',
-      1 => 'authenticated user',
+      'Administrator' => 'Administrator',
+      'authenticated user' => 'authenticated user',
     ),
     'module' => 'menu',
   );
