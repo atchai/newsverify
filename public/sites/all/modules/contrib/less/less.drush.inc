@@ -1,10 +1,15 @@
 <?php
 
-function less_drush_cache_clear(&$types) {
-  $types['less'] = '_less_drush_cache_clear';
-}
+/**
+ * @file
+ * Contains Drush related functions.
+ */
 
-function _less_drush_cache_clear() {
-  _less_new_dir();
-  less_cron();
+/**
+ * Implements hook_drush_cache_clear().
+ * 
+ * This adds an option on drush 'cache-clear'.
+ */
+function less_drush_cache_clear(&$types) {
+  $types['less'] = 'less_flush_caches';
 }

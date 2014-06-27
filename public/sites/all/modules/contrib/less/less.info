@@ -6,9 +6,10 @@ core = 7.x
 
 configure = admin/config/development/less
 
-; Information added by drupal.org packaging script on 2012-08-07
-version = "7.x-2.6"
+dependencies[] = libraries
+; Information added by drupal.org packaging script on 2013-07-08
+version = "7.x-3.0"
 core = "7.x"
 project = "less"
-datestamp = "1344374523"
+datestamp = "1373306757"
 

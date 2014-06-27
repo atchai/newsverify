@@ -6,7 +6,7 @@
  *
  */
 
-function less_settings($form, &$form_state) {
+function less_settings_form($form, &$form_state) {
 
   $form['less_flush'] = array(
     '#type' => 'fieldset',
@@ -23,17 +23,35 @@ function less_settings($form, &$form_state) {
   $form['less_devel'] = array(
     '#type' => 'checkbox',
     '#title' => t('LESS developer mode'),
-    '#description' => t('Enable the developer mode to ensure LESS files are regenerated every page load, regardless of any change done to the LESS file (which may happen when using the @import notation, and changing only the imported file). Note that this setting does not override "Optimize CSS files" if set via <a href="@performance-url">Performance</a>.', array('@performance-url' => url('admin/config/development/performance'))),
+    '#description' => t('Enable developer mode to ensure LESS files are regenerated every page load.'),
     '#default_value' => variable_get('less_devel', FALSE),
   );
-
+  
+  $form['less_watch'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('LESS watch mode'),
+    '#description' => t('Enable watch mode while developer mode is active to automatically reload styles when changes are detected, including changes to @import-ed files. Does not cause a page reload.'),
+    '#default_value' => variable_get('less_watch', TRUE),
+    '#states' => array(
+      'disabled' => array(
+        ':input[name="less_devel"]' => array('unchecked' => TRUE),
+      ),
+    ),
+  );
+  
+  $form['#submit'] = array('less_settings_form_submit');
+  
   return system_settings_form($form);
+}
+
+function less_settings_form_submit($form, &$form_state) {
+  cache_clear_all('less:', 'cache', TRUE);
 }
 
 function _flush_less($form, &$form_state) {
 
-  $less_path = file_default_scheme() . '://less';
-  file_unmanaged_delete_recursive($less_path);
+  _less_get_dir(TRUE);
+  cache_clear_all('less:', 'cache', TRUE);
 
-  drupal_set_message(t('LESS files flushed.'), 'status');
+  drupal_set_message(t('LESS files cache cleared.'), 'status');
 }

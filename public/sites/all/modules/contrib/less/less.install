@@ -1,38 +1,43 @@
 <?php
-
+/**
+ * @file
+ * Install, update, and uninstall functions for the less module.
+ */
+ 
 /**
  * Implements HOOK_enable().
  */
 function less_enable() {
-  drupal_theme_rebuild();
 }
 
+/**
+ * Implements hook_install().
+ */
 function less_uninstall() {
   variable_del('less_devel');
   variable_del('less_dir');
+  variable_del('less_watch');
+  cache_clear_all('less:', 'cache', TRUE);
 }
 
 /**
  * Implementation of hook_requirements().
  *
- * @param $phase The phase in which hook_requirements is run: install or runtime.
+ * @param $phase The phase in which hook_requirements is run: install/runtime.
  */
 function less_requirements($phase) {
   $requirements = array();
   
-  $lessc_exists = FALSE;
-  
   module_load_include('module', 'less');
-  if (function_exists('_less_inc')) {
-    $lessc_exists = _less_inc();
-  }
+  
+  $lessc_exists = function_exists('_less_inc') ? _less_inc() : FALSE;
   
   switch ($phase) {
     case 'runtime':
       if ($lessc_exists) {
         $requirements['less_version'] = array(
           'title' => t('LESS'),
-          'value' => isset(lessc::$VERSION) ? preg_replace('/([^0-9\.-])+/i', '', lessc::$VERSION) : '(less than v0.3.2)',
+          'value' => isset(lessc::$VERSION) ? preg_replace('/([^0-9\.-])+/i', '', lessc::$VERSION) : 'unknown',
           'description' => t('To check for newer versions of lessphp, go to <a href="!url" target="_blank">http://leafo.net/lessphp/</a>', array("!url" => url('http://leafo.net/lessphp/'))),
           'severity' => REQUIREMENT_OK,
         );
