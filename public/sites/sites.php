@@ -36,5 +36,24 @@
 /**
  * Multi-site directory aliasing
  */
-$sites['opennewsplatform.dev'] = 'demo'; // Development
-$sites['opennewsplatform.atchai.com'] = 'demo'; // Demo
+
+// Development
+$sites['opennewsplatform.dev'] = 'demo';
+
+// NewsVerify Arabic
+$sites['ar.newsverify.dev'] = 'snp';
+
+// NewsVerify English
+$sites['en.newsverify.dev'] = 'demo';
+
+// Demo
+$sites['opennewsplatform.atchai.com'] = 'demo';
+
+/**
+ * If a multi-site environment is required for a NewsVerify instance,
+ * the related sites-directory aliasing should be defined in /sites/sites.nv.php
+ */
+if (file_exists(DRUPAL_ROOT . '/sites/sites.nv.php')) {
+  // Add sites mapping specific for this NewsVerify instance
+  include(DRUPAL_ROOT . '/sites/sites.nv.php');
+}
