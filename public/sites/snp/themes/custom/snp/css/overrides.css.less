@@ -1,0 +1,749 @@
+/* SNP Override Styles
+----------------------------------------------------------------------------------------------------*/
+
+/* Includes
+----------------------------------------------------------------------------------------------------*/
+
+// CSS 3 Properties
+// Selectively taken from https://github.com/twitter/bootstrap/blob/master/less/mixins.less
+@import "lib/mixins.less";
+
+/* Typography
+----------------------------------------------------------------------------------------------------*/
+
+/*
+font-family:'FrutigerLTW20-45Light';
+font-family:'FrutigerLTW20-47LightCn';
+font-family:'FrutigerLTW20-55Roman';
+font-family:'Frutiger LT W20 57 Cn';
+font-family:'Frutiger LT W20 65 Bold';
+font-family:'FrutigerLTW20-67BoldCn';
+font-family:'FrutigerLTW20-75Black';
+font-family:'FrutigerLTW20-77BlackCn';
+*/
+
+h1,h2,h3,h4,h5,h6 {
+
+}
+
+h3 {
+  font-family: 'Frutiger LT W20 65 Bold';
+  font-size: 13pt;
+  line-height: 16pt;
+}
+
+/* Header
+----------------------------------------------------------------------------------------------------*/
+
+.site-name a {
+  font-family: 'FrutigerLTW20-55Roman';
+  font-size: 22pt;
+  font-weight: normal;
+  color: #fff
+}
+
+/* Branding
+----------------------------------------------------------------------------------------------------*/
+
+#section-footer {
+  background: #292929;
+}
+
+#section-header {
+  .horizontal-centered(#a81521, #de1c24);
+}
+
+#zone-header-wrapper {
+  #block-np-core-np-core-menu-title {
+    h3 a {
+      font-family: 'Frutiger LT W20 65 Bold';
+      font-weight: normal;
+      font-size: 16px;
+      line-height: 16px;
+      color: #fff;
+      text-decoration: none;
+    }
+  }
+}
+
+#zone-branding-wrapper {
+  border-top: 1px #c96d71 dotted;
+
+  .site-slogan {
+    font-family: 'FrutigerLTW20-55Roman';
+    font-weight: normal;
+    font-size: 13px;
+    line-height: 13px;
+    color: #fff;
+  }
+}
+
+#block-np-core-np-core-site-slogan {
+  font-family:'FrutigerLTW20-55Roman';
+  font-size: 18pt;
+  font-weight: normal;
+  color: #fff
+}
+
+/* Navigation
+----------------------------------------------------------------------------------------------------*/
+
+.front #zone-navigation-wrapper {
+  .horizontal-centered(#a81521, #de1c24);
+  background-color: #dcddde;
+
+  .block h2 {
+    font-family: 'Frutiger LT W20 65 Bold';
+    font-size: 13pt;
+    color: #fff;
+  }
+}
+
+/* Menu
+----------------------------------------------------------------------------------------------------*/
+
+#block-menu-menu-section {
+  ul.menu li {
+    border-left: 1px solid #fff;
+  }
+
+  ul.menu li a {
+    font-family: 'FrutigerLTW20-55Roman';
+    font-size: 16px;
+    font-weight: normal;
+    color: #6d6e70;
+    text-decoration: none;
+  }
+
+}
+
+/* Menu - JS Interaction
+----------------------------------------------------------------------------------------------------*/
+#menu-more-container a {
+  font-family: 'FrutigerLTW20-55Roman';
+  font-size: 9pt;
+  font-weight: normal;
+  color: #939597;
+  text-decoration: underline;
+}
+
+/* Blocks - Our Approach
+----------------------------------------------------------------------------------------------------*/
+#block-menu-menu-our-approach {
+  background-color: #e9eaeb;
+}
+
+/* Blocks - All Aside
+----------------------------------------------------------------------------------------------------*/
+aside .block {
+  .box-shadow(4px 4px 5px #ddd); // rtl
+
+  h2.block-title {
+    font-family: 'Frutiger LT W20 65 Bold';
+    font-size: 18px;
+    font-weight: normal;
+    line-height: 18px;
+  }
+}
+
+/* Blocks - Latest From Location
+----------------------------------------------------------------------------------------------------*/
+#block-views-latest-from-location-block {
+  h2.block-title {
+    border: 1px #808080 solid;
+  }
+
+  > .block-inner > .content {
+    border-bottom: 1px #ccc solid;
+    border-left: 1px #ccc solid;
+  }
+
+  .view-latest-from-location {
+    ul {
+      li {
+        border-bottom: 1px #ccc solid;
+
+        &:last-child {
+          border-bottom: 0px none;
+        }
+
+        h3 a {
+          font-family: 'Frutiger LT W20 65 Bold';
+          font-size: 14px;
+          line-height: 17px;
+          font-weight: normal;
+          color: #000;
+        }
+      }
+    }
+  }
+
+}
+
+
+/* Pages
+----------------------------------------------------------------------------------------------------*/
+.not-front #zone-content-wrapper {
+  border-top: 1px #7f7f7f dotted;
+}
+
+#page-title {
+  font-family: 'Frutiger LT W20 65 Bold';
+  font-size: 18px;
+  font-weight: normal;
+  line-height: 23px;
+  color: #000;
+}
+
+.content,
+.content p,
+.field-type-text-long .field-item {
+  font-family: 'FrutigerLTW20-55Roman';
+  font-size: 13px;
+  line-height: 16px;
+  font-weight: normal;
+  color: #000;
+}
+
+.field {
+  .field-label {
+    font-family: 'Frutiger LT W20 65 Bold';
+    font-size: 15px;
+    line-height: 15px;
+    font-weight: normal;
+    color: #000;
+  }
+}
+
+#block-system-main {
+  .image-container {
+    .box-shadow(4px 4px 5px #ddd);
+  }
+}
+
+/* Pages - Menu
+----------------------------------------------------------------------------------------------------*/
+
+.not-front #zone-pre-content-wrapper {
+  background-color: #fff;
+}
+
+.not-front #block-menu-menu-section ul li {
+  border-left: 0px none;
+}
+
+.not-front #block-menu-menu-section ul li a {
+  color: #000;
+}
+
+/* Pages - Breadcrumb
+----------------------------------------------------------------------------------------------------*/
+
+#breadcrumb {
+  border-bottom: 1px dotted #7F7F7F;
+
+  font-family: 'Frutiger LT W20 65 Bold';
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 14px;
+  color: #6d6e71;
+
+  a {
+    color: #6d6e71;
+  }
+}
+
+/* Pages - Event
+----------------------------------------------------------------------------------------------------*/
+
+.view-mode-full {
+
+  .field-name-field-submitted {
+    font-family: 'FrutigerLTW20-55Roman';
+    font-size: 10px;
+    font-weight: normal;
+    color: #6d6e70;
+    text-decoration: none;
+  }
+
+  .field-name-field-tags {
+    .field-item {
+      a {
+        font-family: 'FrutigerLTW20-55Roman';
+        font-size: 12px;
+        line-height: 15px;
+        font-weight: normal;
+        color: #6d6e70;
+      }
+    }
+  }
+
+  .group-verification {
+    background-color: #fff;
+    border: 1px #808080 solid;
+  }
+
+  .group_sources {
+    .view-sources {
+      ul {
+        li {
+          border-bottom: 1px #cccccc solid;
+
+          &:last-child {
+            border-bottom: 0px none;
+          }
+
+        }
+      }
+    }
+  }
+
+}
+
+/* Pages - Story
+----------------------------------------------------------------------------------------------------*/
+
+
+/* Pages - Story - Embedded Event
+----------------------------------------------------------------------------------------------------*/
+
+.node-story {
+  .node-event {
+    border-left: 1px #ccc solid;
+    border-top: 1px #ccc solid;
+    .box-shadow(2px 2px 3px #ddd); // rtl
+  }
+}
+
+/* Pages - Author
+----------------------------------------------------------------------------------------------------*/
+
+.node-author-view-mode-full {
+  .field-name-field-accounts {
+    background-color: #e9eaeb;
+    .box-shadow(4px 4px 5px #ddd); // rtl
+
+    .field-label {
+      font-family: 'Frutiger LT W20 65 Bold';
+      font-size: 14px;
+      line-height: 14px;
+      color: #000;
+    }
+
+    .field-collection-view {
+      border: 0px none;
+    }
+  }
+}
+
+.block-np-author-events {
+  h2.block-title {
+    font-family: 'Frutiger LT W20 65 Bold';
+    font-size: 18px;
+    font-weight: normal;
+    line-height: 18px;
+  }
+}
+
+/* Pages - All - Post
+----------------------------------------------------------------------------------------------------*/
+
+.field-name-field-post-body-html {
+  background-color: #fff;
+}
+
+/* Pages - All - Groups
+----------------------------------------------------------------------------------------------------*/
+
+.field-group-div {
+  background-color: #e9eaeb;
+  .box-shadow(4px 4px 5px #ddd); // rtl
+
+  h3 {
+    font-family: 'Frutiger LT W20 65 Bold';
+    font-size: 14px;
+    line-height: 14px;
+    color: #000;
+
+    a {
+      text-decoration: none;
+    }
+
+    .status-container {
+      font-family: 'FrutigerLTW20-55Roman';
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 14px;
+      color: #000;
+    }
+  }
+}
+
+
+
+/* Overlay
+----------------------------------------------------------------------------------------------------*/
+
+.qtip-content {
+  background-color: #fff;
+  border-bottom: 10px #dcddde solid;
+  border-top: 1px #ccc solid;
+  border-right: 1px #ccc solid;
+  border-left: 1px #ccc solid;
+
+  .box-shadow(2px 2px 5px #ddd); // rtl
+
+  // Event Summary (overlay) view
+  .view-mode-summary {
+    .field-name-field-sources-simple {
+      border-bottom: 1px #000 dotted;
+
+      table {
+        thead {
+          tr {
+            th {
+              background-color: #9fa1a4;
+
+              font-family: 'Frutiger LT W20 65 Bold';
+              font-size: 12px;
+              line-height: 12px;
+              font-weight: normal;
+              color: #000;
+
+              &:first-child {
+                border-right: 4px #fff solid;
+              }
+            }
+          }
+        }
+        tbody {
+          tr {
+            background-color: #fff;
+            border-bottom: 0px none;
+
+            td {
+              background-color: #fff;
+
+              font-family: 'FrutigerLTW20-55Roman';
+              font-size: 11px;
+              line-height: 11px;
+              font-weight: normal;
+              color: #6d6e70;
+            }
+          }
+        }
+      }
+    }
+
+    .field-name-field-cmptd-why-we-think-its {
+      .why-we-think-its {
+        font-weight: bold;
+      }
+    }
+
+    div.actions {
+      border-top: 1px #000 dotted;
+
+      .action-view-event {
+        background: -moz-linear-gradient(top, #f5f5f5 0%, #ebebec);
+        background: -webkit-gradient(linear, left top, left bottom, from(#f5f5f5), to(#ebebec));
+
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+        border: 1px solid #d8d9da;
+
+        -moz-box-shadow: 0px 1px 3px rgba(221,221,221,0.5), inset 0px 0px 1px rgba(255,255,255,0.6);
+        -webkit-box-shadow: 0px 1px 3px rgba(221,221,221,0.5), inset 0px 0px 1px rgba(255,255,255,0.6);
+        box-shadow: 0px 1px 3px rgba(221,221,221,0.5), inset 0px 0px 1px rgba(255,255,255,0.6);
+
+        font-family: 'Frutiger LT W20 65 Bold';
+        font-size: 12px;
+        line-height: 12px;
+        font-weight: normal;
+        color: #6d6e71;
+        text-decoration: none;
+      }
+
+      .action-about-verification {
+        font-family: 'Frutiger LT W20 65 Bold';
+        font-size: 13px;
+        line-height: 13px;
+        font-weight: normal;
+        color: #000;
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+/* Verification Status
+----------------------------------------------------------------------------------------------------*/
+
+.event-summary-link {
+  font-family: 'FrutigerLTW20-55Roman';
+  font-weight: normal;
+  font-size: 9pt;
+}
+
+/* Views
+----------------------------------------------------------------------------------------------------*/
+
+/* Views - Search
+----------------------------------------------------------------------------------------------------*/
+
+// Exposed search box
+.views-exposed-form {
+  input {
+    font-family: 'FrutigerLTW20-55Roman';
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 14px;
+    color: #ff4c4c;
+  }
+}
+
+/* Views - Home
+----------------------------------------------------------------------------------------------------*/
+
+.view-home,
+.view-taxonomy,
+.view-search {
+  li.news-item {
+    border: 0 none;
+    .box-shadow(2px 2px 5px 2px #ddd); // rtl
+
+    // Story
+    .story-listing-header {
+      .horizontal-centered(#a81521, #de1c24);
+      font-family: 'Frutiger LT W20 65 Bold';
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 14px;
+      color: #fff;
+    }
+
+    h2.node-title a {
+      font-family: 'Frutiger LT W20 65 Bold';
+      font-weight: normal;
+      font-size: 16pt;
+      line-height: 16pt;
+    }
+
+    .node {
+
+      .field-name-field-what-description {
+        font-family: 'FrutigerLTW20-55Roman';
+        font-weight: normal;
+        font-size: 12pt;
+        line-height: 15pt;
+      }
+
+      .field-name-field-cmptd-author,
+      .field-name-field-cmptd-last-updated {
+        font-family: 'FrutigerLTW20-55Roman';
+        font-size: 9pt;
+        font-weight: normal;
+      }
+
+    }
+
+    .node-event {
+      .field-name-field-cmptd-last-updated {
+        border-right: 1px #88898b solid; // RTL
+      }
+    }
+
+    .node-story {
+      background-color: #dcddde;
+
+      .field-name-field-cmptd-last-updated {
+        border-right: 1px #000 solid; // RTL
+      }
+    }
+  }
+}
+
+.view-search {
+  .views-row {
+    border: 0 none;
+    .box-shadow(5px 5px 5px #ddd); // rtl
+  }
+}
+
+/* Views - Home - Carousel
+----------------------------------------------------------------------------------------------------*/
+
+.view-home-carousel {
+  .slideshow {
+    border: none;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    -o-border-radius: 0;
+    border-radius: 0;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    -o-box-shadow: none;
+    box-shadow: none;
+
+    .slides {
+      li.slide-item {
+        .news-caption {
+          h3.news-title {
+            font-family: 'Frutiger LT W20 65 Bold';
+            font-size: 13pt;
+            line-height: 16pt;
+          }
+          .date {
+            font-family: 'FrutigerLTW20-55Roman';
+            font-size: 9pt;
+          }
+        }
+      }
+    }
+  }
+}
+
+/* Views - Related Stories
+----------------------------------------------------------------------------------------------------*/
+
+#block-views-related-stories-block {
+
+  h2.block-title {
+    border: 1px #808080 solid;
+
+    font-family: 'Frutiger LT W20 65 Bold';
+    font-size: 19px;
+    font-weight: normal;
+    line-height: 19px;
+    color: #000;
+  }
+
+  .view-related-stories {
+    ul {
+      li {
+        background-color: #dcddde;
+        .box-shadow(4px 4px 5px #ddd); // rtl
+
+        font-family: 'FrutigerLTW20-55Roman';
+        font-size: 10px;
+        font-weight: normal;
+        color: #6D6E70;
+        text-decoration: none;
+
+        h4 {
+          font-family: 'Frutiger LT W20 65 Bold';
+          font-size: 11px;
+          font-weight: normal;
+          line-height: 15px;
+        }
+
+        .updated {
+          border-left: 1px #6d6e71 solid;
+        }
+      }
+    }
+  }
+}
+
+/* Footer
+----------------------------------------------------------------------------------------------------*/
+
+#region-after-content {
+  border-top: 1px #ccc dotted;
+  border-bottom: 1px #ccc dotted;
+}
+
+.zone-post-content-wrapper {
+  .gradient-vertical-centered(#d8d9da, #fff);
+}
+
+.zone-footer-wrapper {
+  border-top: 2px #1c1d1d solid;
+}
+
+#section-footer .footer-spacer {
+  border-top: 1px #58585a dotted;
+  border-bottom: 1px #58585a dotted;
+}
+
+.region-footer-first .block .block-inner {
+  border-top: 7px #dc1c24 solid;
+  background-color: #7f7f7f;
+}
+
+.region-footer-first h2.block-title {
+  font-family: 'Frutiger LT W20 65 Bold';
+  font-size: 19pt;
+  font-weight: normal;
+  color: #fff;
+}
+
+.region-footer-first .block .content,
+.region-footer-first .block .content p {
+  font-family: 'FrutigerLTW20-55Roman';
+  font-size: 11pt;
+  line-height: 14pt;
+  color: #fff;
+}
+
+/* Footer - Menu
+----------------------------------------------------------------------------------------------------*/
+
+.zone-footer-wrapper ul.menu li a {
+  font-family: 'Frutiger LT W20 65 Bold';
+  font-weight: normal;
+  font-size: 9.6pt;
+  color: #5c5d5e;
+  text-decoration: none;
+
+  border-bottom: 1px #58585a dotted;
+}
+
+.zone-footer-wrapper div > ul.menu > li > ul.menu > li a:before {
+  color: #58585a;
+}
+
+#block-np-core-np-core-section-menu-two {
+
+  .block-inner {
+    background-color: #a8a9ac;
+
+    h2.block-title {
+      font-family: 'Frutiger LT W20 65 Bold';
+      font-weight: normal;
+      font-size: 15px;
+      line-height: 15px;
+      color: #fff;
+
+      .backtotop {
+        color: #fff;
+        text-decoration: none;
+      }
+    }
+
+    > .content {
+      border-top: 1px #fff dotted;
+
+      ul {
+        li {
+          border-bottom: 1px #fff dotted;
+
+          &:first-child {
+            border-top: 1px #fff dotted;
+          }
+
+          a {
+            font-family: 'FrutigerLTW20-55Roman';
+            font-weight: normal;
+            font-size: 15px;
+            line-height: 15px;
+            color: #fff;
+            text-decoration: none;
+          }
+        }
+      }
+    }
+  }
+
+}

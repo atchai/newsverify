@@ -1,0 +1,33 @@
+<?php
+/**
+ * @file
+ * Code for the SocialNewsPlatform: Core feature.
+ */
+
+include_once 'snp_core.features.inc';
+
+/**
+ * Implements hook_block_info().
+ */
+function snp_core_block_info() {
+  $blocks['snp_core_small_logo'] = array(
+    'info' => t('Social News Platform: Small logo'),
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function snp_core_block_view($delta = '') {
+  switch ($delta) {
+    case 'snp_core_small_logo':
+      $block['subject'] = '';
+      $block['content'] = array(
+        '#markup' => l(theme('image', array('path' => drupal_get_path('module', 'snp_core') . '/images/small_logo.png')), '<front>', array('html' => TRUE))
+      );
+      break;
+  }
+  return $block;
+}
