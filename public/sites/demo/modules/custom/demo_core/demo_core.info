@@ -1,5 +1,5 @@
-name = NewsPlatform Demo: Core
-description = Core site settings for NewsPlatform Demo
+name = NewsVerify Demo: Core
+description = Core site settings for NewsVerify Demo
 core = 7.x
 package = Features
 php = 5.2.4

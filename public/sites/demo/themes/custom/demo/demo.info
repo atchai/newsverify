@@ -1,5 +1,5 @@
-name = 'NewsPlatform Demo'
-description = 'NewsPlatform Demo theme'
+name = 'NewsVerify Demo'
+description = 'NewsVerify Demo theme'
 core = '7.x'
 engine = 'phptemplate'
 screenshot = 'screenshot.png'
@@ -32,7 +32,7 @@ zones[post_content] = 'Post Content'
 zones[footer] = 'Footer'
 
 css[overrides.css.less][name] = 'Demo: Overrides'
-css[overrides.css.less][description] = 'NewsPlatform Demo Overrides'
+css[overrides.css.less][description] = 'NewsVerify Demo Overrides'
 css[overrides.css.less][options][weight] = 20
 
 version = '1.x'
