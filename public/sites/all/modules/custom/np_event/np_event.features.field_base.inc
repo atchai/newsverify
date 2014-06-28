@@ -10,55 +10,6 @@
 function np_event_field_default_field_bases() {
   $field_bases = array();
 
-  // Exported field_base: 'field_addthis'
-  $field_bases['field_addthis'] = array(
-    'active' => 1,
-    'cardinality' => 1,
-    'deleted' => 0,
-    'entity_types' => array(),
-    'field_name' => 'field_addthis',
-    'foreign keys' => array(),
-    'indexes' => array(),
-    'locked' => 0,
-    'module' => 'addthis',
-    'settings' => array(
-      'max_length' => 255,
-    ),
-    'translatable' => 0,
-    'type' => 'addthis',
-  );
-
-  // Exported field_base: 'field_cmptd_author'
-  $field_bases['field_cmptd_author'] = array(
-    'active' => 1,
-    'cardinality' => 1,
-    'deleted' => 0,
-    'entity_types' => array(),
-    'field_name' => 'field_cmptd_author',
-    'foreign keys' => array(),
-    'indexes' => array(),
-    'locked' => 0,
-    'module' => 'computed_field',
-    'settings' => array(
-      'code' => '$entity_field[0][\'value\'] = "";',
-      'database' => array(
-        'data_default' => '',
-        'data_index' => 0,
-        'data_length' => 32,
-        'data_not_NULL' => 0,
-        'data_precision' => 10,
-        'data_scale' => 2,
-        'data_size' => 'normal',
-        'data_type' => 'varchar',
-      ),
-      'display_format' => '$sub_username = theme(\'username\', array(\'account\' => $entity));
-$display_output =  t(\'!username\', array(\'!username\' => $sub_username));',
-      'store' => 0,
-    ),
-    'translatable' => 0,
-    'type' => 'computed',
-  );
-
   // Exported field_base: 'field_cmptd_date'
   $field_bases['field_cmptd_date'] = array(
     'active' => 1,
@@ -87,7 +38,7 @@ $calc_display = array(
   \'label\' => \'hidden\',
   \'type\' => \'date_default\',
   \'settings\' => array(
-    \'format_type\' => \'long\',
+    \'format_type\' => \'short\',
     \'fromto\' => \'both\'
   )
 );
@@ -215,37 +166,6 @@ $display_output  .= render($render);',
     'type' => 'computed',
   );
 
-  // Exported field_base: 'field_cmptd_last_updated'
-  $field_bases['field_cmptd_last_updated'] = array(
-    'active' => 1,
-    'cardinality' => 1,
-    'deleted' => 0,
-    'entity_types' => array(),
-    'field_name' => 'field_cmptd_last_updated',
-    'foreign keys' => array(),
-    'indexes' => array(),
-    'locked' => 0,
-    'module' => 'computed_field',
-    'settings' => array(
-      'code' => '$entity_field[0][\'value\'] = "";',
-      'database' => array(
-        'data_default' => '',
-        'data_index' => 0,
-        'data_length' => 32,
-        'data_not_NULL' => 0,
-        'data_precision' => 10,
-        'data_scale' => 2,
-        'data_size' => 'normal',
-        'data_type' => 'varchar',
-      ),
-      'display_format' => '$sub_timeago = format_interval(time() - $entity->changed, 2, NULL);
-$display_output =  t(\'!datetime ago\', array(\'!datetime\' => $sub_timeago));',
-      'store' => 0,
-    ),
-    'translatable' => 0,
-    'type' => 'computed',
-  );
-
   // Exported field_base: 'field_cmptd_what_posts_first'
   $field_bases['field_cmptd_what_posts_first'] = array(
     'active' => 1,
@@ -327,7 +247,7 @@ $calc_display = array(
   \'label\' => \'hidden\',
   \'type\' => \'date_default\',
   \'settings\' => array(
-    \'format_type\' => \'long\',
+    \'format_type\' => \'short\',
     \'fromto\' => \'both\'
   )
 );
@@ -489,58 +409,6 @@ $display_output  .= render($render);',
     'type' => 'computed',
   );
 
-  // Exported field_base: 'field_facebook_like'
-  $field_bases['field_facebook_like'] = array(
-    'active' => 1,
-    'cardinality' => 1,
-    'deleted' => 0,
-    'entity_types' => array(),
-    'field_name' => 'field_facebook_like',
-    'foreign keys' => array(),
-    'indexes' => array(),
-    'locked' => 0,
-    'module' => 'addthis',
-    'settings' => array(
-      'max_length' => 255,
-    ),
-    'translatable' => 0,
-    'type' => 'addthis',
-  );
-
-  // Exported field_base: 'field_location'
-  $field_bases['field_location'] = array(
-    'active' => 1,
-    'cardinality' => 1,
-    'deleted' => 0,
-    'entity_types' => array(),
-    'field_name' => 'field_location',
-    'foreign keys' => array(
-      'tid' => array(
-        'columns' => array(
-          'tid' => 'tid',
-        ),
-        'table' => 'taxonomy_term_data',
-      ),
-    ),
-    'indexes' => array(
-      'tid' => array(
-        0 => 'tid',
-      ),
-    ),
-    'locked' => 0,
-    'module' => 'taxonomy',
-    'settings' => array(
-      'allowed_values' => array(
-        0 => array(
-          'vocabulary' => 'location',
-          'parent' => 0,
-        ),
-      ),
-    ),
-    'translatable' => 0,
-    'type' => 'taxonomy_term_reference',
-  );
-
   // Exported field_base: 'field_location_geo'
   $field_bases['field_location_geo'] = array(
     'active' => 1,
@@ -615,40 +483,6 @@ $display_output  .= render($render);',
     'type' => 'list_integer',
   );
 
-  // Exported field_base: 'field_section'
-  $field_bases['field_section'] = array(
-    'active' => 1,
-    'cardinality' => 1,
-    'deleted' => 0,
-    'entity_types' => array(),
-    'field_name' => 'field_section',
-    'foreign keys' => array(
-      'tid' => array(
-        'columns' => array(
-          'tid' => 'tid',
-        ),
-        'table' => 'taxonomy_term_data',
-      ),
-    ),
-    'indexes' => array(
-      'tid' => array(
-        0 => 'tid',
-      ),
-    ),
-    'locked' => 0,
-    'module' => 'taxonomy',
-    'settings' => array(
-      'allowed_values' => array(
-        0 => array(
-          'vocabulary' => 'section',
-          'parent' => 0,
-        ),
-      ),
-    ),
-    'translatable' => 0,
-    'type' => 'taxonomy_term_reference',
-  );
-
   // Exported field_base: 'field_sources'
   $field_bases['field_sources'] = array(
     'active' => 1,
@@ -679,73 +513,6 @@ $display_output  .= render($render);',
     'settings' => array(),
     'translatable' => 0,
     'type' => 'viewfield',
-  );
-
-  // Exported field_base: 'field_submitted'
-  $field_bases['field_submitted'] = array(
-    'active' => 1,
-    'cardinality' => 1,
-    'deleted' => 0,
-    'entity_types' => array(),
-    'field_name' => 'field_submitted',
-    'foreign keys' => array(),
-    'indexes' => array(),
-    'locked' => 0,
-    'module' => 'computed_field',
-    'settings' => array(
-      'code' => '$entity_field[0][\'value\'] = "";',
-      'database' => array(
-        'data_default' => '',
-        'data_index' => 0,
-        'data_length' => 32,
-        'data_not_NULL' => 0,
-        'data_precision' => 10,
-        'data_scale' => 2,
-        'data_size' => 'normal',
-        'data_type' => 'varchar',
-      ),
-      'display_format' => '$sub_username = theme(\'username\', array(\'account\' => $entity));
-$sub_timeago = format_interval(time() - $entity->created, 2, NULL);
-
-$display_output =  t(\'!username | !datetime ago\', array(\'!username\' => $sub_username, \'!datetime\' => $sub_timeago));',
-      'store' => 0,
-    ),
-    'translatable' => 0,
-    'type' => 'computed',
-  );
-
-  // Exported field_base: 'field_tags'
-  $field_bases['field_tags'] = array(
-    'active' => 1,
-    'cardinality' => -1,
-    'deleted' => 0,
-    'entity_types' => array(),
-    'field_name' => 'field_tags',
-    'foreign keys' => array(
-      'tid' => array(
-        'columns' => array(
-          'tid' => 'tid',
-        ),
-        'table' => 'taxonomy_term_data',
-      ),
-    ),
-    'indexes' => array(
-      'tid' => array(
-        0 => 'tid',
-      ),
-    ),
-    'locked' => 0,
-    'module' => 'taxonomy',
-    'settings' => array(
-      'allowed_values' => array(
-        0 => array(
-          'vocabulary' => 'tags',
-          'parent' => 0,
-        ),
-      ),
-    ),
-    'translatable' => 0,
-    'type' => 'taxonomy_term_reference',
   );
 
   // Exported field_base: 'field_verification_narrative'

@@ -263,6 +263,46 @@ function np_home_views_default_views() {
   $handler = $view->new_display('block', 'Block', 'block');
   $handler->display->display_options['defaults']['title'] = FALSE;
   $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
+  $handler->display->display_options['defaults']['fields'] = FALSE;
+  /* Field: Content: Thumbnail Image */
+  $handler->display->display_options['fields']['field_story_thumb']['id'] = 'field_story_thumb';
+  $handler->display->display_options['fields']['field_story_thumb']['table'] = 'field_data_field_story_thumb';
+  $handler->display->display_options['fields']['field_story_thumb']['field'] = 'field_story_thumb';
+  $handler->display->display_options['fields']['field_story_thumb']['label'] = '';
+  $handler->display->display_options['fields']['field_story_thumb']['element_type'] = 'div';
+  $handler->display->display_options['fields']['field_story_thumb']['element_class'] = 'image';
+  $handler->display->display_options['fields']['field_story_thumb']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_story_thumb']['element_default_classes'] = FALSE;
+  $handler->display->display_options['fields']['field_story_thumb']['click_sort_column'] = 'fid';
+  $handler->display->display_options['fields']['field_story_thumb']['settings'] = array(
+    'image_style' => '300x195',
+    'image_link' => 'content',
+  );
+  /* Field: Content: Title */
+  $handler->display->display_options['fields']['title']['id'] = 'title';
+  $handler->display->display_options['fields']['title']['table'] = 'node';
+  $handler->display->display_options['fields']['title']['field'] = 'title';
+  $handler->display->display_options['fields']['title']['label'] = '';
+  $handler->display->display_options['fields']['title']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
+  $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
+  $handler->display->display_options['fields']['title']['element_type'] = 'h3';
+  $handler->display->display_options['fields']['title']['element_class'] = 'news-title';
+  $handler->display->display_options['fields']['title']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['title']['element_default_classes'] = FALSE;
+  /* Field: Content: Updated date */
+  $handler->display->display_options['fields']['changed']['id'] = 'changed';
+  $handler->display->display_options['fields']['changed']['table'] = 'node';
+  $handler->display->display_options['fields']['changed']['field'] = 'changed';
+  $handler->display->display_options['fields']['changed']['label'] = '';
+  $handler->display->display_options['fields']['changed']['alter']['alter_text'] = TRUE;
+  $handler->display->display_options['fields']['changed']['alter']['text'] = '<div class="news-caption">
+<h3 class="news-title">[title]</h3> <span class="date">[changed]</span>
+</div>';
+  $handler->display->display_options['fields']['changed']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['changed']['element_default_classes'] = FALSE;
+  $handler->display->display_options['fields']['changed']['date_format'] = 'short';
+  $handler->display->display_options['fields']['changed']['second_date_format'] = 'long';
   $translatables['home_carousel'] = array(
     t('Master'),
     t('Home Carousel'),
@@ -277,6 +317,9 @@ function np_home_views_default_views() {
 <h3 class="news-title">[title]</h3> <span class="date">| Updated [changed]</span>
 </div>'),
     t('Block'),
+    t('<div class="news-caption">
+<h3 class="news-title">[title]</h3> <span class="date">[changed]</span>
+</div>'),
   );
   $export['home_carousel'] = $view;
 

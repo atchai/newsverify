@@ -83,7 +83,7 @@ $display_output =  t(\'!username\', array(\'!username\' => $sub_username));',
         'data_type' => 'varchar',
       ),
       'display_format' => '$sub_timeago = format_interval(time() - $entity->changed, 2, NULL);
-$display_output =  t(\'!datetime ago\', array(\'!datetime\' => $sub_timeago));',
+$display_output =  t(\'!datetime\', array(\'!datetime\' => format_date($entity->changed, \'short\') ));',
       'store' => 0,
     ),
     'translatable' => 0,
@@ -358,7 +358,7 @@ $display_output =  t(\'!datetime ago\', array(\'!datetime\' => $sub_timeago));',
       'display_format' => '$sub_username = theme(\'username\', array(\'account\' => $entity));
 $sub_timeago = format_interval(time() - $entity->created, 2, NULL);
 
-$display_output =  t(\'!username | !datetime ago\', array(\'!username\' => $sub_username, \'!datetime\' => $sub_timeago));',
+$display_output =  t(\'!username | !datetime\', array(\'!username\' => $sub_username, \'!datetime\' => format_date($entity->created, \'short\') ));',
       'store' => 0,
     ),
     'translatable' => 0,
