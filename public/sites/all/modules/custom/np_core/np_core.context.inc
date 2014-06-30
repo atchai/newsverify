@@ -50,11 +50,11 @@ function np_core_context_default_contexts() {
           'region' => 'content',
           'weight' => '0',
         ),
-        'menu-menu-section' => array(
-          'module' => 'menu',
+        'responsive_dropdown_menus-menu-section' => array(
+          'module' => 'responsive_dropdown_menus',
           'delta' => 'menu-section',
           'region' => 'pre_content',
-          'weight' => '-10',
+          'weight' => '-9',
         ),
         'views-footer_ads-block' => array(
           'module' => 'views',
@@ -98,12 +98,6 @@ function np_core_context_default_contexts() {
           'module' => 'np_core',
           'delta' => 'np_core_menu_title',
           'region' => 'search',
-          'weight' => '-10',
-        ),
-        'np_core-np_core_section_menu_two' => array(
-          'module' => 'np_core',
-          'delta' => 'np_core_section_menu_two',
-          'region' => 'footer_second',
           'weight' => '-10',
         ),
       ),

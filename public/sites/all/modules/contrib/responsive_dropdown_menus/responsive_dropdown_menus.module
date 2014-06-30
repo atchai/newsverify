@@ -1,0 +1,275 @@
+<?php
+/**
+ * @file
+ * Module file for Responsive Dropdown Menus
+ */
+
+/**
+ * Implements hook_preprocess_page().
+ *
+ * This allows our JavaScript to properly name toggle helpers for better usability.
+ */
+function responsive_dropdown_menus_page_build(&$variables) {
+
+  // Initiate what will be our settings array.
+  $js_settings = array('responsive_dropdown_menus' => array());
+
+  // Populate JS settings with menu machine names and display names.
+  $menus = menu_get_menus();
+  foreach ($menus as $name => $title) {
+    $js_settings['responsive_dropdown_menus'][$name] = $title;
+  }
+  drupal_add_js($js_settings, 'setting');
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function responsive_dropdown_menus_block_info() {
+  $menus = menu_get_menus();
+
+  $blocks = array();
+  foreach ($menus as $name => $title) {
+    $blocks[$name]['info'] = t('Responsive Menu') . ': ' . check_plain($title);
+    $blocks[$name]['cache'] = DRUPAL_NO_CACHE;
+  }
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function responsive_dropdown_menus_block_view($delta = '') {
+  $menus = menu_get_menus();
+  $data['subject'] = check_plain($menus[$delta]);
+
+  // Get tree data for menu, three tiers deep.
+  $menu = menu_tree_all_data($delta, 3);
+  // Remove hidden links.
+  responsive_dropdown_menus_remove_hidden($menu);
+  // Return our HTML.
+  $data['content']['#markup'] = responsive_dropdown_menus_theme_dropdown_menu($menu, $delta);
+
+  // Add contextual links for this block.
+  if (!empty($data['content'])) {
+    $data['content']['#contextual_links']['menu'] = array('admin/structure/menu/manage', array($delta));
+  }
+  return $data;
+}
+
+/**
+ * This function will render and return the output for the main menu.
+ *
+ * @param array $args
+ *   Array of theme function parameters
+ *   - $inline: If true, the class 'inline' will be added.
+ */
+function responsive_dropdown_menus_main_menu($args) {
+  // It's not inline by default.
+  $inline = isset($args['inline']) ? $args['inline'] : FALSE;
+
+  // Get tree data for main menu, three tiers deep.
+  $menu = menu_tree_all_data(variable_get('menu_main_links_source', 'main-menu'), 3);
+  // Remove hidden links.
+  responsive_dropdown_menus_remove_hidden($menu);
+  // Return our HTML.
+  return responsive_dropdown_menus_theme_dropdown_menu($menu, 'main-menu', $inline);
+}
+
+/**
+ * Builds cycles through the provided menu tree to create a maximum of three tiered dropdown menus.
+ *
+ * @param array $menu_tree
+ *   The menu tree to be rendered
+ * @param string $menu_delta
+ *   Menu's delta, which is also applied as the main <ul>'s ID
+ * @param bool $menu_inline
+ *   If true, the class 'inline' will be added.
+ *
+ * @return string
+ */
+function responsive_dropdown_menus_theme_dropdown_menu($menu_tree, $menu_delta, $menu_inline = FALSE) {
+
+  // These are the classes which will be assigned to the root <ul>.
+  $menu_is_line = ($menu_inline) ? 'inline' : '';
+  $menu_classes = array(
+    $menu_delta,
+    'responsive-menu',
+    'links',
+    $menu_is_line,
+    'clearfix',
+  );
+
+  // Create empty <ul> variables.
+  $tier_one_level = $tier_two_level = $tier_three_level = '';
+  // Create empty <li> array.
+  $tier_one_items = $tier_two_items = $tier_three_items = array();
+
+  foreach ($menu_tree as $tier) {
+
+    if ($tier['below']) {
+      foreach ($tier['below'] as $tier_two) {
+
+        if ($tier_two['below']) {
+          foreach ($tier_two['below'] as $tier_three) {
+            // Check if active.
+            $active = responsive_dropdown_menus_active_helper($tier_three);
+            // If there are attributes, respect them.
+            $link_attributes = isset($tier['link']['options']) ? $tier['link']['options'] : array();
+            $tier_three_items[] = array(
+              'data' => l($tier_three['link']['link_title'], $tier_three['link']['href'], $link_attributes),
+              'id' => 'menu-item-' . $tier_three['link']['mlid'],
+              'class' => array(
+                'menu-item',
+                $active,
+              ),
+            );
+          }
+          $tier_three_level = theme('item_list', array(
+            'items' => $tier_three_items,
+            'attributes' => array(
+              'class' => array('clearfix', 'sub-menu', 'tier-three'),
+            ),
+          ));
+          $tier_three_level = str_replace(array('<div class="item-list">', '</div>'), '', $tier_three_level);
+          $tier_three_items = '';
+        }
+
+        // Check if active.
+        $active = responsive_dropdown_menus_active_helper($tier_two);
+        // If there are attributes, respect them.
+        $link_attributes = isset($tier['link']['options']) ? $tier['link']['options'] : array();
+        // Specify if there is a sub-menu.
+        $has_sub_menu = (!empty($tier_two_level)) ? 'menu-parent' : '';
+        $tier_two_items[] = array(
+          'data' => l($tier_two['link']['link_title'], $tier_two['link']['href'], $link_attributes) . $tier_three_level,
+          'title' => $tier_two['link']['link_title'],
+          'href' => $tier_two['link']['href'],
+          'id' => 'menu-item-' . $tier_two['link']['mlid'],
+          'class' => array(
+            'menu-item',
+            $active,
+            $has_sub_menu,
+          ),
+        );
+        $tier_three_level = '';
+      }
+      $tier_two_level = theme('item_list', array(
+        'items' => $tier_two_items,
+        'attributes' => array(
+          'class' => array(
+            'clearfix',
+            'sub-menu',
+            'tier-two',
+          ),
+        ),
+      ));
+      $tier_two_level = str_replace(array('<div class="item-list">', '</div>'), '', $tier_two_level);
+      $tier_two_items = '';
+    }
+
+    // Check if active.
+    $active = responsive_dropdown_menus_active_helper($tier);
+    // If there are attributes, respect them.
+    $link_attributes = isset($tier['link']['options']) ? $tier['link']['options'] : array();
+    // Specify there is a sub-menu.
+    $has_sub_menu = (!empty($tier_two_level)) ? 'menu-parent' : '';
+    $tier_one_items[] = array(
+      'data' => l($tier['link']['link_title'], $tier['link']['href'], $link_attributes) . $tier_two_level,
+      'id' => 'menu-item-' . $tier['link']['mlid'],
+      'class' => array(
+        'menu-item',
+        $active,
+        $has_sub_menu,
+      ),
+    );
+    $tier_two_level = '';
+  }
+  $tier_one_level = theme('item_list', array(
+    'items' => $tier_one_items,
+    'attributes' => array('id' => $menu_delta, 'class' => $menu_classes),
+  ));
+  $tier_one_level = str_replace(array('<div class="item-list">', '</div>'), '', $tier_one_level);
+  return $tier_one_level;
+}
+
+/**
+ * Checks whether to add the 'active' class to a link.
+ *
+ * @param array $link
+ *   Drupal menu item array
+ *
+ * @return string
+ *   String of CSS classes
+ */
+function responsive_dropdown_menus_active_helper($link) {
+  if (!is_array($link)) {
+    return;
+  }
+  $classes = '';
+  if ($link['link']['in_active_trail'] == FALSE) {
+    if (!empty($link['below'])) {
+      $classes = ' active-trail';
+    }
+    else {
+      $classes = 'active active-trail';
+    }
+  }
+  return $classes;
+}
+
+/**
+ * Removes any disabled menu items from the menu tree.
+ *
+ * @param array $menu_tree
+ *   Drupal menu tree array
+ *
+ * @return array
+ *   Modified menu tree array
+ */
+function responsive_dropdown_menus_remove_hidden(&$menu_tree) {
+  foreach ($menu_tree as $tier_key => $tier_item) {
+
+    if ($tier_item['link']['hidden'] == 1) {
+      unset($menu_tree[$tier_key]);
+    }
+    elseif (!empty($tier_item['below']) && is_array($tier_item['below'])) {
+
+      foreach ($tier_item['below'] as $tier_two_key => $tier_two_item) {
+        if ($tier_two_item['link']['hidden'] == 1) {
+          unset($menu_tree[$tier_key]['below'][$tier_two_key]);
+        }
+        elseif (!empty($tier_two_item['below']) && is_array($tier_two_item['below'])) {
+
+          foreach ($tier_two_item['below'] as $tier_three_key => $tier_three_item) {
+            if ($tier_three_item['link']['hidden'] == 1) {
+              unset($menu_tree[$tier_key]['below'][$tier_two_key]['below'][$tier_three_key]);
+            }
+          }
+
+        }
+
+      }
+    }
+
+  }
+}
+
+/**
+ * Implements hook_theme().
+ *
+ * @param $existing
+ * @param $type
+ * @param $theme
+ * @param $path
+ * @return array
+ */
+function responsive_dropdown_menus_theme($existing, $type, $theme, $path) {
+  return array(
+    // Override the main menu theme.
+    'links__system_main_menu' => array(
+      'variables' => array('inline' => FALSE),
+      'function' => 'responsive_dropdown_menus_main_menu',
+    ),
+  );
+}

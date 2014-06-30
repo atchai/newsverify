@@ -11,6 +11,7 @@ dependencies[] = np_page
 dependencies[] = np_publisher
 dependencies[] = np_search
 dependencies[] = np_story
+dependencies[] = responsive_dropdown_menus
 dependencies[] = strongarm
 dependencies[] = wysiwyg
 features[context][] = global

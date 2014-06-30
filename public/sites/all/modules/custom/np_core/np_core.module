@@ -111,7 +111,7 @@ function np_core_block_view($delta = '') {
     case 'np_core_menu_title':
       $block['subject'] = '';
       $block['content'] = array(
-        '#markup' => '<h3><a href="#section-footer">' . t('Menu') . '</a></h3>'
+        '#markup' => '<h3><a href="#zone-pre-content">' . t('Menu') . '</a></h3>'
       );
       break;
     case 'np_core_front_page_menu_title':

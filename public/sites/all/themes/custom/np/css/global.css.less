@@ -262,7 +262,7 @@ ul.inline li {
 /* Menu
 ----------------------------------------------------------------------------------------------------*/
 
-#block-menu-menu-section {
+/*#block-menu-menu-section {
   float: left; // LTR
   width: 880px;
 
@@ -284,6 +284,45 @@ ul.inline li {
     }
   }
 
+}*/
+
+.block-responsive-dropdown-menus-menu-section {
+
+  .block-title {
+    display: none;
+  }
+
+  ul {
+    margin-top: 10px;
+  }
+
+  li {
+    display: inline-block;
+    font-size: 20px;
+    padding: 10px 10px;
+  }
+
+  li:hover {
+
+    background-color: #de1c24;
+
+    a {
+      color: white;
+    }
+  }
+
+  .sub-menu {
+    background-color: #de1c24;
+    margin-right: -10px;
+
+    li:hover {
+      background-color: #a81521;
+    }
+
+    li {
+      white-space: nowrap;
+    }
+  }
 }
 
 /* Menu - JS Interaction
@@ -1330,11 +1369,73 @@ aside .block {
 /* Mobile ONLY
 ----------------------------------------------------------------------------------------------------*/
 
-@media (max-width: 767px) {
+/* Top Menu anchor
+--------------------*/
+.block-np-core-menu-title {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 740px) {
 
   // hide admin menu
   #admin-menu {
     display: none;
+  }
+
+  .block-responsive-dropdown-menus-menu-section {
+
+    .toggle-help {
+      display: none;
+    }
+
+    .block-title {
+      display: none;
+    }
+
+    ul {
+      margin-top: 10px;
+    }
+
+    li {
+      display: block;
+      padding-left: 0;
+      background-color: #A8A9AC;
+      border-top: 1px dotted grey;
+
+      a {
+        color: white;
+      }
+    }
+
+    li.menu-parent {
+      padding-bottom: 0;
+    }
+
+    li:hover {
+      background-color: #A8A9AC;
+
+    }
+
+    .sub-menu {
+      margin-right: -10px;
+
+      li {
+        border-top: none;
+        background-color: #DEDEDE;
+
+        a {
+          font-size: 15px;
+          font-weight: bold;
+          color: black;
+        }
+      }
+
+      li:hover {
+        background-color: #DEDEDE;
+        color: black;
+      }
+    }
   }
 
   body.admin-menu #section-header {

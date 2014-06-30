@@ -1,0 +1,80 @@
+/**
+* Menu toggle base styling
+*/
+.menu-toggle {
+  position: relative;
+  display: block;
+  margin: 0;
+  padding: 4px 3px;
+  width: 36px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.menu-toggle .toggle-help {
+    position: absolute;
+    left: 45px;
+    top: 7px;
+    margin: 0;
+    padding: 0 0 10px 0;
+}
+.menu-toggle .line {
+  display: block;
+  height: 2px;
+  width: 26px;
+  margin: 5px auto 5px auto;
+  background-color: #AAA;
+  border-bottom: 1px solid #CCC;
+}
+/**
+ * Ensures in mobile our menus stack
+ */
+.responsive-menu,
+.responsive-menu.links.inline {
+  max-height: 0;
+  overflow:hidden;
+  }
+  .responsive-menu.menu-toggled,
+  .responsive-menu.links.inline.menu-toggled {
+    max-height: none;
+  }
+.responsive-menu li,
+.responsive-menu.inline li {
+  position: relative;
+  display: block;
+}
+
+/**
+ * Default media query for Omega and narrow
+ */
+@media all and (min-width: 740px) and (min-device-width: 740px), (max-device-width: 800px) and (min-width: 740px) and (orientation:landscape) {
+  .menu-toggle {
+    display: none;
+  }
+  .responsive-menu,
+  .responsive-menu.links.inline {
+    max-height: none;
+    overflow: visible;
+  }
+  .responsive-menu li {
+    display: inherit;
+  }
+  .responsive-menu.inline li {
+    display: inline-block;
+  }
+  .responsive-menu .sub-menu {
+    position: absolute;
+    z-index: 100;
+    max-height: 0;
+    overflow: hidden;
+  }
+  /* Display does not animate, max-height does. Max-weight will not animate from 0 - none, so default 900px added.
+      if your sub menu goes past 900px, well..uhh.. */
+  .responsive-menu .sub-menu.active {
+    max-height: none;
+    overflow: visible;
+  }
+  /* Chances are your submenu should stack...if not override this. */
+  .responsive-menu .sub-menu li {
+    display: block;
+  }
+}

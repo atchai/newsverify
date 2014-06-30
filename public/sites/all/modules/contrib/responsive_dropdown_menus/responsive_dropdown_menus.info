@@ -1,0 +1,15 @@
+name = Responsive Dropdown Menus
+description = Provides menu blocks for all system menus, supporting responsive design and dropdown navigation.
+core = 7.x
+
+dependencies[] = menu
+
+stylesheets[all][] = theme/responsive-dropdown-menus.css
+scripts[] = theme/responsive-dropdown-menus.js
+
+; Information added by Drupal.org packaging script on 2014-01-21
+version = "7.x-1.0"
+core = "7.x"
+project = "responsive_dropdown_menus"
+datestamp = "1390270705"
+
