@@ -29,7 +29,7 @@ function np_event_field_group_info() {
     'format_settings' => array(
       'label' => 'Sources',
       'instance_settings' => array(
-        'id' => '',
+        'id' => 'node_event_full_group_sources',
         'classes' => 'field-group-div group_sources',
         'description' => '',
         'show_label' => '1',
@@ -62,7 +62,7 @@ function np_event_field_group_info() {
     'format_settings' => array(
       'label' => 'Verification',
       'instance_settings' => array(
-        'id' => '',
+        'id' => 'node_event_full_group_verification',
         'classes' => 'field-group-div group-verification',
         'description' => '',
         'show_label' => '0',
@@ -98,7 +98,7 @@ function np_event_field_group_info() {
     'format_settings' => array(
       'label' => 'What',
       'instance_settings' => array(
-        'id' => '',
+        'id' => 'node_event_full_group_what',
         'classes' => 'field-group-div group-what',
         'description' => '',
         'show_label' => '1',
@@ -166,7 +166,7 @@ function np_event_field_group_info() {
     'format_settings' => array(
       'label' => 'When',
       'instance_settings' => array(
-        'id' => '',
+        'id' => 'node_event_full_group_when',
         'classes' => 'field-group-div group-when',
         'description' => '',
         'show_label' => '1',
@@ -234,7 +234,7 @@ function np_event_field_group_info() {
     'format_settings' => array(
       'label' => 'Where',
       'instance_settings' => array(
-        'id' => '',
+        'id' => 'node_event_full_group_where',
         'classes' => 'field-group-div group-where',
         'description' => '',
         'show_label' => '1',
