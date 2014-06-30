@@ -17,14 +17,15 @@ class AddThis {
   const STYLE_KEY = 'addthis_style';
   const WIDGET_TYPE = 'addthis_button_widget';
 
-  // AddThis attribute and parameter names (as defined in AddThis APIs)
+  // AddThis attribute and parameter names (as defined in AddThis APIs).
   const PROFILE_ID_QUERY_PARAMETER = 'pubid';
   const TITLE_ATTRIBUTE = 'addthis:title';
   const URL_ATTRIBUTE = 'addthis:url';
 
-  // Persistent variable keys
+  // Persistent variable keys.
   const ADDRESSBOOK_ENABLED_KEY = 'addthis_addressbook_enabled';
   const BLOCK_WIDGET_TYPE_KEY = 'addthis_block_widget_type';
+  const BLOCK_WIDGET_SETTINGS_KEY = 'addthis_block_widget_settings';
   const BOOKMARK_URL_KEY = 'addthis_bookmark_url';
   const CLICKBACK_TRACKING_ENABLED_KEY = 'addthis_clickback_tracking_enabled';
   const CLICK_TO_OPEN_COMPACT_MENU_ENABLED_KEY = 'addthis_click_to_open_compact_menu_enabled';
@@ -45,29 +46,29 @@ class AddThis {
   const UI_HEADER_BACKGROUND_COLOR_KEY = 'addthis_ui_header_background_color';
   const UI_HEADER_COLOR_KEY = 'addthis_ui_header_color';
   const WIDGET_JS_URL_KEY = 'addthis_widget_js_url';
-  const WIDGET_JS_ASYNC = 'addthis_widget_async';
+  const WIDGET_JS_LOAD_TYPE = 'addthis_widget_load_type';
 
-  // Twitter
+  // Twitter.
   const TWITTER_VIA_KEY = 'addthis_twitter_via';
   const TWITTER_VIA_DEFAULT = 'AddThis';
   const TWITTER_TEMPLATE_KEY = 'addthis_twitter_template';
   const TWITTER_TEMPLATE_DEFAULT = '{{title}} {{url}} via @AddThis';
 
-  // External resources
-  const DEFAULT_BOOKMARK_URL = 'http://www.addthis.com/bookmark.php?v=250';
+  // External resources.
+  const DEFAULT_BOOKMARK_URL = 'http://www.addthis.com/bookmark.php?v=300';
   const DEFAULT_SERVICES_CSS_URL = 'http://cache.addthiscdn.com/icons/v1/sprites/services.css';
   const DEFAULT_SERVICES_JSON_URL = 'http://cache.addthiscdn.com/services/v1/sharing.en.json';
-  const DEFAULT_WIDGET_JS_URL = 'http://s7.addthis.com/js/250/addthis_widget.js';
-  const DEFAULT_WIDGET_JS_ASYNC = TRUE;
+  const DEFAULT_WIDGET_JS_URL = 'http://s7.addthis.com/js/300/addthis_widget.js';
+  const DEFAULT_WIDGET_JS_LOAD_TYPE = 'async';
 
-  // Internal resources
+  // Internal resources.
   const ADMIN_CSS_FILE = 'addthis.admin.css';
   const ADMIN_INCLUDE_FILE = 'includes/addthis.admin.inc';
 
-  // Widget types
+  // Widget types.
   const WIDGET_TYPE_DISABLED = 'addthis_disabled';
 
-  // Styles
+  // Styles.
   const CSS_32x32 = 'addthis_32x32_style';
   const CSS_16x16 = 'addthis_16x16_style';
 
@@ -77,18 +78,27 @@ class AddThis {
   private $json;
 
   /**
+   * Get the singleton instance of the AddThis class.
+   *
    * @return AddThis
+   *   Instance of AddThis.
    */
   public static function getInstance() {
     module_load_include('php', 'addthis', 'classes/AddThisJson');
+    module_load_include('php', 'addthis', 'classes/AddThisWidgetJs');
+
     if (!isset(self::$instance)) {
-      $addThis = new AddThis();
-      $addThis->setJson(new AddThisJson());
-      self::$instance = $addThis;
+      $add_this = new AddThis();
+      $add_this->setJson(new AddThisJson());
+      self::$instance = $add_this;
     }
+
     return self::$instance;
   }
 
+  /**
+   * Set the json object.
+   */
   public function setJson(AddThisJson $json) {
     $this->json = $json;
   }
@@ -123,6 +133,10 @@ class AddThis {
     if (!array_key_exists($display, $formatters)) {
       return array();
     }
+
+    // Load resources.
+    self::$instance->includeWidgetJs();
+    self::$instance->addConfigurationOptionsJs();
 
     // The display type exists. Now get it and get the markup.
     $display_information = $formatters[$display];
@@ -192,43 +206,91 @@ class AddThis {
     return $rows;
   }
 
+  /**
+   * Add the AddThis Widget JavaScript to the page.
+   */
   public function addWidgetJs() {
-    $async_parameter = self::isWidgetJsAsync() ? '?async=1' : '';
-    $url = self::getWidgetUrl() . $async_parameter;
-    if (self::isWidgetJsAsync()) {
-      drupal_add_js(
-        array(
-        'addthis' => array(
-          'widget_url' => $url,
-        ),
-      ),
-        'setting'
-      );
+    $widgetjs = new AddThisWidgetJs(self::getWidgetUrl());
+    $widgetjs->addAttribute('pubid', $this->getProfileId());
+
+    if (self::getWidgetJsLoadType() != 'include') {
+      $widgetjs->addAttribute(self::getWidgetJsLoadType(), '1');
     }
-    else {
-      // Add AddThis.com resources
-      drupal_add_js(
-        $url,
-        array(
-        'type' => 'external',
-        'group' => JS_LIBRARY,
-        'every_page' => TRUE,
-        'weight' => 9,
+
+    $url = $widgetjs->getFullUrl();
+
+    switch (self::getWidgetJsLoadType()) {
+
+      // Load as DOM is ready.
+      case 'domready':
+        drupal_add_js(
+          array(
+            'addthis' => array(
+              'widget_url' => $url,
+              'load_type' => self::getWidgetJsLoadType(),
+            ),
+          ),
+          'setting'
+        );
+        break;
+
+      // Load as async.
+      case 'async':
+        drupal_add_js(
+          array(
+            'addthis' => array(
+              'load_type' => self::getWidgetJsLoadType(),
+            ),
+          ),
+          'setting'
+        );
+
+        drupal_add_js(
+          $url,
+          array(
+            'type' => 'external',
+            'scope' => 'footer',
+          )
+        );
+        break;
+
+      // Load as include in the page.
+      default:
+        drupal_add_js(
+          $url,
+          array(
+            'type' => 'external',
+            'scope' => 'footer',
+          )
+        );
+        break;
+    }
+
+    // Add local internal behaviours.
+    drupal_add_js(
+      drupal_get_path('module', 'addthis') . '/addthis.js',
+      array(
+        'type' => 'file',
+        'scope' => 'footer',
       )
-      );
+    );
+  }
+
+  /**
+   * Load function for widget information.
+   *
+   * Loading widget information only once.
+   */
+  public function includeWidgetJs() {
+    static $loaded;
+
+    if (!isset($loaded)) {
+      $loaded = TRUE;
+      $this->addWidgetJs();
+
+      return TRUE;
     }
-    // Add local internal behaviours
-    if (self::isWidgetJsAsync()) {
-      drupal_add_js(
-        drupal_get_path('module', 'addthis') . '/addthis.js',
-        array(
-        'group' => JS_DEFAULT,
-        'weight' => 10,
-        'every_page' => TRUE,
-        'preprocess' => TRUE,
-      )
-      );
-    }
+    return FALSE;
   }
 
   public function addConfigurationOptionsJs() {
@@ -240,6 +302,7 @@ class AddThis {
 
       global $language;
       $configuration = array(
+        'pubid' => $this->getProfileId(),
         'services_compact' => $enabledServices,
         'data_track_clickback' => $this->isClickbackTrackingEnabled(),
         'ui_508_compliant' => $this->get508Compliant(),
@@ -291,8 +354,24 @@ class AddThis {
     return array();
   }
 
+  /**
+   * Get the type used for the block.
+   */
   public function getBlockDisplayType() {
     return variable_get(self::BLOCK_WIDGET_TYPE_KEY, self::WIDGET_TYPE_DISABLED);
+  }
+
+  /**
+   * Get the settings used by the block display.
+   */
+  public function getBlockDisplaySettings() {
+    $settings = variable_get(self::BLOCK_WIDGET_SETTINGS_KEY, NULL);
+
+    if ($settings == NULL && $this->getBlockDisplayType() != self::WIDGET_TYPE_DISABLED) {
+      $settings = field_info_formatter_settings($this->getBlockDisplayType());
+    }
+
+    return $settings;
   }
 
   public function getProfileId() {
@@ -311,8 +390,14 @@ class AddThis {
     return variable_get(self::ENABLED_SERVICES_KEY, array());
   }
 
-  public function isWidgetJsAsync() {
-    return variable_get(self::WIDGET_JS_ASYNC, self::DEFAULT_WIDGET_JS_ASYNC);
+  /**
+   * Return the type of loading.
+   *
+   * @return string
+   *   Retuns domready or async.
+   */
+  public function getWidgetJsLoadType() {
+    return variable_get(self::WIDGET_JS_LOAD_TYPE, self::DEFAULT_WIDGET_JS_LOAD_TYPE);
   }
 
   public function isClickToOpenCompactMenuEnabled() {
@@ -446,13 +531,32 @@ class AddThis {
     return $this->getProfileIdQueryParameter('#');
   }
 
+  /**
+   * Get the url for the AddThis Widget.
+   */
   private function getWidgetUrl() {
-    return check_url($this->validateSecureUrl($this->getBaseWidgetJsUrl()) . $this->getProfileIdQueryParameterPrefixedWithHash());
+    $url = ($this->currentlyOnHttps() ?
+      $this->getBaseWidgetJsUrl() : // Not https url.
+      $this->transformToSecureUrl($this->getBaseWidgetJsUrl()) // Transformed to https url.
+    );
+    return check_url($url);
   }
 
-  private function validateSecureUrl($url) {
+  /**
+   * Request if we are currently on a https connection.
+   *
+   * @return True if we are currently on a https connection.
+   */
+  public function currentlyOnHttps() {
     global $base_root;
-    if (strpos($base_root, 'https://') !== FALSE) {
+    return (strpos($base_root, 'https://') !== FALSE) ? TRUE : FALSE;
+  }
+
+  /**
+   * Transform a url to secure url with https prefix.
+   */
+  public function transformToSecureUrl($url) {
+    if ($this->currentlyOnHttps()) {
       $url = (strpos($url, 'http://') === 0 ? 'https://' . substr($url, 7) : $url);
     }
     return $url;

@@ -53,4 +53,12 @@ function addthis_uninstall() {
   variable_del(AddThis::UI_HEADER_BACKGROUND_COLOR_KEY);
   variable_del(AddThis::UI_HEADER_COLOR_KEY);
   variable_del(AddThis::WIDGET_JS_URL_KEY);
+  variable_del(AddThis::WIDGET_JS_LOAD_TYPE);
+}
+
+/**
+ * Remove old WIDGET_JS_ASYNC variable.
+ */
+function addthis_update_7401() {
+  variable_del('addthis_widget_async');
 }

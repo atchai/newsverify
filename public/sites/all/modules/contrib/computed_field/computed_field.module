@@ -64,7 +64,7 @@ function computed_field_field_settings_form($field, $instance, $has_data) {
   $settings = $field['settings'];
 
   $form['#element_validate'] = array('computed_field_field_settings_form_validate');
-  
+
   $form['code'] = array(
     '#type' => 'textarea',
     '#rows' => 15,
@@ -89,7 +89,7 @@ function computed_field_field_settings_form($field, $instance, $has_data) {
   $form['display_format'] = array(
     '#type' => 'textarea',
     '#title' => t('Display Code (PHP)'),
-    '#description' => t('This code should assign a string to the <code>@display_output</code> variable, which will be printed when the field is displayed. The raw computed value of the field is in <code>@value</code>.  <strong>Note:</strong> this code has no effect if you use the "Raw computed value" display formatter.<p> Alternately, this code can be supplied by your own custom function named: <code>@display_func($field, $entity_field_item, $entity_lang, $langcode)</code>.  Return the value to be displayed.  Original value is in $entity_field_item[\'value\'].', 
+    '#description' => t('This code should assign a string to the <code>@display_output</code> variable, which will be printed when the field is displayed. The raw computed value of the field is in <code>@value</code>.  <strong>Note:</strong> this code has no effect if you use the "Raw computed value" display formatter.<p> Alternately, this code can be supplied by your own custom function named: <code>@display_func($field, $entity_field_item, $entity_lang, $langcode, $entity)</code>.  Return the value to be displayed.  Original value is in $entity_field_item[\'value\'].',
       array('@display_output' => '$display_output',
             '@value' => '$entity_field_item[\'value\']',
             '@display_func' => $display_func)),
@@ -110,7 +110,7 @@ function computed_field_field_settings_form($field, $instance, $has_data) {
     '#disabled' => $has_data,
   );
   $form['database'] = array('#type' => 'fieldset', '#title' => t('Database Storage Settings'));
-  
+
   if ($has_data) {
     $form['database']['warning'] = array(
       '#type' => 'item',
@@ -320,13 +320,13 @@ function computed_field_field_formatter_view($entity_type, $entity, $field, $ins
   $display_func = 'computed_field_' . $field['field_name'] . '_display';
   if (function_exists($display_func)) $display_in_code = TRUE;
   else $display_in_code = FALSE;
-  
+
   // Loop the items to display
   foreach ($items as $delta => $item) {
-  
+
     // For "some" backwards compatibility
     $entity_field_item = $item;
-    
+
     // Setup a variable with the entity language if available
     if (isset($entity->language)) $entity_lang = $entity->language;
     else $entity_lang = LANGUAGE_NONE;
@@ -338,12 +338,12 @@ function computed_field_field_formatter_view($entity_type, $entity, $field, $ins
     // Execute the display code
     $display_output = NULL;
     if ($display_in_code) {
-      $display_output = $display_func($field, $entity_field_item, $entity_lang, $langcode);
+      $display_output = $display_func($field, $entity_field_item, $entity_lang, $langcode, $entity);
     }
     else {
       eval($field['settings']['display_format']);
     }
-    
+
     // Output the formatted display item
     switch ($display['type']) {
       case 'computed_field_unsanitized':
@@ -357,7 +357,6 @@ function computed_field_field_formatter_view($entity_type, $entity, $field, $ins
         break;
     }
   }
-
   return $element;
 }
 
@@ -373,78 +372,6 @@ function computed_field_field_is_empty($item, $field) {
 }
 
 /**
- * Implements hook_token_info().
- */
-function computed_field_token_info() {
-  $types['computed'] = array(
-    'name' => t("Computed"),
-    'description' => t("Tokens related to Computed fields."),
-    'needs-data' => 'node',
-  );
-  $fields = field_info_fields();
-  $node = array();
-  $computed = array();
-  foreach ($fields as $field_name => $field) {
-    if ($field['module'] == "computed_field") {
-      $node[str_replace('_', '-', $field_name)] = array(
-        'name' => t("Computed: %field_name", array('%field_name' => $field_name)),
-        'description' => t("Computed field %field_name value.", array('%field_name' => $field_name)),
-        'type' => 'computed',
-      );
-      $computed['rawvalue'] = array(
-        'name' => t("Raw computed value"),
-        'description' => t("Computed field %field_name raw value.", array('%field_name' => $field_name)),
-      );
-    }
-  }
-  if (!empty($computed)) {
-    return array(
-      'types' => $types,
-      'tokens' => array('node' => $node, 'computed' => $computed),
-    );
-  }
-}
-
-/**
- * Implements hook_tokens().
- */
-function computed_field_tokens($type, $tokens, array $data = array(), array $options = array()) {
-  $computed_fields = array();
-  $replacements = array();
-  $sanitize = !empty($options['sanitize']);
-  $lang = isset($options['language']->language) ? $options['language']->language : LANGUAGE_NONE;
-  $fields = field_info_fields();
-  foreach ($fields as $field_name => $field) {
-    if ($field['module'] == "computed_field") {
-      $computed_fields[] = str_replace('_', '-', $field_name);
-    }
-  }
-  foreach ($tokens as $name => $original) {
-    // For normal display output
-    if (in_array($name, $computed_fields)) {
-      $field_name = str_replace('-', '_', $name);
-      $entity_field_item = $data[$type]->{$field_name}[$lang][0];
-      $field = $fields[$field_name];
-      // Check if the value is to be formatted by a display function outside the DB
-      $display_func = 'computed_field_' . $field_name . '_display';
-      if (function_exists($display_func))  {
-        $display_output = $display_func($field, $entity_field_item);
-      }
-      else {
-        eval($field['settings']['display_format']);
-      }
-      $replacements[$original] = $sanitize ? check_plain($display_output) : $display_output;
-    }
-    // For raw value output
-    elseif (in_array(str_replace(':rawvalue', '', $name), $computed_fields)) {
-      $field_name = str_replace('-', '_', str_replace(':rawvalue', '', $name));
-      $replacements[$original] = $sanitize ? check_plain($data[$type]->{$field_name}[$lang][0]['value']) : $data[$type]->{$field_name}[$lang][0]['value'];
-    }
-  }
-  return $replacements;
-}
-
-/**
  * Private function to compute the fields value.
  */
 function _computed_field_compute_value($entity_type, $entity, $field, $instance, $langcode, &$items) {
@@ -452,11 +379,11 @@ function _computed_field_compute_value($entity_type, $entity, $field, $instance,
 
   // Setup a variable with the field values
   $entity_field =& $items;
-  
+
   // Setup a variable with the entity language if available
   if (isset($entity->language)) $entity_lang = $entity->language;
   else $entity_lang = LANGUAGE_NONE;
-  
+
   // Allow the value to be computed from code not stored in DB
   $compute_func = 'computed_field_' . $field['field_name'] . '_compute';
   if (function_exists($compute_func)) {
@@ -468,3 +395,4 @@ function _computed_field_compute_value($entity_type, $entity, $field, $instance,
     }
   }
 }
+

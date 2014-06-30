@@ -5,7 +5,9 @@
  * in a separate AddThis-class to keep the .module-file clean.
  */
 
-module_load_include('inc', 'addthis', 'includes/addthis.block');
+if (module_exists('block')) {
+  module_load_include('inc', 'addthis', 'includes/addthis.block');
+}
 module_load_include('inc', 'addthis', 'includes/addthis.field');
 
 /**
@@ -95,14 +97,6 @@ function addthis_permission() {
       'description' => t('Perform advanced maintenance tasks for AddThis.'),
     ),
   );
-}
-
-/**
- * Implements hook_page_alter().
- */
-function addthis_page_alter(&$page) {
-  AddThis::getInstance()->addWidgetJs();
-  AddThis::getInstance()->addConfigurationOptionsJs();
 }
 
 /**
@@ -200,4 +194,95 @@ function theme_addthis_element($variables) {
   }
   $output .= '</' . $element['#tag'] . ">\n";
   return $output;
+}
+
+/**
+ * Create a addthis settings form.
+ */
+function _addthis_settings_form($form = array(), &$form_state, $display_type = NULL, $display_settings = NULL) {
+  // Toggle variables
+  $no_js = FALSE;
+
+
+  // Default display type if not set in the parameters.
+  $display_type = (isset($display_type)) ? $display_type : 'addthis_disabled';
+  // Load setting type from the form_state.
+  if (isset($form_state['values']['addthis_settings']['type'])) {
+    $display_type = $form_state['values']['addthis_settings']['type'];
+  }
+
+  // Container used as the replace for ajax.
+  $form['#type'] = 'container';
+  $form['#attributes'] = array();
+  $form['#id'] = 'addthis_settings';
+
+  // The list of formatters.
+  $formatter_options = AddThis::getInstance()->getDisplayTypes();
+  $form['type'] = array(
+    '#type' => 'select',
+    '#title' => t('Formatter for @title', array('@title' => 'AddThis block')),
+    '#title_display' => 'invisible',
+    '#options' => $formatter_options,
+    '#default_value' => $display_type,
+    '#parents' => array('addthis_settings', 'type'),
+    '#attributes' => array('class' => array('addthis-display-type')),
+    '#ajax' => array(
+      'callback' => '_addthis_settings_form_submit_callback',
+      'wrapper' => 'addthis_settings',
+      'name' => 'switch_display',
+      'event' => 'change',
+    )
+  );
+
+  if ($no_js) {
+    $form['choose'] = array(
+      '#type' => 'submit',
+      '#name' => 'Switch display',
+      '#value' => 'Switch display',
+      '#op' => 'switch_display',
+      '#id' => 'switch-display',
+      '#submit' => array('_addthis_settings_form_submit'),
+    );
+  }
+
+  // Formatter settings.
+
+  // Check the currently selected formatter, and merge persisted values for
+  // formatter settings.
+  $formatter_type = $display_type;
+
+  // Get the settings if set.
+  $settings = $display_settings;
+  $formatter_settings = field_info_formatter_settings($formatter_type);
+  $settings += $formatter_settings;
+
+  $field = array();
+  $instance = array();
+  $view_mode = 'block';
+
+  $instance['display'][$view_mode]['type'] = $formatter_type;
+  $formatter = field_info_formatter_types($formatter_type);
+  $instance['display'][$view_mode]['module'] = $formatter['module'];
+  $instance['display'][$view_mode]['settings'] = $settings;
+
+  $settings_form = array();
+  $function = $formatter['module'] . '_field_formatter_settings_form';
+  if (function_exists($function)) {
+    $settings_form = $function($field, $instance, $view_mode, $form, $form_state);
+    $settings_form['#tree'] = TRUE;
+    $settings_form['#parents'] = array('addthis_settings', 'settings');
+  }
+
+  $form['settings'] = $settings_form;
+
+  return $form;
+}
+
+function _addthis_settings_form_submit($form, &$form_state) {
+  $form_state['rebuild'] = TRUE;
+}
+
+function _addthis_settings_form_submit_callback($form, &$form_state) {
+  $form_state['rebuild'] = TRUE;
+  return $form['addthis_settings']['form'];
 }

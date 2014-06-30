@@ -1,10 +1,12 @@
 <?php
-
 /**
  * @file
  * Administrative page callbacks for the AddThis-module.
  */
 
+/**
+ * Form handler for admin_settings_form.
+ */
 function addthis_admin_settings_form($form_state) {
   AddThis::getInstance()->addStylesheets();
 
@@ -23,30 +25,30 @@ function addthis_admin_settings_form($form_state) {
     '#collapsed' => TRUE,
   );
   $form['fieldset_compact_menu']['fieldset_menu_style'][AddThis::CO_BRAND_KEY] = array(
-      '#type' => 'textfield',
-      '#title' => t('Branding text'),
-      '#description' => t('Additional branding message to be rendered in the upper-right-hand corner of the compact menus.<br />Should be less than 15 characters in most cases to render properly.'),
-      '#default_value' => AddThis::getInstance()->getCoBrand(),
-      '#required' => FALSE,
-      '#maxlength' => 15,
+    '#type' => 'textfield',
+    '#title' => t('Branding text'),
+    '#description' => t('Additional branding message to be rendered in the upper-right-hand corner of the compact menus.<br />Should be less than 15 characters in most cases to render properly.'),
+    '#default_value' => AddThis::getInstance()->getCoBrand(),
+    '#required' => FALSE,
+    '#maxlength' => 15,
   );
   $form['fieldset_compact_menu']['fieldset_menu_style'][AddThis::UI_HEADER_COLOR_KEY] = array(
-      '#type' => 'textfield',
-      '#title' => t('Header text color'),
-      '#default_value' => AddThis::getInstance()->getUiHeaderColor(),
-      '#description' => t('Something like #FFFFFF'),
-      '#size' => 8,
-      '#maxlength' => 7,
-      '#required' => FALSE,
+    '#type' => 'textfield',
+    '#title' => t('Header text color'),
+    '#default_value' => AddThis::getInstance()->getUiHeaderColor(),
+    '#description' => t('Something like #FFFFFF'),
+    '#size' => 8,
+    '#maxlength' => 7,
+    '#required' => FALSE,
   );
   $form['fieldset_compact_menu']['fieldset_menu_style'][AddThis::UI_HEADER_BACKGROUND_COLOR_KEY] = array(
-      '#type' => 'textfield',
-      '#title' => t('Header background color'),
-      '#default_value' => AddThis::getInstance()->getUiHeaderBackgroundColor(),
-      '#description' => t('Something like #000000'),
-      '#size' => 8,
-      '#maxlength' => 7,
-      '#required' => FALSE,
+    '#type' => 'textfield',
+    '#title' => t('Header background color'),
+    '#default_value' => AddThis::getInstance()->getUiHeaderBackgroundColor(),
+    '#description' => t('Something like #000000'),
+    '#size' => 8,
+    '#maxlength' => 7,
+    '#required' => FALSE,
   );
   $form['fieldset_compact_menu']['fieldset_menu_style'][AddThis::CLICK_TO_OPEN_COMPACT_MENU_ENABLED_KEY] = array(
     '#type' => 'checkbox',
@@ -75,7 +77,7 @@ function addthis_admin_settings_form($form_state) {
   // Enabled services settings.
   $form['fieldset_compact_menu']['enabled_services_fieldset'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Enabled services'),
+    '#title' => t('Compact menu enabled services'),
     '#description' => t('The sharing services you select here will be displayed in the compact menu. If you select no services, AddThis will provide a list of frequently used services. This list is updated regularly. <b>Notice that this setting does not define what services should be display in a toolbox.</b>'),
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
@@ -91,41 +93,41 @@ function addthis_admin_settings_form($form_state) {
 
   // Additional visual settings.
   $form['fieldset_compact_menu']['fieldset_additionals'] = array(
-      '#type' => 'fieldset',
-      '#title' => t('Additional configuration'),
-      '#collapsible' => TRUE,
-      '#collapsed' => TRUE,
+    '#type' => 'fieldset',
+    '#title' => t('Additional configuration'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
   );
   $form['fieldset_compact_menu']['fieldset_additionals'][AddThis::STANDARD_CSS_ENABLED_KEY] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Use standard AddThis stylesheet'),
-      '#description' => t('If not checked, AddThis will not load standard CSS file, allowing you to style everything yourself without incurring the cost of an additional load.'),
-      '#default_value' => AddThis::getInstance()->isStandardCssEnabled(),
-      '#required' => FALSE,
+    '#type' => 'checkbox',
+    '#title' => t('Use standard AddThis stylesheet'),
+    '#description' => t('If not checked, AddThis will not load standard CSS file, allowing you to style everything yourself without incurring the cost of an additional load.'),
+    '#default_value' => AddThis::getInstance()->isStandardCssEnabled(),
+    '#required' => FALSE,
   );
   $form['fieldset_compact_menu']['fieldset_additionals'][AddThis::COMPLIANT_508_KEY] = array(
-      '#type' => 'checkbox',
-      '#title' => t('508 compliant'),
-      '#description' => 'If checked, clicking the AddThis button will open a new window to a page that is keyboard navigable.',
-      '#default_value' => AddThis::getInstance()->get508Compliant(),
-      '#required' => FALSE,
+    '#type' => 'checkbox',
+    '#title' => t('508 compliant'),
+    '#description' => 'If checked, clicking the AddThis button will open a new window to a page that is keyboard navigable.',
+    '#default_value' => AddThis::getInstance()->get508Compliant(),
+    '#required' => FALSE,
   );
   $form['fieldset_compact_menu']['fieldset_additionals'][AddThis::ADDRESSBOOK_ENABLED_KEY] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Use addressbook'),
-      '#description' => 'If checked, the user will be able import their contacts from popular webmail services when using AddThis\'s email sharing.',
-      '#default_value' => AddThis::getInstance()->isAddressbookEnabled(),
-      '#required' => FALSE,
+    '#type' => 'checkbox',
+    '#title' => t('Use addressbook'),
+    '#description' => 'If checked, the user will be able import their contacts from popular webmail services when using AddThis\'s email sharing.',
+    '#default_value' => AddThis::getInstance()->isAddressbookEnabled(),
+    '#required' => FALSE,
   );
 
   // Analytics settings.
   $profile_id = AddThis::getInstance()->getProfileId();
   $can_track_clicks = empty($profile_id) ? FALSE : TRUE;
   $form['fieldset_analytics'] = array(
-        '#type' => 'fieldset',
-        '#title' => t('Analytics & Tracking'),
-        '#collapsible' => TRUE,
-        '#collapsed' => $can_track_clicks ? TRUE : FALSE,
+    '#type' => 'fieldset',
+    '#title' => t('Analytics & Tracking'),
+    '#collapsible' => TRUE,
+    '#collapsed' => $can_track_clicks ? TRUE : FALSE,
   );
 
   if (!$can_track_clicks) {
@@ -155,7 +157,7 @@ function addthis_admin_settings_form($form_state) {
   // Facebook Like tracking requires a namespace to be added.
   $rdf_enabled = module_exists('rdf');
   if (!$rdf_enabled) {
-    $rdf_description = '<span class="admin-disabled">' . t('The RDF module needs to be enabled to support Facebook Like tracking support.<br>Enable the module on <a href="!modules">modules</a> page.',
+    $rdf_description = '<span class="admin-disabled">' . t('The RDF module needs to be enabled to support Facebook Like tracking support.<br />Enable the module on <a href="!modules">modules</a> page.',
       array('!modules' => base_path() . 'admin/modules')
     ) . '</span>';
   }
@@ -175,15 +177,15 @@ function addthis_admin_settings_form($form_state) {
   );
 
   $form['fieldset_analytics'][AddThis::FACEBOOK_LIKE_COUNT_SUPPORT_ENABLED] = array(
-        '#type' => 'checkbox',
-        '#title' => t('Enable Facebook Like tracking'),
-        '#description' => filter_xss($rdf_description, array('span')),
-        '#default_value' => AddThis::getInstance()->isFacebookLikeCountSupportEnabled(),
-        '#required' => FALSE,
-        '#disabled' => !$rdf_enabled,
+    '#type' => 'checkbox',
+    '#title' => t('Enable Facebook Like tracking'),
+    '#description' => filter_xss($rdf_description, array('span')),
+    '#default_value' => AddThis::getInstance()->isFacebookLikeCountSupportEnabled(),
+    '#required' => FALSE,
+    '#disabled' => !$rdf_enabled,
   );
 
-  // Google Analytics and Google Social Tracking support
+  // Google Analytics and Google Social Tracking support.
   $can_do_google_social_tracking = module_exists('googleanalytics');
   $is_google_analytics_setup = $can_do_google_social_tracking && variable_get('googleanalytics_account', '');
   $form['fieldset_analytics']['google_analytics'] = array(
@@ -222,7 +224,6 @@ function addthis_admin_settings_form($form_state) {
     '#disabled' => !$is_google_analytics_setup,
   );
 
-
   // Third party settings.
   $form['third_party_fieldset'] = array(
     '#type' => 'fieldset',
@@ -253,38 +254,41 @@ function addthis_admin_settings_form($form_state) {
   return system_settings_form($form);
 }
 
+/**
+ * Form handler for admin_settings_advanced_form.
+ */
 function addthis_admin_settings_advanced_form($form_state) {
 
   // Service URL's settings.
   $form['service_urls_fieldset'] = array(
-      '#type' => 'fieldset',
-      '#title' => t('Service URLs'),
-      '#collapsible' => TRUE,
-      '#collapsed' => TRUE,
+    '#type' => 'fieldset',
+    '#title' => t('Service URLs'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
   );
   $form['service_urls_fieldset'][AddThis::BOOKMARK_URL_KEY] = array(
-      '#type' => 'textfield',
-      '#title' => t('AddThis bookmark URL'),
-      '#default_value' => AddThis::getInstance()->getBaseBookmarkUrl(),
-      '#required' => TRUE,
+    '#type' => 'textfield',
+    '#title' => t('AddThis bookmark URL'),
+    '#default_value' => AddThis::getInstance()->getBaseBookmarkUrl(),
+    '#required' => TRUE,
   );
   $form['service_urls_fieldset'][AddThis::SERVICES_CSS_URL_KEY] = array(
-      '#type' => 'textfield',
-      '#title' => t('AddThis services stylesheet URL'),
-      '#default_value' => AddThis::getInstance()->getServicesCssUrl(),
-      '#required' => TRUE,
+    '#type' => 'textfield',
+    '#title' => t('AddThis services stylesheet URL'),
+    '#default_value' => AddThis::getInstance()->getServicesCssUrl(),
+    '#required' => TRUE,
   );
   $form['service_urls_fieldset'][AddThis::SERVICES_JSON_URL_KEY] = array(
-      '#type' => 'textfield',
-      '#title' => t('AddThis services json URL'),
-      '#default_value' => AddThis::getInstance()->getServicesJsonUrl(),
-      '#required' => TRUE,
+    '#type' => 'textfield',
+    '#title' => t('AddThis services json URL'),
+    '#default_value' => AddThis::getInstance()->getServicesJsonUrl(),
+    '#required' => TRUE,
   );
   $form['service_urls_fieldset'][AddThis::WIDGET_JS_URL_KEY] = array(
-      '#type' => 'textfield',
-      '#title' => t('AddThis javascript widget URL'),
-      '#default_value' => AddThis::getInstance()->getBaseWidgetJsUrl(),
-      '#required' => TRUE,
+    '#type' => 'textfield',
+    '#title' => t('AddThis javascript widget URL'),
+    '#default_value' => AddThis::getInstance()->getBaseWidgetJsUrl(),
+    '#required' => TRUE,
   );
 
   // Advanced settings.
@@ -308,6 +312,17 @@ function addthis_admin_settings_advanced_form($form_state) {
     '#default_value' => AddThis::getInstance()->getCustomConfigurationCode(),
     '#required' => FALSE,
     '#description' => t('AddThis custom configuration code. See format at <a href="http://addthis.com/" target="_blank">AddThis.com</a>'),
+  );
+  $form['advanced_settings_fieldset'][AddThis::WIDGET_JS_LOAD_TYPE] = array(
+    '#type' => 'select',
+    '#title' => t('When to load the widget js.'),
+    '#options' => array(
+      'async' => t('When the page loads, but load assets asynchronously. (default)'),
+      'include' => t('When the page loads.'),
+      'domready' => t('When the DOM is ready at the script dynamicly.'),
+    ),
+    '#default_value' => AddThis::getInstance()->getWidgetJsLoadType(),
+    '#required' => FALSE,
   );
   return system_settings_form($form);
 }

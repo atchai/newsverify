@@ -89,24 +89,29 @@ function addthis_displays_addthis_display_markup__addthis_basic_toolbox($options
  */
 function addthis_displays_addthis_display_markup__addthis_basic_button($options = array()) {
 
+  $addthis = AddThis::getInstance();
+  $settings = $options['#display']['settings'];
+
   $button_img = 'http://s7.addthis.com/static/btn/sm-share-en.gif';
-  if ($options['#display']['settings']['button_size'] == 'big') {
+  if (isset($settings['buttons_size']) && $settings['buttons_size'] == 'big') {
     $button_img = 'http://s7.addthis.com/static/btn/v2/lg-share-en.gif';
   }
+  $button_img = $addthis->transformToSecureUrl($button_img);
 
+  $extra_css = isset($settings['extra_css']) ? $settings['extra_css'] : '';
   $element = array(
     '#theme' => 'addthis_wrapper',
     '#tag' => 'a',
     '#attributes' => array(
       'class' => array(
         'addthis_button',
-        $options['#display']['settings']['extra_css'],
+        $extra_css,
       ),
     ),
   );
-  $element['#attributes'] += AddThis::getInstance()->getAddThisAttributesMarkup($options);
+  $element['#attributes'] += $addthis->getAddThisAttributesMarkup($options);
 
-  // Create img button
+  // Create img button.
   $image = array(
     '#theme' => 'addthis_element',
     '#tag' => 'img',
