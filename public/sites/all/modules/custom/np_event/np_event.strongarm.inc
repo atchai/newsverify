@@ -55,6 +55,9 @@ function np_event_strongarm() {
         'path' => array(
           'weight' => '24',
         ),
+        'metatags' => array(
+          'weight' => '40',
+        ),
       ),
       'display' => array(),
     ),
