@@ -157,7 +157,7 @@ function np_core_page_alter($variables) {
   // wouldn't work properly because that would be null on events and stories with no section.
   // My point here being that it's just faster and more precise to write code for this.
   $breadcrumbs = array(
-    l('Home', '<front>')
+    l(t('Home'), '<front>')
   );
 
   $node = menu_get_object('node', 1);
