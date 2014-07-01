@@ -181,3 +181,26 @@ function np_core_page_alter($variables) {
   // Set the breadcrumbs, it will always be at least Home, as that is always set
   drupal_set_breadcrumb($breadcrumbs);
 }
+
+/**
+ * Implements hook_date_formats().
+ */
+function np_core_date_formats() {
+  return array(
+    array(
+      'type' => 'short',
+      'format' => 'd/m/Y',
+      'locales' => array(),
+    ),
+    array(
+      'type' => 'medium',
+      'format' => 'D, d/m/Y H:i',
+      'locales' => array(),
+    ),
+    array(
+      'type' => 'long',
+      'format' => 'l, d/m/Y H:i',
+      'locales' => array(),
+    ),
+  );
+}
