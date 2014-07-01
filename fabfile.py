@@ -83,9 +83,8 @@ def update():
     """ Update site (enabling modules, reverting features, running DB updates) """
     deploy_handlers = {}
 
-    print "\n>>Set maintenance mode\n"
-
     # Initialise deploy handlers and set maintenance mode
+    print "\n>>Set maintenance mode\n"
     for current_site in env['sites'].iterkeys():
         deploy_handlers[current_site] =\
             drupal.deploy(current_site, env['repo_path'])
@@ -97,9 +96,8 @@ def update():
     print "\n>>Pull code changes.\n"
     pull(env['repo_url'])
 
-    print "\n>>Run Drupal deployment steps.\n"
-
     # Run deployment steps for every sites
+    print "\n>>Run Drupal deployment steps.\n"
     for current_site, current_site_info in env['sites'].iteritems():
         print "\n>>Current site:%s\n" % current_site
 
