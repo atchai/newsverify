@@ -1,8 +1,10 @@
 name = NewsPlatform: Core
 core = 7.x
 package = Features
+dependencies[] = context
 dependencies[] = diff
 dependencies[] = features
+dependencies[] = metatag
 dependencies[] = np_event
 dependencies[] = np_home
 dependencies[] = np_image
