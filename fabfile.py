@@ -1,13 +1,14 @@
 #
-# Newsverify Fabfile #
+# News Verify Fabfile #
 #
 # Requires: fabric 1.3.2 or above.
 #
 # References: http://docs.fabfile.org/en/1.9/usage/fab.html
 #
-# Defines the newsverify deployment process via fabric.
+# Defines the News Verify deployment process via fabric.
+#
 # Consider this file as a starting point to define a deployment process
-# bespoke for your specific newsverify instance.
+# bespoke for your specific News Verify instance.
 #
 # Your deploy command will be
 #   fab -f <fabfile_path> --hosts=<hosts> <serv_conf_task> <op_task>
@@ -15,18 +16,20 @@
 # <hosts> is a comma-delimited list of host strings (http://docs.fabfile.org/en/1.9/usage/fab.html#cmdoption-H)
 #
 # <serv_conf_task> is a Server Configuration task which is used to define
-# server-specific configurations (branch to clone, db connection parameters and so on)
+# server-specific configurations (branch to clone, db connection parameters and
+# so on)
 #
 # <op_task> is an Operation task which is used to define the operations
 # that have to be performed by the deploy.
 #
-# Tipycally you won't need to change the Operations tasks below. Thus your cloned fabfile
-# will just have to re-define the proper Server Configuration tasks.
+# Typically you won't need to change the Operations tasks below. Thus your
+# cloned fabfile will just have to re-define the proper Server Configuration
+# tasks.
 #
-# If your fabric file will have to work on different environments you might want to use
-# the --set option to set default values for arbitrary Fabric env vars instead of hardcoding
-# them in the Server Configuration section.
-# The --set option is supported only by fabric 1.4 or above.
+# If your fabric file will have to work on different environments you might want
+# to use the --set option to set default values for arbitrary Fabric env vars
+# instead of hardcoding them in the Server Configuration section.
+# Beware: --set option is supported only on fabric 1.4 or above.
 # See: http://docs.fabfile.org/en/1.9/usage/fab.html#cmdoption--set .
 #
 
