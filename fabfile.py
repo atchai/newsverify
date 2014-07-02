@@ -99,7 +99,7 @@ def update():
     # Run deployment steps for every sites
     print "\n>>Run Drupal deployment steps.\n"
     for current_site, current_site_info in env['sites'].iteritems():
-        print "\n>>Current site:%s\n" % current_site
+        print "\n>>>>Current site:%s\n" % current_site
 
         # Enable all modules (previously enabled modules will be ignored by
         # drush)
