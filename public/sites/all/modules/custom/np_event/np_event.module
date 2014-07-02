@@ -114,3 +114,36 @@ function np_event_author_events() {
 
     return $items;
 }
+
+/**
+ * Implements hook_field_attach_view_alter().
+ *
+ * By default, field labels are translatable only via i18n_field. We thus
+ * implement this hook in order to handle the event's field labels translation
+ * without adding a dependency towards i18n.
+ *
+ * Specifically, the strings affected by this implementation are:
+ *  - "When" (from field_cmptd_when_full)
+ *  - "Where" (from field_cmptd_where_full)
+ *  - "What Happened" (from field_cmptd_description_full)
+ *  - "Verification Status" (from field_verification_status)
+ *  - "Date" (from field_when_date)
+ *  - "Location" (from field_where_location)
+ *  - "Description" (from field_what_description)
+ */
+function np_event_field_attach_view_alter(&$output, $context) {
+  if($context['entity_type'] != 'node' || $context['entity']->type != 'event'){
+    return;
+  }
+  foreach (element_children($output) as $field_name) {
+    $element = &$output[$field_name];
+    if (!empty($element['#entity_type']) && !empty($element['#field_name']) && !empty($element['#bundle'])) {
+      $instance = field_info_instance($element['#entity_type'], $element['#field_name'], $element['#bundle']);
+
+      // Translate field title if set
+      if (!empty($instance['label'])) {
+        $element['#title'] = t($instance['label']);
+      }
+    }
+  }
+}
