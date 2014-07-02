@@ -4,6 +4,7 @@ package = Features
 dependencies[] = context
 dependencies[] = diff
 dependencies[] = features
+dependencies[] = features_override
 dependencies[] = metatag
 dependencies[] = np_event
 dependencies[] = np_home
