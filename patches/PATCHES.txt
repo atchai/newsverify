@@ -16,3 +16,7 @@ URL: http://drupal.org/node/693302#comment-6726614
 Patch: preprocess-aggregation-1627478-14.patch
 Project: omega
 URL: http://drupal.org/node/1627478#comment-6698812
+
+Patch: wysiwyg-1802394-4.patch
+Project: wysiwyg
+URL: https://www.drupal.org/node/1802394#comment-6556656
