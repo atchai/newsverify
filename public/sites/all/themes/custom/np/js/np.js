@@ -227,6 +227,10 @@ Drupal.behaviors.np = {
       itemMargin: 0
     });
 
+    // Bind the top left menu interaction to the responsive dropdown menu
+    $('#top-left-menu').click(function(){
+        $('.menu-toggle').next().toggleClass('menu-toggled');
+    });
   }
 };
 
