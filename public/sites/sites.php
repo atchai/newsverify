@@ -62,7 +62,7 @@
 $sites['opennewsplatform.dev'] = 'demo';
 
 // NewsVerify Arabic
-$sites['ar.newsverify.dev'] = 'snp';
+//$sites['verifsy.verif.iesech.info] = 'snp';
 
 // NewsVerify English
 $sites['en.newsverify.dev'] = 'demo';
